@@ -14,7 +14,7 @@ apply from: "utils.gradle"
 def os = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
 ext.isWindows = os.startsWith("windows");
 if (!isWindows) {    
-    ext.writeAVersionHeaderFile()  // aversion_scc.h is not created/updated
+    // public testIDEA has SDK lib precompiled: ext.writeAVersionHeaderFile()  // aversion_scc.h is not created/updated
               // on Linux by TortoiseSVN, because these hooks don't work there.
 }
 
