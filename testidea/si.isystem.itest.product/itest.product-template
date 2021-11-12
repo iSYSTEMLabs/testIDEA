@@ -23,9 +23,9 @@
    </configIni>
 
    <launcherArgs>
-      <programArgsWin>-vm
+      <!-- use system JRE in public version of testIDEA programArgsWin>-vm
 ../jre/bin/javaw.exe
-      </programArgsWin>
+      </programArgsWin -->
       <vmArgs>
          <argsX86>-Xmx1024m</argsX86>
          <argsX86_64>-Xmx2048m</argsX86_64>

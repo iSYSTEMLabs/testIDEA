@@ -6,6 +6,9 @@ deploy
 .gradle
 local-maven-repo
 
+# created by testIDEA when started from this dir
+workspace
+
 # Compiled class file
 *.class
 
