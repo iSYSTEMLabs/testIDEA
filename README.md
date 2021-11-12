@@ -3,9 +3,9 @@ This application is unit testing tool for embedded systems. Current implementati
 
 __Main features:__
 
-- testIDEA is interactive editor for creating and running tests. 
-- Test cases and test vectors are __executed on the real hardware or 
-  simulator without code instrumentation__.
+- testIDEA is interactive editor for creating and running unit tests. 
+- Test cases are __executed on the real hardware or simulator without 
+  code instrumentation__.
 - The major advantage of non-instrumented unit tests is the fast 
   turn-around-times, because the tests can run without compilation, 
   linking and download. 
@@ -24,7 +24,7 @@ __Main features:__
 - Code completion of function and variable names.
 - Debugging of test cases with step execution is possible.
 
-![Screenshot](main-window.png)
+![Screenshot](./main.png)
 
 
 # Using prebuilt testIDEA
