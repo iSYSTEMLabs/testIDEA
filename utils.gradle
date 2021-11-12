@@ -95,9 +95,9 @@ void runMavenBuild(pomPath, target, signPass) {
 
         // system installed java (OpenJDK) is used on Linux
         if (isWindows) {
-            environment "JAVA_HOME", "$ISYSTEM_BUILD_JDK_x64_PATH"
+            // environment "JAVA_HOME", "$ISYSTEM_BUILD_JDK_x64_PATH"
 
-            commandLine("$ISYSTEM_BUILD_MAVEN_PATH/bin/mvn.cmd",
+            commandLine("mvn.cmd",
                         target, // clean, verify...
                         // '-o',   // work offline
                         '-f', pomPath,
@@ -108,7 +108,7 @@ void runMavenBuild(pomPath, target, signPass) {
             // On linux maven works online, because local repo does not contain
             // artifacts required on Linux, most likely because of Eclipse version
             // and runtime native plugins.
-            commandLine("$ISYSTEM_BUILD_MAVEN_PATH/bin/mvn",
+            commandLine("mvn",
                         target, // clean, verify...
                         '-f', pomPath,
                         "-Disys.version=$version",
@@ -137,7 +137,7 @@ gradle.allprojects {
 
         String major, minor, build, buildSub, svnRev
 
-        file('../Venus/aversion1.h').eachLine('UTF-8') {
+        file('aversion1.h').eachLine('UTF-8') {
             def tokens = it.split(' ')
 
             if (tokens.length == 3) {
@@ -168,10 +168,11 @@ gradle.allprojects {
     ext.getISysQualifiedVer = {
 
         // use '_' for svnRev to respect format of version string in Eclipse
-        return getISysVer() + '_' + getSvnRev()
+        return getISysVer() // + '_' + getSvnRev()
     }
 
     
+    /*
     ext.compileCppProjectWin = { isRebuild, isDebugBuild, cfgExt, projName, slnDir, slnName ->    
         Yaml parser = new Yaml()
         Map compilerConfig = parser.load((rootProject.file('..\\config.yaml').getAbsolutePath() as File).text)
@@ -218,7 +219,7 @@ gradle.allprojects {
 
         execPyScript('../linux', 'buildSDKsLinux.py', ['-b', 'java'])
     }
-
+*/
 
     ext.writeAVersionHeaderFile = {
         execPyScript('../Venus', '-c', 
@@ -265,7 +266,7 @@ gradle.allprojects {
         '../sdk/java/release-java-x64/IConnectJava64.dll',
         '../sdk/java/release-java-win32/IConnectJava.dll',
         
-        '../Venus/aversion1.h',
+        'aversion1.h',
 
         'common/si.isystem.jfaceutils/build/libs/si.isystem.jfaceutils-' + version + '.jar',
         'common/de.kupzog.ktable/build/libs/de.kupzog.ktable-' + version + '.jar',

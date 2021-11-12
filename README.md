@@ -44,6 +44,10 @@ form. You can also download them as part of
 Required tools:
 - JDK 11
 - Gradle
+- Maven
+
+Env. variable `JAVA_HOME` must be defined, and `gradle` and `mvn` must be 
+in `PATH`.
 
 Clone this repository, then:
 

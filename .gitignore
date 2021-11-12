@@ -3,6 +3,8 @@ bin
 build
 target
 deploy
+.gradle
+local-maven-repo
 
 # Compiled class file
 *.class
@@ -11,7 +13,7 @@ deploy
 *.log
 
 # Package Files #
-*.jar
+#*.jar
 *.zip
 *.tar.gz
 *.rar

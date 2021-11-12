@@ -36,15 +36,13 @@ ext.MAVEN_LOCAL_REPO = 'local-maven-repo'
 def configYamlPath = '../config.yaml'
 
 Yaml parser = new Yaml()
-Map compilerConfig = parser.load((rootProject.rootDir.toPath().toString() + '/' + configYamlPath as File).text)
-ext.ISYSTEM_BUILD_JDK_x64_PATH = ext.expandEnvVars(compilerConfig['jdk_x64']['ISYSTEM_BUILD_JDK_x64_PATH'])
+// ext.ISYSTEM_BUILD_JDK_x64_PATH = ext.expandEnvVars(compilerConfig['jdk_x64']['ISYSTEM_BUILD_JDK_x64_PATH'])
 
 def drive = ext.expandEnvVars("%ISYSTEM_ROOT_DRIVE%")
 if (!isWindows) {
     drive = System.getenv("HOME")
 }
-ext.ISYSTEM_BUILD_MAVEN_REPO_PATH = ext.expandEnvVars(compilerConfig['maven_repo']['ISYSTEM_BUILD_MAVEN_REPO_PATH'])
-ext.ISYSTEM_BUILD_MAVEN_PATH = ext.expandEnvVars(compilerConfig['maven']['ISYSTEM_BUILD_MAVEN_PATH'])
+ext.ISYSTEM_BUILD_MAVEN_PATH = ''  
 
 // def toolsDir = 'AsystLib/tools'
 // if (ext.isWindows) {
@@ -125,16 +123,9 @@ subprojects {
 }
 
 
-task configure(type: Copy) {
-    from ISYSTEM_BUILD_MAVEN_REPO_PATH
-    into MAVEN_LOCAL_REPO
-}
-
-
 /**
  * Starts VisualStudio to build iConnect, which calls swigBuild.py,
  * which in turn starts gradle to build and copy IConnectJNI.jar.
- */
 task compileCppSDK {
     doFirst {
 
@@ -151,14 +142,15 @@ task compileCppSDK {
         }
     }
 }
+ */
 
 //-------------------------------------------------------------------------------------------------------------
 //---------------------------------------------  Commons  -----------------------------------------------------
 //-------------------------------------------------------------------------------------------------------------
-
+/*
 project(':si.isystem.icadapter') {
     compileJava.dependsOn compileCppSDK
-}
+} */
 
 project(':si.isystem.commons.plugin') {
 
