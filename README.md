@@ -43,8 +43,8 @@ form. You can also download them as part of
 
 Required tools:
 - JDK 11
-- Gradle
-- Maven
+- Gradle (tested with version 6.1)
+- Maven (tested with version 3.6)
 
 Env. variable `JAVA_HOME` must be defined, and `gradle` and `mvn` must be 
 in `PATH`.
