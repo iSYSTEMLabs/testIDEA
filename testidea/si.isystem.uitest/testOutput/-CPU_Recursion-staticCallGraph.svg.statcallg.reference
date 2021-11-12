@@ -1,0 +1,8 @@
+digraph G {
+  node[fontsize=10];
+  edge[fontsize=10];
+"Factorial"[style=filled, fillcolor="darkseagreen1"];
+"CPU_Recursion"[style=filled, fillcolor="cadetblue1"];
+"Factorial" -> "Factorial";
+"CPU_Recursion" -> "Factorial";
+}

@@ -1,0 +1,48 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>testIDEA Configuration</title>
+</head>
+
+<body>
+	<h1>testIDEA and Project Configurations</h1>
+
+	<i>testIDEA</i> has two sets of options:
+	<ul>
+		<li>The first set configures behavior of testIDEA, and has no
+			direct influence on test execution. For example, it controls the help
+			system and defaults for new projects. This set of options is called <i>Preferences</i>
+			and is accessible with command <code>iTools | Preferences</code>.
+			These options are stored in <i>testIDEA</i> storage and are the same
+			for all projects opened with <i>testIDEA</i>.</li>
+		<li>The second set configures test environment. For example, it
+			defines target initialization steps before test execution starts.
+			This set of options is called <i>Properties</i> and is accessible
+			with command <code>File | Properties</code>. These options are stored
+			in project file (*.iyaml), and are specific for each project.</li>
+	</ul>
+
+	Some pages in Preferences and Properties dialogs are very similar, but
+	the following rule always applies for these settings:
+	<p>
+	<b>Preferences are used only when new project is created - they
+		serve as a starting base. Once the project is created, only Properties
+		are used.</b>
+	<p>
+
+          To make things clearer, the topmost statement on each page
+		explains the meaning of settings, as shown in the two figures below:
+	<p>
+
+        <p align='center'>
+          <img width="100%" src="images/prefs-runConfig.png"/>
+	</p>
+
+        <p align='center'>
+          <img width="100%" src="images/prefs-runProperties.png"/>
+	</p>
+</body>
+</html>
+

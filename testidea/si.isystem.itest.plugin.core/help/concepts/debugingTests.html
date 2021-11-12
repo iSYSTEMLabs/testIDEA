@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <title>Debugging tests</title>
+  </head>
+
+  <body>
+    <h1>Debugging tests</h1>
+
+    It may happen, that test results do not match our expectations. If
+    the tested function is not trivial, we can use debugger to step
+    through the function and examine variables. However, if we simply
+    set a breakpoint in the function, it will be detected as invalid
+    test termination and the test will end. This means
+    that <code>winIDEA</code> will restore target state as it was
+    before the test run. To avoid this and enable debugging, we can
+    set the debug mode flag in <i>testIDEA</i>. It is shown as toggle
+    button in the </i>testIDEA</i> toolbar:
+
+
+    <p align="center">
+    <img src="images/debugMode.png"/>
+    </p>
+
+    Procedure for debugging is therefore the following:
+    <ul>
+      <li>set debug mode in <i>testIDEA</i></li>
+      <li>set a breakpoint in <i>winIDEA</i></li>
+      <li>run the test</li>
+      <li>when the following dialog appears in <i>testIDEA</i>, you
+      can debug the function in <i>winIDEA</i>:
+        
+          <p align="center">
+            <img src="images/debugDialog.png"/>
+          </p>
+      </li>
+      <li>when debugging is finished, click <code>OK</code> to execute next tests
+      (if there are any selected), or <code>Cancel</code> to terminate
+      testing.
+        </li>
+    </ul>
+    <p>
+      <br>
+      
+
+    <H1>Quick debug</h1>
+
+    The debug functionality described above is flexible, but requires
+    several operations to start debugging. To make things easier in
+    the common situation, when we want to debug a function from the
+    beginning, a <i>single click</i> debug mode has been added to
+    <i>testIDEA</i>. Button called <i>Quick debug button</i> is
+    located on the testIDEA toolbar:
+    <br>&nbsp;
+  
+    <p align="center">
+    <img src="images/debugModeQuick.png"/>
+    </p>
+    <br>
+    With a single click the target is initialized for execution of the test,
+    which is currently selected in the test specification tree, then
+    execution point is set to function start, and focus is set to 
+    <i>winIDEA</i>.
+    Now everything is ready for debugging.
+    <p><br>
+
+    <h1>Debugging tests with test-points and stubs</h1>
+
+    If tests contain test-points and stubs, we usually want them to
+    get applied during debugging, so that target state matches state
+    during normal test run. However, when we manually step through
+    application code in winIDEA, testIDEA has no control and can not
+    apply test points and stubs. To avoid this, <b>we should not step in
+    winIDEA</b>, but do the following:
+    <ul>
+    <li>set breakpoint in winIDEA on the next location, where we'd
+    like to stop (to investigate values of variables, for example).
+      </li>
+    <li>Press button <b>OK</b> testIDEA dialog, to continue with test.
+      </ul>
+    
+    If stub or test-point will be encountered during the run, they
+    will be applied. <p>
+
+    <b>Note:</b> Do not modify breakpoints set by testIDEA for stubs
+    and test-points!
+    
+
+
+      
+    <br><br>
+    &nbsp;
+  </body>
+</html>

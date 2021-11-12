@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <title>Connection to winIDEA</title>
+  </head>
+
+  <body>
+    <h1>Connection to winIDEA</h1>
+
+    When defining test specification, function and variable names
+    must be specified. <i>winIDEA</i> knows names of all functions and
+    variables from debug info, and <i>testIDEA</i> can get this information
+    from <i>winIDEA</i> to help us with auto-completion. Therefore it is
+    convenient to have <i>winIDEA</i> running, when specifying
+    tests. <p/>
+
+    <p/>
+    Once <i>winIDEA</i> is running, <i>testIDEA</i>
+    can connect to it. For convenience there are several ways to connect:
+
+    <ul>
+    <li>
+    The simplest one is the main menu option <code>iTools | Connect to winIDEA</code>
+    in <i>iSYSTEM testIDEA</i>.
+    </li>
+    <li>
+    The next possibility is simply pressing the <i>Refresh</i> button, and
+    testIDEA asks us, whether we want to connect.
+    </li>
+    <li>
+    It is also possible to configure <i>testIDEA</i> to connect
+    automatically, with <code>iTools | Preferences | testIDEA | Connect automatically</code>.
+    </li>
+    </ul>
+    
+    Connection status is shown in the bottom left corner of the <i>iSYSTEM testIDEA</i> window:
+
+    <p align="center">
+    <img src="images/connectionStatus.png"/>
+    </p>
+
+    
+    <b>Note 1:</b> <i>winIDEA</i> must download the code for symbols to be
+    available. If we don't have target available, switching
+    <i>winIDEA</i> to demo mode will also do the trick (main menu option
+    <code>Hardware | Demo mode</code> in <i>winIDEA</i>).
+    <p/>
+
+    <b>Note 2:</b> If <i>testIDEA</i> was started from winIDEA (menu
+    <code>Test | Launch testIDEA</code>), then it can connect only to this instance
+    of <i>winIDEA</i>. If we close the <i>winIDEA</i>
+    instance, <i>testIDEA</i> can not connect anywhere, and we must
+    close it also. This behavior may seem inconvenient, but if we have
+    several instances of <i>winIDEA</i> and <i>testIDEA</i> running, this tight
+    coupling provides a controllable development environment. <br>
+    To get a <i>testIDEA</i> instance, which can connect to
+    any <i>winIDEA</i>, run it
+    directly from Windows, not from <i>winIDEA</i>.
+    
+ 
+  </body>
+</html>

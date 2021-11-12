@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+
+  
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <link href="../../styles.css" rel="stylesheet" type="text/css">
+    <title>Filter</title>
+  </head>
+
+  <body>
+    <h1></h1>
+
+    <h2 id="filterConfig">Filter</h2>
+
+    Filter settings define which test cases are members of a group.
+    Test cases can be removed or added to group only with filter
+    settings. After change in settings, command <span class="menuCmd">Refresh symbols</span> must
+    be executed to update test cases in groups.<p/>
+    
+    Group filter has many settings and it can specify complex criteria
+    for test case filtering. However, in most cases only one or two
+    items need to be set, like it is done in the image below, where
+    all test cases for functions in module <i>listUtils.c</i> are listed.<br>
+    Use tool-tips of controls in filter section
+    to learn more about their meaning.
+
+    <p align='center'>
+    <img width="90%" src="images/filterConfigSection.png"/>
+    </p>
+
+    Please note that only executable tests (have <i>Execute</i> flag in
+    section <i>Meta</i> selected) can be members of a group.<p/>
+
+    <b>Limitation:</b> Download files with the same name but in different
+    directories are not supported.
+
+    
+    <h3>Drag and drop</h3>
+
+    <i>Drag & Drop</i> action of a test case on group adds test ID of
+    the dropped test cases to filter. This action is convenient for
+    defining filter in a new custom group, which has no other items
+    set. Only test cases dropped on a group will be group members.<p/>
+    
+    If filter has already other constraints defined, <i>Drag & drop</i> may
+    not add test cases to the group. For example, if filter is
+    configured to contain only test cases for functions from module
+    <i>signal.c</i>, and test case from module <i>math.c</i> is dropped on the
+    group, then this test case will not be part of the
+    group. Furthermore, since there is no test case with the given ID
+    for functions from module <i>math.c</i>, the group will contain no test
+    cases. Modify the filter manually in such cases.
+    
+    <p/>
+  </body>
+</html>
+

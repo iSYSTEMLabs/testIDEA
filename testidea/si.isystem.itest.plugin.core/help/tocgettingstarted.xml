@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="Getting Started" link_to="toc.xml#gettingstarted"> 
+    <topic label="iSYSTEM testIDEA Overview" href="help/gettingstarted/whatIsTestIDEA.html"/>
+    <topic label="Professional and standard features" href="help/gettingstarted/standardAndProfessional.html"/>
+    
+    <topic label="Installation"  href="help/gettingstarted/installation.html"/> 
+    <topic label="Write your first test"  href="help/gettingstarted/firstTest.html"/>
+    <topic label="Run the test"  href="help/gettingstarted/runTest.html"/>
+    <topic label="View test report"  href="help/gettingstarted/viewReport.html"/>
+</toc>

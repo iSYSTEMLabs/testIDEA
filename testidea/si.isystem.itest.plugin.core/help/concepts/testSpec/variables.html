@@ -1,0 +1,301 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <title>Variables</title>
+  </head>
+
+  <body>
+    <h1>Variables</h1>
+
+    This page contains declarations of test local variables, and
+    initialization of global and test local variables. Test local
+    variables are created on the stack before test execution. They may
+    be used as function parameters, when pointers or structures are
+    needed. For example, for function
+
+    <pre>
+        void initStructT(struct_td * pStruct, long value);
+    </pre>
+    we need the following local variable:
+
+    <p align="center">
+    <img width="90%" src="images/variables.png"/>
+    </p>
+
+    The two buttons between the tables can save us some typing.
+    The first one copies all declared test local variables to the
+    initialization table. The second one opens a wizard dialog, which
+    helps us to add all array or structure members to the
+    initialization table with few clicks:<p>
+
+    <p align="center">
+    <img src="images/vars_structWizard.png"/>
+    </p>
+&nbsp;<p>
+
+    Note, that we have to initialize each structure or array member
+    separately. <p>
+    Now we can use the declared and initialized variables as function
+    parameters:
+    <p align="center">
+    <img width="90%" src="images/vars_localVars.png"/>
+    </p>
+
+    <h4>Arrays</h4>
+    For character and number arrays we can specify contents with
+    single entry. For strings we can use double quotes, for example:
+
+    <pre>
+  <b>Declaration:</b>
+      myChar     char[10]
+
+  <b>Initialization:</b>
+      myChar     "Hello!"
+    </pre>
+    For number arrays we can use curly braces, for example:
+    <pre>
+  <b>Declaration:</b>
+      myArray     int[10]
+
+  <b>Initialization:</b>
+      myArray     {10, 20, 30, 40, 50, 60, 70, 80, 90, 100}
+    </pre>
+    <p>
+
+
+      <h4>Pointers</h4>
+
+    If function parameter is a pointer, we must make sure to assign
+    pointer so that it points to valid memory area. For example, if
+    function declaration is:
+
+    <pre>
+      void f(int *p);
+    </pre>
+
+    and we declare variable:
+
+    <pre>
+      param1    int *
+    </pre>
+
+    and then 'initialize' it like:
+    <pre>
+      *param1     10             // DON'T DO THIS!!!
+    </pre>
+
+    then <i>param1</i> will contain uninitialized address, depending on
+    previous stack content. Symptoms: test will sometimes succeed,
+    sometimes fail with error. Proper approach:<p>
+
+    Declaration:
+    <pre>
+      param1    int
+    </pre>
+
+    Initialization:
+    <pre>
+      param1    10
+    </pre>
+
+    Function parameter:
+
+    <pre>
+      &amp;param1
+    </pre>
+
+
+    <h4>Global variables</h4>
+
+    Global variables do <b>not</b> need declaration
+    in <i>testIDEA</i>, because they already exist on the target and
+    their address and type are already known from debug info. For
+    example, global variable <code>iCounter</code> is initialized to
+    value 10:
+
+    <p align="center">
+    <img width="90%" src="images/vars_globalVars.png"/>
+    </p>
+
+    Global and function static variables keep their values between
+    test runs - if a test changes value of the global variable, the
+    next test will be executed with the changed value.<p>
+
+    <b>Warning</b>: If we define type of a variable, it means a
+    declaration of a local variable. If it has the same name as a
+    global variable, the global variable is hidden!<p>
+
+    <h4>Fully qualified names of global variables</h4>
+
+     When we have multiple download files, global variables from other
+     then the default download file, require access with fully
+     qualified name, which includes the download file name:
+
+     <pre>
+     "&lt;moduleName&gt;#"&lt;varName&gt;,,&lt;downloadFileName&gt;
+     </pre>
+     where:
+     <ul>
+     <li> <code>moduleName</code> - name of the C source file, which
+     contains the variable (optional)</li>
+     <li> <code>varName</code> - name of the variable</li>
+     <li> <code>downloadFileName</code> - name of the download file, where the variable is located</li>
+     </ul>
+
+     Examples:
+     <pre>
+     "main.c#"iCounter,,executable.elf
+     </pre>
+
+     <pre>
+     iCounter,,executable.elf
+     </pre>
+
+     When we use such variable in expressions, the download file name
+     is valid for whole expression, so we have to specify it at the
+     end of expression, for example:
+
+     <pre>
+     iCounter == 3,,executable.elf
+     </pre>
+
+
+
+    <h4>Function static variables</h4>
+
+    Syntax for static variables declared inside of a function, is the
+    following:
+    <pre>
+      &lt;functionName&gt;##&lt;functionStaticVarName&gt;
+    </pre>
+
+    where:
+     <ul>
+     <li> <code>functionName</code> - name of the function, which
+     contains static variable</li>
+     <li> <code>functionStaticVarName</code> - name of the static
+     variable inside the function</li>
+     </ul>
+
+    Example:
+    <pre>
+        myFunction##myStaticVar
+    </pre>
+
+
+<p>
+    <h4>Variables with the same type as function parameters</h4>
+
+    This section describes workaround for:
+
+    <ul>
+    <li><b>Incomplete debug information</b><br/>
+      Sometimes it may happen, that debug information
+      contains wrong information or the type of function parameter is
+      not named. For example, if a struct with two integers is
+      typedefed, and the typedef is used as function parameter, some
+      compilers do not provide the name of the typedef. In such cases
+      winIDEA knows the parameter is a struct with two integers, but
+      does not know the name of the type. This means we can not create a
+      variable of the same type as function parameter.</li>
+
+    <li><b>Bug in compiler</b></li>
+
+    <li><b>Types declared in header file and included in several
+      compile units.</b>
+
+      This is the most common source of problems with function parameter
+      types. The reason for this lies in C/C++ design - each time a header
+      file is included in c/cpp file, a new type is generated, because
+      compiler does not know if it is the same type which has already been
+      included in other module. Some compilers/linkers are able to merge
+      this information in elf symbol info, but some are not, and sometimes
+      merging is not possible because of C language design.
+    </li>
+    </ul>
+
+    To solve this problem, we can use types of function parameters
+    implicitly when creating variables by using
+    keywords <b>decltype</b> or <b>decltype_ref</b>. The syntax is the
+    following:
+
+    <pre>
+      decltype(&lt;<i>functionName</i>&gt;##&lt;<i>N</i>&gt;)
+      decltype(*&lt;<i>functionName</i>&gt;##&lt;<i>N</i>&gt;)[<K>]
+      decltype_ref(&lt;<i>functionName</i>&gt;##&lt;<i>N</i>&gt;)
+    </pre>
+
+    where:<br>
+    - <i>functionName</i> - name of the function<br>
+    - <i>N</i> - index of function parameter, where 0 means function
+    return value type, 1 is the first parameter, ...<br>
+    - <i>K</i> - size of the declared array
+
+    <p>
+      Examples:<br>
+      <ol><li>
+      If the function is declared as:
+       <pre>void myFunction(MyStruct a)</pre>
+      we can use the following type instead of type <code>MyStruct</code>:
+        <pre>decltype(myFunction##1)</pre>
+        <p>
+      </li><li>
+      If the function is declared as:
+       <pre>otherFunction(MyType *ptr)</pre>
+       and we want to create an array of 5 elements of type <code>MyType</code> to
+       be used as a pointer parameter, we can write:
+
+        <pre>decltype(*myFunction##1)[5]</pre>
+
+        Note that type of the first function parameter is <code>MyType
+        *</code>. We have to dereference it to get
+        type <code>MyType</code>.
+        <p>
+       </li>
+       <li>
+      If the function is declared as:
+      <pre>void f(int n1, int * pn2, int & rn3)</pre>
+      we can get parameter types using one of the following:<p/>
+
+      <table border='1' cellpadding='5' cellspacing='0'>
+      <tr bgcolor='0x00f0f0f0'><th>Syntax</th><th>Returned type</th><th>Description</th></tr>
+
+      <tr><td>decltype(f##1)</td><td>int</td><td>type of 1st parameter (n1)</td></tr>
+      <tr><td>decltype(f##2)</td><td>int *</td><td>type of 2nd parameter (pn2)</td></tr>
+      <tr><td>decltype(*f##2)</td><td>int</td><td>type of pointer</td></tr>
+      <tr><td>decltype(*f##2)[3]</td><td>int[3]</td><td>declares array to be used as the first parameter</td></tr>
+      <tr><td>decltype(f##3)</td><td>int &</td><td>type of param3 (rn3)</td></tr>
+      <tr><td>decltype_ref(f##3)</td><td>int</td><td>referenced type of param3 (rn3)</td></tr>
+      </table>
+       </li>
+      </ol>
+
+    <h4>Type merging in winIDEA</h4>
+
+    When types declared in header file are included in several compile
+    units, then symbol browser in winIDEA shows several types with the
+    same name. In such case we can select options <i>Optimize type
+    information</i> or <i>Merge Types</i> in dilaogs opened with Debug
+    | Files for download:
+
+    <p align="center">
+    <img width="90%" src="images/mergeTypes.png"/>
+    </p>
+
+    Option <i>Optimize type information</i> checks some information
+    before merging types, but sometimes this information is not
+    available and merging is not performed. On the other hand,
+    option <i>Merge Types</i> merges types if they have the same
+    name. This setting should always solve the problem of type merging
+    for equal types, but it will cause problems if you have types with
+    the same name, but are actually different. <b>When using this option,
+    it is your responsibility to be sure about declarations of types
+    used.</b>
+
+
+
+
+  </body>
+</html>

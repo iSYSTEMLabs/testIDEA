@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <title>Common analyzer configuration</title>
+  </head>
+
+  <body>
+    <h1>Common analyzer configuration</h1>
+
+    Section <i>Analyzer</i> contains data for code execution
+    analysis: code coverage, profiler, and trace. This section
+    contains only configuration common to all three subsections. 
+
+    <p align="center">
+    <img width="90%" src="images/analyzer.png"/></p>
+    <p><br><p>
+    
+
+    <i>Note:</i> Append mode is currently available for coverage
+    only. Profiler and trace data are removed on each start.
+    <p>
+
+    To create distinct analyzer file name for each test case, we
+    can use host variables in field <i>Document file</i>. If we type
+    <b>$</b>, a list of porposals with available host variables is
+    shown. Select a variable and its description will appear.<p>
+      For example, if file name is defined as
+      <pre>
+
+      ${_testId}-${_function}.trd
+
+      </pre>
+    then the two variables will be replaced with current test ID and
+    the name of function under test. This way each test case gets analyzer
+    file with different but meaningful name.
+      
+  </body>
+</html>

@@ -1,0 +1,565 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <link href="../styles.css" rel="stylesheet" type="text/css">
+    <title>Writing Script Extensions</title>
+  </head>
+
+  <body>
+    <h1>Writing Script Extensions</h1>
+
+    
+    <h2>Script Extension Points</h2>
+
+    When the original functionality of <i>testIDEA</i> is not enough,
+    we can extend it by writing Python functions and scripts. 
+    There exist three kinds of script extension points:
+    <ul>
+    <li><a href="#testCaseExtensions">Test case extensions</a></li>
+    <li><a href="#execution">Test execution extensions</a></li>
+    <li><a href="#guiExtensions">GUI extensions</a></li>
+    </ul>
+
+    All extensions should be implemented as methods in extension
+    script file. The only exception are GUI script extensions, which
+    are described in section <a href="#guiExtensions">GUI extensions</a>.
+
+    
+    <a name="configuration"/>
+    <h2>Configuration of script environment</h2>
+    Configuration for execution of scripts is accessible with command
+    <span class="menuCmd">File | Properties | Scripts</span>:
+        
+    <p align="center">
+    <img width="90%" src="images/scriptConfig.png"/>
+    </p>
+
+    Each parameter is described in its tool-tip.<p>
+
+    <b>Note:</b> Path to Python interpreter is the same as used by
+    <i>winIDEA</i>. If you need to change it, please
+    see <i>winIDEA</i> dialog <span class="menuCmd">Tools |
+    Options</span>, tab <span class="menuCmd">Scripts</span>.
+    
+
+    <a name="testCaseExtensions"/>
+    <h2>Test case extensions</h2>
+    
+    These extensions can be defined for each test case. This means,
+    that each test case may specify different script methods to be
+    executed during test case run. These methods are defined in file
+    and class specified in <a href="#configuration">configuration</a>.
+    <p>
+
+    There exist six extension points in test case:
+    <ul>
+      <li><b>Init target script function</b>, section <i>Scripts</i>.<br>
+        Called before the test starts. No modifications of target stack are
+        made up to this point, so we may run/stop the target if
+        necessary. Test local variables declared in the <i>Variables</i>
+        section of test case are _not_ available at this point, and
+        target global variables are not modified by testIDEA. It is
+        not recommended to set any variables in this function, as they
+        might be overwritten by testIDEA when setting up test
+        case. Use <i>Init test</i> script function for this purpose.
+        If you set target global variables here, make sure they are
+        not set in test case specification.        
+        </li>
+      
+      <li><b>Init test script function</b>, section <i>Scripts</i><br>
+
+        Called after the test is initialized, but just before the
+        function under test is executed on the target. The stack on
+        the target is set up at this point, and test local variables
+        are created and initialized according to test specification.
+        Target global and test persistent variables are initialized.
+        If we need to initialize some large array, for example, this
+        is the right point to do it.<br>
+
+        Function parameters can be accessed as variables with names
+        defined as:
+
+          <pre>ic.CTestCaseController.POSITION_PARAM_NAME_PREFIX + index</pre>
+
+        where <i>index</i> is 0 for the first parameter, 1 for the second, ...
+        Example:
+        <pre>  
+        self.param0 = ic.CTestCaseController.POSITION_PARAM_NAME_PREFIX + '0'
+        self.testCtrl.modify(self.param0, "1234")
+        </pre>
+        If parameter 0 is char array, we can write:
+        <pre>  
+        self.testCtrl.modify(self.param0 + '[1]', "'a'")
+        </pre>
+        The target should not be started at this point, so calls
+        like <code>run()</code>, <code>stepOver()</code>,
+        <code>call()</code>... from <code>CExecutionController</code> are not
+        allowed here.
+
+        </li>
+
+      <li><b>End test script function</b>, section <i>Scripts</i><br>
+        
+        Called immediately after the function under test returns. The
+        target state is not modified, so we can access global
+        variables and test local variables on the stack. If we need to
+        verify contents of arrays modified by function under test, for
+        example, we should do it at this point.<br>
+        
+        The target should not be started at this point, so calls
+        like <code>run()</code>, <code>stepOver()</code>,
+        <code>call()</code>... from <code>CExecutionController</code> are not
+        allowed in this script function.
+        </li>
+
+      <li><b>Restore target script function</b>, section <i>Scripts</i><br>
+        Called after the test completes. The stack is cleared at this
+        point, global variables are still available. Usually we do
+        some final cleanup at this point, for example restore global
+        variables.
+      </li>
+      
+      <li><b>Stub script function</b>, section <i>Stubs</i><br>
+        Called when the stub is executed. This function is called whenever
+        the function, which we have stubbed is called. This 
+        script function can be called more than once during
+        one test case run. Parameters of the stubbed function are available at
+        this point.
+        </li>
+
+      <li><b>Test Point script function</b>, section <i>Test points</i><br>
+        Called when test point is hit. This 
+        script function can be called more than once during
+        one test case run. Function local variables are available at this point
+        - script function can test and modify them.
+        </li>
+</ul>
+
+
+    <h3>Writing the script extension</h3>
+
+    Python script file with extension functions can be written
+    manually from scratch, or by wizard. The description of manual
+    script creation is following, while the wizard is described in
+    a <a href="#scriptExtensions"> separate section</a>.
+    <p>
+    
+    Script functions should be implemented as methods of class in
+    Python module. First we create a file with extension <code>py</code>. File
+    name is also the name of the module. This name should be specified
+    in the <i>Imported modules</i> field in the configuration dialog
+    above. This way <i>testIDEA</i> can tell Python interpreter where
+    to find our code.
+    <p>
+
+    Next we write a class in the created file. It is a normal Python
+    class with methods. Names of the methods must be the same as given
+    in test case. The number of parameters must also match.
+    <p>
+    Example of class with one extension method:
+    <pre>
+      <b>class</b> SampleExtension:
+
+          <b>def</b> __init__(<b>self</b>, mccMgr = None):
+              pass
+
+          <b>def</b> initTarget(<b>self</b>):
+              print 'Executing initTarget()'
+    </pre>
+    
+    Since we'll usually need <i>isystem.connect</i> calls to access
+    the target, it is a good idea to import the module and initialize
+    access object in extension class constructor, for example:
+
+    <pre>
+    import isystem.connect as ic
+
+    class SampleExtension:
+
+        def __init__(self, mccMgr = None):
+            """
+            Normally we'll connect to winIDEA, which is running the test, so that
+            target state can be accessed/modified by this script.
+            """
+            if mccMgr == None:
+                # Executed when called from testIDEA.
+                # Connection can't be passed between processes.
+                self.mccMgr = None
+                self.connectionMgr = ic.ConnectionMgr()
+                self.connectionMgr.connectMRU()
+                self.debug = ic.CDebugFacade(self.connectionMgr)
+            else:
+                # Executed when called from generated script - connection is reused.
+                self.mccMgr = mccMgr
+                self.connectionMgr = mccMgr.getConnectionMgr('')
+                self.debug = mccMgr.getCDebugFacade('')
+
+            self.testCtrl = None
+
+    
+        def initTarget(self):
+            print 'Executing initTarget()'
+            for i in  range(0, 10):
+                self.debug.modify(ic.IConnectDebug.fMonitor, 'g_charArray1[' + str(i) + ']',
+                                  str(i*i))
+    </pre>
+    
+    Note that for access to test local variables declared in testIDEA, we have to use
+    instance of class <code>CTestCaseController</code>. See below for
+    procedure of getting this object.
+    
+    If this class is saved to
+    file <code>sampleTestExtensions.py</code>, we
+    configure <i>testIDEA</i> as shown in the image above. Similar
+    class can be found in Python SDK: <i>examples\winIDEA\sampleTestExtensions.py</i>.
+    
+    <h3>How can extension methods provide feedback?</h3>
+
+    There are several kinds of information a method can provide, and
+    each has its own purpose:
+
+    <ul>
+      <li>
+      Throwing an exception indicates a failure of test execution. The
+      test in testIDEA ends with exception in such case, and should be
+      considered as not executed. The problem in this case lies in test
+      case itself, not in the code on target.
+      </li> 
+      <li>
+      Text printed to std out is shown in console when running tests from console,
+      and in <i>Status view</i>, when tests are started from 
+      <i>testIDEA</i>. This text is not shown in reports, it is intended to be used
+      during test development for debugging purposes only.
+      </li>
+      <li>
+      Function return values are the most important piece of information returned 
+      by extension functions. If function returns <code>None</code>, it means no error
+      and test execution continues normally. If the function returns non-empty string,
+      it is considered as error in test results, and the string contents is shown
+      in test reports as the reason of test failure. Make sure the
+      function returns only None or string, but no other types.
+      </li>
+      <li>
+      Reserved variables can be used to provide additional information,
+      which does not mean an error. For example, value of analog voltage should be
+      in range for the test to pass, but we would like to have the actual value 
+      measured in the report. For such data each type of extension function has its 
+      own variable. Names of these variables are composed of prefix <code>_isys_</code>,
+      followed by tag used in test specification for extension function, and followed
+      by postfix <code>Info</code>. All extension functions and
+      corresponding variables are shown
+      in the following table:<p>
+      <table border = '1' cellpadding="5">
+      <tr><th>Extension (tag)</th><th>Variable name</th></tr>
+      <tr><td>Initialize Target (initTarget)</td><td>_isys_initTargetInfo</td></tr>
+      <tr><td>Initialize Variables (initFunc)</td><td>_isys_initFuncInfo</td></tr>
+      <tr><td>Verify Variables (endFunc)</td><td>_isys_endFuncInfo</td></tr>
+      <tr><td>Restore Target (restoreTarget)</td><td>_isys_restoreTargetInfo</td></tr>
+      <tr><td>Stubs (stub: script)</td><td>_isys_stubInfo</td></tr>
+      <tr><td>Test Points (testPoint: script)</td><td>_isys_testPointInfo</td></tr>
+      </table>
+      <p>
+      Example of setting a variable in Python script:
+      <pre>
+          <b>self</b>._isys_initTargetInfo = 'information from initTarget()'
+      </pre> 
+
+      Variables are set to <code>None</code> by <i>testIDEA</i> after extension function returns.
+      </li>
+    </ul>
+
+    When not set to <i>None</i>, type of these variables should always be <i>string</i>.<p>
+    
+    Return values and info variables of each function can be seen in tool-tips of
+    decorations next to extension function name in section <code>Scripts</code> in
+    <i>testIDEA</i>. Red decoration means error, green one means information is available,
+    while no decoration means no error and no information:
+
+
+    <p align="center">
+    <img width="90%" src="images/scriptResults.png"/>
+    </p>
+
+    <b>Important:</b> Standard output (print statements) should be used for
+    debugging only, and script info and return values should be at
+    most few lines long. This way reports and information in testIDEA UI will be
+    readable. For more extensive measurements scripts should use files.
+    
+
+    <h2>How to access target variables</h2>
+
+        One of the tasks for script functions is evaluating values of
+	target variables and modifying them. By the term <i>target variables</i> this
+	manual refers to one of the following:
+        <ul>
+        <li>global variables of the target application</li>
+        <li>test local variables defined in test case
+            section <i>Variables</i></li>
+        <li>parameters of target function (tested or stubbed)</li>
+        <li>return values of target function (tested or stubbed)</li>
+        <li>local variables of the target functions (tested or stubbed)</li>
+        </ul>
+
+        All target variables can be accessed with an instance
+	of <i>isystem.connect</i>
+	class <code>CTestCaseController</code>. Before <i>testIDEA</i>
+	calls script extension functions it sets Python variable
+	<code>_isys_testCaseHandle</code> to the value of current test
+	case handle. To instantiate <code>CTestCaseController</code>
+	inside script extension functions use the following
+	Python code:<p>
+      
+	<pre>
+    <b>def</b> myExtFunction(<b>self</b>, testSpec):
+        <b>if self</b>.testCtrl == <b>None</b>:
+            <b>self</b>.testCtrl = ic.CTestCaseController(<b>self</b>.connectionMgr,
+                                                   <b>self</b>._isys_testCaseHandle)
+	</pre>
+
+        To access target variables use the following example:
+
+        <pre>
+        <i># 'nItems' is the name of parameter specified in 'Parameters' field of the
+        # 'Stubs' section in testIDEA. 'srv' is the name of return value as
+        # specified in the same section.
+        # Format specifier 'd' in 'nItems,d' ensures that the returned string 
+        # always contains decimal value.
+          </i>
+        nItems_t = <b>int</b>(<b>self</b>.testCtrl.evaluate('nItems,d'))
+        <b>print</b> 'nItems = ', nItems_t
+
+        <b>self</b>.testCtrl.modify('srv', <b>str</b>(nItems_t * 2))
+        </pre>
+
+        <b>Tip:</b> To avoid confusion, it is highly recommended to
+        use a prefix or postfix for all Python variables, which are
+        related to target variables. For example, above we have used
+        postfix <code>_t</code> to mark that Python variable <code>nItems_t</code>
+        is related to target variable <code>nItems</code>.
+        
+        
+        
+	<h2>How to access test specification</h2>
+	If test specification data in the script function is needed, then 
+	the first parameter in <i>testIDEA</i> should be specified as variable 
+	<code>_isys_testSpec</code>. This parameter is initialized to the instance 
+	of <code>CTestSpecification</code>,
+	which contains all information about the test case executed.
+
+	<h2>Reserved identifiers</h2>
+
+    All identifier names (variable, function, module, ... names) starting
+    with string <code>_isys_</code> are reserved. It is strongly
+    advised to <b>not</b> use such names for custom identifiers, to avoid
+    problems with the future versions of <i>testIDEA</i>.
+
+
+        <a name="scriptExtensions"/>
+	<h2>Script extensions wizard</h2>
+        </a>
+
+    The wizard for script extensions is accessible with menu command <i>iTools |
+    Script Extensions Wizard</i>. It creates an initial script file,
+    which can be customized according to our requirements, and sets
+    names of script functions in the selected test case. If
+    no test case is selected, then only script is generated.
+
+    It is recommended to create the script in the <i>winIDEA</i>
+    project directory (where xjrf file is located), because then 
+    Python paths for module loading do not have to be modified.
+
+    <p align="center">
+    <img width="90%" src="images/scriptExtensionsWizard.png"/>
+    </p>
+        
+  <p/>
+
+  <a name="execution"/>
+  <h2>Test execution extensions</h2>
+
+  These extensions are defined as methods in file and class specified
+  in <a href="#configuration">configuration</a>. They are called
+  at the following occasions:
+  
+  <ul>
+        <li><b>Test case filtering</b><br/>
+        The function for test filtering is specified in filter
+        settings (command <code>Run | Run with filter</code>). It
+        should return <b>None</b> if the test should NOT be executed,
+        and any non-empty string when the test should be
+        executed. Currently the string returned is not used, but in
+        the future it may be stored in test reports, so the recommended
+        value is description why the test was selected for execution,
+        for example:
+        <i>This function is part of communication module.</i>
+        </li>
+        <li>
+          <b>Initialization sequence</b><br> Initialization sequence
+          is defined in <span class="menuCmd">File | Properties |
+          Initialization sequence</span>. It can contain several calls
+          to script functions.
+        </li>
+        <li>
+          <b>Before saving test report</b><br/>
+          Function <code>isys_getTestReportCustomData(self,
+          reportConfig)</code> can be used to provide data to be used in test
+          report. When implemented, it is called when user selects
+          command <span class="menuCmd">Test | Save test
+          report</span>, <b>before</b> the dialog opens. The function
+          should set
+          variable <code>self._isys_customScriptMethodInfo</code> to
+          string containing <code>key: value</code> pairs, one pair
+          per line. These data is then added to report <i>Test
+          environment</i>. Examples of usage are revisions of tested
+          components. <br> Example:<br>
+
+          <pre>
+            <b>def</b> isys_getTestReportCustomData(<b>self</b>, reportConfig):
+            
+                 # get revisions as mapping
+                 data = {'_appRev': 12355, 'bootloaderRev': '1.05g'}
+
+                 # create string of 'key: value' pairs suitable for test report
+                 dataAsList = [(k + ': ' + str(v)) <b>for</b> k, v in data.items()]
+                 self._isys_customScriptMethodInfo = '\n'.join(dataAsList)
+          </pre>
+
+          If key starts with an underscore, it is saved to test
+          report, but it is <b>not</b> saved to iyaml file. Other key/value
+          pairs are saved also to iyaml file.<p>
+
+          <p align="center">
+            <img width="90%" src="images/scriptProvidedDataForReport.png"/>
+          </p>
+            
+          Return value should be <code>None</code> if no error occurred, error
+          message as string otherwise.<br>
+          This function has a predefined name - there is no setting in <i>testIDEA</i>.
+          </li>
+          <li>
+            <b>After test report is saved</b><br/>
+            Function <code>isys_afterReportSave(self, reportConfig)</code>
+            can be used to post-process test report, or send/commit it
+            to a database, for example. <br>
+            When implemented, it is called after test report is saved.
+            Return value should be <code>None</code> if no error occurred, error
+            message as string otherwise.<br>
+            This function has a predefined name - there is no setting in <i>testIDEA</i>.
+          </li>
+  </ul>
+
+  Parameter <code>reportConfig</code> in script functions called during report saving
+  contains report configuration as string in iyaml format, for example:
+  <pre>
+    testIDEAVersion: 9.12.279
+    winIDEAVersion: 9.12.279
+    reportContents: full
+    outFormat: xml
+    fileName: 'report\reportFull.xml'
+    iyamlFileName: d:\bb\trunk\sdk\targetProjects\testIDEADemo.iyaml
+    xsltFull: '<built-in> isystemTestReport.xslt'
+    xmlLogoImage: file://D:\bb\trunk\Eclipse\testidea\si.isystem.itest.plugin.core\i
+    cons\itest_window_128.gif
+    xmlReportHeader: |-
+      Test Report
+    cssFile: <built-in> blue.css
+    csvSeparator: ','
+    isCSVHeaderLine: true
+    isXLSVerticalHeader: false
+    isIncludeTestSpec: true
+    isAbsPathForLinks: true
+    htmlViewMode: all
+    testInfo:
+      Date: 2016-05-16
+      Time: 16:11:04
+      Subversion rev.: 58135
+      description: release build
+      hardware: cortex
+      wiWorkspacePath:
+      bootloader: '1.05g'
+      _appRev: '12.35'
+  </pre>
+        
+  
+  <a name="guiExtensions"/>
+  <h2>GUI extensions</h2>
+  
+  These script extensions appear in
+  menu <span class="menuCmd">iTools</span>, and must be selected
+  explicitly by user to be executed. To refresh the list in the menu,
+  execute command <span class="menuCmd">iTools | Refresh</span>.
+  Two kinds of GUI extensions
+  exist:
+  
+  <ul>
+    <li>Methods in extension script file</li>
+    <li>Standalone scripts</li>
+  </ul>
+  
+  <h3>Methods in extension script file</h3>
+
+  These methods should be defined in the script extension file and
+  class, which are set in <span class="menuCmd">File | Properties |
+  Scripts</span>. All methods, which start with
+  prefix <b>_isys_cmd_</b> are listed in
+  menu <span class="menuCmd">iTools</span>. When called, all methods
+  receive name of the iyaml file in the currently active editor as
+  parameter.<p>
+    
+  Example:
+    <pre>
+    <b>def</b> isys_cmd_printHi(<b>self</b>, iyamlFile):
+        print("HI! Script method executed, parameter = ", iyamlFile)
+    </pre>
+    
+
+  For function output the same rules as for
+  other extension functions defined in this file apply. Method result can be
+  printed to stdout or stored to variable <i>self._isys_customScriptMethodInfo</i>.
+  Any text printed to stderr or return value other than <i>None</i> mean
+  error.
+
+  See file <i>basicTutorialExtensions.py</i>, which comes with SDK for
+  examples.
+
+  <h3>Standalone scripts</h3>
+
+  Python scripts (extension *.py), which are located in the same
+  directory as iyaml file, are listed in the
+  menu <span class="menuCmd">iTools</span>. To get script directory,
+  iyaml file which was opened in an active editor when
+  command <span class="menuCmd">iTools | Refresh</span> was executed,
+  is used.<p>
+
+  To avoid inconveniently long lists in the menu, scripts are sorted
+  alphabetically, and only the first ten are used. One possible
+  naming convention for scripts, which we want to run from testIDEA,
+  would be to start their names with an underscore ('_') character.
+  <p>
+
+    Scripts can be run in three modes:
+    <ul>
+      
+      <li>Synchronous mode. This is the default mode. <i>testIDEA</i>
+      waits until the script is executed, and prints its output in
+      Status view after script execution. Timeout set
+      in <span class="menuCmd">File | Properties | Scripts</span>
+      applies here.</li>
+      
+      <li>Asynchronous mode. This mode is used, when SHIFT key is hold
+      down when script is selected in the menu. Script is run in
+      standalone console window, which is closed after the script
+        executes. No output is available in testIDEA.</li>
+      
+      <li>Asynchronous interactive mode. This mode is used, when SHIFT
+      and CTRL keys are hold down when script is selected in the
+        menu. Script is run in standalone console window, which remains
+      opened with Python prompt when the script ends execution.</li>
+    </ul>
+  <p>
+    
+    &nbsp;
+  </body>
+</html>

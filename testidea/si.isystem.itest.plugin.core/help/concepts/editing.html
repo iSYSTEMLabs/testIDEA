@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <title>Editing</title>
+  </head>
+
+  <body>
+    <h1>Editing</h1>
+
+    With <i>testIDEA</i> we can set or change all parts of test
+    specifications, as described in the <a href="testSpec/testSpec.html">The
+    Test Specification</a> page. However, sometimes we also want to
+    arrange the order of test specifications, move them between
+    instances of <i>testIDEA</i> or between <i>testIDEA</i> and text
+    editor. These operations are described on this page.
+
+    <h2>Selecting test specifications</h2>
+
+    If we want to perform the same operation on multiple test
+    specifications, we have to select more of them. This can be done
+    in one of the following ways:
+
+    <ul>
+      <li>
+        Hold down the <code>Ctrl</code> key and click test
+        specifications in the <code>Test Tree</code> with mouse.
+        </li>
+      <li>
+        Hold down the <code>Ctrl</code> key and move selection with
+        cursor keys. Press <code>space</code> to add test
+        specification to the selection.
+        </li>
+      <li>
+        Hold down the <code>Shift</code> key and move selection with
+        cursor keys. With each move one test specification is added
+        to the selection.
+        </li>
+      </ul>
+        
+        
+    
+    <h2>Cut/Copy/Paste</h2>
+
+    Operations from the title move test specification to/from
+    operating system's clipboard. They are stored there as plain text
+    in YAML format. Therefore we can copy test specification
+    from <i>testIDEA</i> to text editor or the other way around.
+
+    <h2>Paste As Derived</h2>
+
+    As the name tells, this command pastes test specification from the
+    clipboard as <i>derived</i> test specification of the currently
+    selected test specification.
+    
+    <h2>Paste And Overwrite</h2>
+
+    This command pastes test specification so that all sections, which
+    are defined in the test specification on the clipboard, overwrite
+    the same sections of the selected test specification. For example,
+    if test specification on the clipboard has defined
+    sections <code>Coverage</code> and <code>Options</code>, these two
+    sections will replace the same sections of the selected test
+    specification, regardless if they are defined in the
+    selected test specification or not.
+
+    <h2>Copying individual sections</h2>
+
+    Suppose we have section <code>Variables</code>, which we would
+    like to apply also to few other test specifications. This can be
+    achieved with the following steps:
+
+    <ul>
+      <li>
+    right click the section <code>Variables</code> in
+    the <code>Test Specification Editor</code>, and select
+    the <code>Copy</code> command from the context menu.
+      </li>
+      <li>
+    select a test specification in the <code>Test tree</code> view and
+    select the <code>Paste And Overwrite</code> command.
+      </li>
+    </ul>
+    
+    The section is applied to the selected test specification.
+
+    
+    <h2>View test specification source</h2>
+    
+    The context menu of test specifications in test tree contains
+    option <i>Show source</i>.
+
+    <p align="center">
+    <img src="images/showSource.png"/>
+    </p>
+
+    If we select it, <i>winIDEA</i> opens
+    the source files (either <i>iyaml</i> or C/C++ source) and
+    positions the cursor to the selected test specification.
+    
+    <P>
+    <b>Note:</b> When we move test specifications around in the test tree,
+    source code location may no longer match the one in source
+    file. If we save the file, locations are refreshed.
+
+    <p>
+      <br>
+  </body>
+</html>

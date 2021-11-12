@@ -1,0 +1,163 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+
+  
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <link href="../../styles.css" rel="stylesheet" type="text/css">
+    <title>Groups</title>
+  </head>
+
+  <body>
+    <h1>Groups of test cases</h1>
+
+    Often we want to get test results not only for individual test
+    case, but for wider scope, for example all code in a
+    function or module (source file). This information can be obtained
+    by creating groups of test cases.<p/>
+
+    <p align='center'>
+    <img width="90%" src="images/groupsInOverviewView.png"/>
+    </p>
+
+    The code, which belongs to group <b>is defined in a filter section</b>.
+    For example, by specifying a module in filter section, all code
+    from that module is part of the group. <i>testIDEA</i> then shows all
+    unit test cases, which test code (functions) from the selected group as
+    members of the group. Test cases can be added to groups only
+    changing filter settings.<p/>
+    
+    Groups are used only as different view of
+    existing test cases and to perform statistics on results. They do
+    not alter relations between base and derived tests. All test cases
+    still exist on their own in <i>testIDEA</i> - they are shown as test
+    cases without groups. All test cases in a project are always shown
+    below the groups in <i>Outline</i> view, as shown in the image below.
+
+    <p align='center'>
+    <img width="90%" src="images/originalTestCases.png"/>
+    </p>
+
+    Groups are dynamic containers - when
+    group is created, or <i>testIDEA</i> file is opened, groups contain no
+    test cases. <i>testIDEA</i> shows which test cases belong to group
+    only after symbol refresh.<p/>
+        
+    <b>Important:</b> If we use Delete action on test case shown in a
+    group, the test case will be deleted from a project, not only
+    removed from the group.
+    <hr>
+
+
+    <h2>Group hierarchy</h2>
+
+    Groups can have sub-groups as children. Test cases are first
+    filtered by parent group, and only those, which pass this filter,
+    are used as an input to the sub-group.<br/>
+    
+    It is common use case to define parent top level group
+    with filter for module (source file), and sub-groups with filter
+    for modules (source files), and sub-sub groups filter test
+    cases on function being tested.
+    <p/>
+
+    <p align='center'>
+    <img width="90%" src="images/modulesFunctionGroupsInOverview.png"/>
+    </p>
+
+    If parent and sub-groups exist, and a test case belongs to both of
+    them, then it is shown only in the sub-group. Statistics for
+    parent group is calculated from all test cases in the group and
+    sub-groups, because they all belong to the parent group.
+    
+    <h2>Creating groups</h2>
+
+    Before we create groups it is recommended to refresh symbols in
+    <i>testIDEA</i> (see command <span class="menuCmd">iTools |
+      Refresh</span>). Test cases can be properly assigned to groups
+      only with up-to-date symbols. <i>testIDEA</i> automatically
+      assigns test cases to groups when symbols are refreshed.
+    
+    <h3> Menu commands</h3>
+    
+    There exist two commands in menu <span class="menuCmd">Test</span>
+    and in context menu of the <i>Outline view</i>:
+
+    <ul>
+      <li>
+        <span class="menuCmd">New group ...</span> - creates new group in the top level
+      </li>
+      <li>
+        <span class="menuCmd">New sub-group</span> - creates new group as sub-group of the
+        group currently selected in <i>Outline view</i>.
+      </li>
+    </ul>
+
+    Filter in the created group is empty, which means that all test cases
+    belong to this group. See section <a href="filter.html/#filterConfig">Filter
+    configuration</a> below for details.
+    
+    
+    <h3>Wizard</h3>
+
+    Wizard can be used to create hierarchies of groups for several
+    download files, modules, and functions at once. It is accessible
+    with command <span class="menuCmd">iTools | Create Groups ...</span>
+
+    <p align='center'>
+    <img width="50%" src="images/groupsWizard.png"/>
+    </p>
+
+    If the wizard is empty, click refresh button in the top right
+    corner. When group hierarchy is displayed, select groups which you
+    want to be created. Click OK to create groups.<br/>
+    Filters are already configured in created groups.
+    
+    <h2>Running test cases in groups</h2>
+
+    During test case development and group configuration it is
+    possible to run only sub-set of all test cases, for example only
+    test cases in a group. <br>
+
+    <b>Note:</b> Symbols are not automatically refreshed in such
+    case and test cases are not reassigned to groups, because in
+    larger projects with many symbols refresh may take few seconds and
+    refreshing would be annoying when running one or few test cases.
+    When command <span class="menuCmd">Run All</span> is executed,
+    then symbols are refreshed and test cases reassigned to groups
+    before the run.
+    
+    <h2 id="groupResults">Group results</h2>
+
+    Group results consist of three sections:
+    <ul>
+      <li>
+        Group statistics - contains statistics of results for test
+        cases, functions, modules and partitions.
+        <p align='center'>
+          <img width="90%" src="images/groupStatistics.png"/>
+        </p>&nbsp;<p/>
+      </li>
+      <li>
+        Function statistics - contains more detailed statistics of
+        results for functions in a group.
+        <p align='center'>
+          <img width="90%" src="images/functionStatistics.png"/>
+        </p>&nbsp;<p/>
+      </li>
+      <li>
+        Coverage results - contains coverage criteria and measured coverage.
+        <p align='center'>
+          <img width="90%" src="images/coverageResults.png"/>
+        </p>&nbsp;<p/>
+      </li>
+    </ul>
+    
+    
+    
+    <p/>
+  </body>
+</html>
+
+      

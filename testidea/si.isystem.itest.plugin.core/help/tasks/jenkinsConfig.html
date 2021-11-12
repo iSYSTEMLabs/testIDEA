@@ -1,0 +1,243 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <link href="../styles.css" rel="stylesheet" type="text/css">
+    <title>Continuous Integration with iSYSTEM and Jenkins</title>
+  </head>
+
+  <body>
+    <h1>Continuous Integration with iSYSTEM and Jenkins</h1>
+
+
+    <a href="#overview">Overview</a><br/>
+    <a href="#script">Create python script for test execution</a><br/>
+    <a href="#install">Install Jenkins</a><br/>
+    <a href="#runAsService">Run headless tests as a service</a><br/>
+    <a href="#runAsUser">Run tests with normal user account</a><br/>
+    <a href="#coverage">iSYSTEM coverage in Jenkins</a><br/>
+    
+
+
+    <h2 id="overview">Overview</h2>
+    
+    As the name implies, continuous integration (CI) requires running of tests 
+    repeatedly during the development cycle. This way we find problems soon 
+    after they appear, which usually makes fixing easier. Since repetitive 
+    tasks are better left to machines, server applications specialized for
+    running build/test cycles were implemented. One of the most popular 
+    CI servers is <a href = 'https://jenkins.io/'>Jenkins</a>. To simplify CI process,
+    iSYSTEM tools provide support for running tests and displaying tests results 
+    with Jenkins:
+    
+    <ul>
+    <li>testIDEA can create Python scripts, which can be run directly by 
+        Jenkins.</li>
+    
+    <li>The scripts can produce result in JUnit XML format, which is understood 
+        by Jenkins.</li>
+    
+    <li>Coverage information can be exported in format understood by 
+        Jenkins.</li>
+    
+    <li>Test cases can produce coverage document in HTML format, which can be
+        linked directly from Jenkins. This document contains all coverage information
+        recoreded by iSYSTEM tools, which can be more detailed than existing
+        Jenkins plug-ins can show.</li>  
+    </ul>
+
+      <p align="center">
+          <img width="90%" src="images/jenkinsScreenshot.png"/>
+      </p>
+
+    
+    <h2 id="script">Create Python script for test execution</h2>
+
+	To generate Python script for running tests headless from command line
+	or Jenkins, use menu command <span class="menuCmd">iTools |
+    Generate Test Script ...</span>). The dialog opens, which contains the
+    following configuration items related to Jenkins:
+
+	<ul>
+		<li id='dllPath'>Path to <i>isystem.connect</i> DLL should be set if Jenkins will
+			run tests as a service. In this case 
+			<code>ConnectionMgr::connectMRU()</code> call in Python script can
+			not find and start the last winIDEA started with normal user account. 
+			<span id='dllEnvVar'/>The other solution to this problem includes 
+			setting of an environment 
+			variable to point to winIDEA installation directory, for example:
+            <pre>
+              SET ICONNECT_PATH="C:\winIDEA\2012\iConnect.dll"
+            </pre>
+      
+		</li>
+		<li>Saving of report in JUnit format. This format is recognized
+			by Jenkins server, which can then include <i>testIDEA</i> test
+			results in its reports.
+		</li>
+		<li id='coberturaExport'>Exporting of one analyzer file in Cobertura 
+		    format (download files are mapped to packages in this export). 
+		    Cobertura is coverage tool for Java, and there exists plug-in for 
+		    Jenkins, which displays results in graphical form.<br/>
+		     
+			The analyzer file is winIDEA file containing coverage, and it
+			can be created either by test case, test group or extension script.
+			It is recommended to use analyzer file which contains coverage of all
+			code under test.
+		</li>
+	</ul>
+
+
+	<p align="center">
+          <img width="70%" src="images/scriptForJenkins.png"/>
+      </p>
+      
+    
+    <h2 id="install">Install Jenkins</h2>
+    
+      <a href='https://jenkins.io/'>Jenkins home page</a> provides download link
+      and instructions for installation. If you're planning to show coverage 
+      results in Jenkins, install also Cobertura plug-in.
+      
+      
+    <h2 id="runAsService">Run headless tests as a service</h2>
+    
+        This section describes configuration of Jenkins to run iSYSTEM tests. 
+        Note, that test script can be generated with testIDEA, but it is also
+        possible to write the script manually.<p/>
+
+	    <b>Important:</b> Make sure you have specified path to <i>iConnect.dll</i> 
+        when <a href='#dllPath'>generating script in testIDEA</a>, 
+        or <a href='#dllEnvVar'>set environment variable</a>.
+
+        <ol>      
+	    <li><b>Create new project</b>
+        Enter project name and select <i>Freestyle project</i>, as shown in the image below.
+	    
+	    <p align="center">
+	      <img width="90%" src="images/jenkinsNewProject.png"/>
+	    </p>
+	    </li>
+	    <li><b>Configure the project</b>
+	
+	    <p align="center">
+	      <img width="90%" src="images/jenkinsConfigure-1.png"/>
+	    </p>
+	
+	    <p align="center">
+	      <img width="90%" src="images/jenkinsConfigure-2.png"/>
+	    </p>
+	
+	    Name of <i>Test report XMLs</i> (JUnit file) must be the same as
+	    name of test report configured in testIDEA, but with
+	    extension <i>.junit.xml</i>.<p>
+	    </li>
+	    <li><b>Run the project</b>
+	    
+	    Click <i>Build Now</i> in the menu, and wait for execution to
+	    finish. To observe progress, open console by double clicking the
+	    flashing icon next to build in the <i>Build History</i> box.
+	
+	    <p align="center">
+	      <img width="90%" src="images/jenkinsTestRun.png"/>
+	    </p>
+	
+	    Click the build number to get menu with build details, including
+	    console output and test result.
+	    </li>
+      </ol>
+      
+    <h2 id="runAsUser">Run tests with normal user account</h2>
+
+      For debugging purposes it may be useful to run tests with account
+      of logged user, not with Jenkins's account. In this case winIDEA
+      window is visible. The test script uses preferences of the
+      currently logged user for starting winIDEA, and winIDEA is
+      not started as a service. <p>
+      
+      <ol>
+      <li><b>Enable Java Web Start</b>
+        Open <i>Top level menu | Manage Jenkins | Configure Global
+        Security</i>. Then select <i>Enable security</i>
+        and <i>Random</i>.
+      
+        <p align="center">
+          <img width="90%" src="images/jenkinsJWSEnable.png"/>
+        </p>
+      </li>
+      <li><b>Create executor, which uses Java Web Start</b>
+
+        Open <i>Top level menu | Manage Jenkins | Manage Nodes | New Node</i>
+
+	    <p align="center">
+	      <img width="90%" src="images/jenkinsNewNode.png"/>
+	    </p>
+
+	    Click OK to get he next configuration screen.
+	    
+	    <p align="center">
+	      <img width="90%" src="images/jenkinsNodeConfiguration.png"/>
+	    </p>
+	</li>
+    <li><b>Select agent in project configuration</b>
+	    <p align="center">
+	      <img width="90%" src="images/jenkinsNodeSelection.png"/>
+	    </p>
+	</li>
+    <li><b>Start executor agent</b>
+
+	    In main dashboard, click node jwsGui in Build Executor Status box,
+	    to get the screen shown below:
+	
+	    <p align="center">
+	      <img width="90%" src="images/jenkinsStartAgent.png"/>
+	    </p>
+	
+	    Connect the agent, then run the project.
+	  </li>
+    </ol>
+      
+      
+    <h2 id="coverage">iSYSTEM coverage in Jenkins</h2>
+    
+    To view iSYSTEM coverage measurements in Jenkins, you can add link to 
+    HTML report created by iSYSTEM tools, or use Cobertura plug-in in Jenkins.
+    The first approach provides more information, while the second approach 
+    provides quick overview of trends in graphical way. It possible to
+    use both approaches in the same project.<br>
+    If analyzer file from test case is used, it is very important to set
+    value of <i>Measure all functions</i> in section 
+    <i>Analyzer | Coverage | Statistics</i>. If this check-box is checked, 
+    all code in the project is considered as 100% coverage. If it is not checked,
+    only functions explicitly mentioned in the statistics section are considered
+    as coverage goal (100% coverage).    
+    
+    <ul><li>To add link to iSYSTEM HTML report, open project configuration, and
+    add post-build action <i>Publish HTML reports</i>.
+     
+        <p align="center">
+          <img width="90%" src="images/publishHtmlCvrg.png"/>
+        </p>
+        
+        The information shown in this report depends on coverage export 
+        configuration. See section <i>Analyzer | Coverage</i>, group <i>Export 
+        configuration</i> in testIDEA.<p> 
+    </li>
+    <li>To see coverage trends, create test script so that 
+      it <a href='#coberturaExport'>exports analyzer (trd) file in
+				Cobertura format</a>. Then add post-build action 
+				<i>Publish Cobertura Coverage Report</i> to project 
+       configuration in Jenkins.
+        
+        <p align="center">
+          <img width="90%" src="images/publishCobertura.png"/>
+        </p>
+    </li>
+    </ul>
+        
+    &nbsp;
+  </body>
+</html>
+       
+

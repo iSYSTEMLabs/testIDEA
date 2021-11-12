@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- All toc*.xml files must be listed also in plugin.xml,
+     extension 'org.eclipse.help.toc' -->
+
+<toc label="Test Groups" link_to="help/tocconcepts.xml#testGroup">
+  
+   <topic label="Overview" href="help/concepts/testGroup/groupOverview.html"/>
+   <topic label="Meta" href="help/concepts/testGroup/meta.html"/>
+   <topic label="Filter" href="help/concepts/testGroup/filter.html"/>
+   <topic label="Group statistics" href="help/concepts/testGroup/groupStat.html"/>
+   <topic label="Function statistics" href="help/concepts/testGroup/funcStat.html"/>
+   <topic label="Coverage config." href="help/concepts/testGroup/cvrgConfig.html"/>
+   <topic label="Coverage results" href="help/concepts/testGroup/cvrgResults.html"/>
+   <topic label="Scripts" href="help/concepts/testGroup/scripts.html"/>
+</toc>

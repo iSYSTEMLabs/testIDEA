@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <title>Derived test cases</title>
+  </head>
+
+  <body>
+    <h1>Derived test cases</h1>
+
+    Often we want to group tests based on some common property, for
+    example on function to be tested. Such tests also usually share at
+    least some test case sections. To provide this functionality,
+    tests can be organized hierarchically in a tree structure. Tests
+    on the top level of the tree are called <b>base tests</b>, while
+    their children are called <b>derived tests</b>.
+    <p/>
+
+    Derived tests inherit all test sections from their
+    parents by default, but they can also override them.
+    The sections, which are specified in derived tests (overridden),
+    are not inherited from base test case.
+    <p/>
+
+    <p/>
+    <b>Example:</b> Suppose we have a test case with
+    several sections defined:
+
+    <p align="center">
+    <img width="90%" src="images/derivedTestSpec1.png"/>
+    </p>
+
+    If we add a derived test case, it inherits all settings from the
+    base test case:
+
+    <p align="center">
+    <img width="90%" src="images/derivedTestSpec2.png"/>
+    </p>
+
+    Inherited sections are marked with a blue icon marker
+    <img src="images/derivedIcon.png"/>. Background of
+    input fields, which contain data from parent test case is
+    set to blue and can not be modified. <p>
+    
+    Since it does not make much sense to have two
+    exactly equal test cases, we can change inheritance status of a section.
+    The image blow shows section <i>Analyzer</i>, where
+    check-box <i>Inherit</i> is not selected, so modification of
+    settings is possible. Inherited status can be toggled by clicking
+    the check-box.
+    
+    <p align="center">
+    <img width="90%" src="images/derivedTestSpecNoInherit.png"/>
+    </p>
+    
+    Note, that only complete sections can be inherited. For example,
+    it is not possible to inherit only analyzer file name, and
+    specify coverage criteria.<p>
+    The only field that is never inherited is check-box <b>Execute</b>
+    from section <b>Meta</b>.
+    
+
+    <h2>Abstract tests</h2>
+    <p/>
+    Sometimes it may be handy to specify base test case, which should
+    not be executed directly, because it only specifies sections for
+    derived test cases. Such test cases are called
+    <b>abstract</b> test cases. To tell <i>testIDEA</i>, that they
+    should <b>not</b> be executed, uncheck the <i>Execute</i> check box
+    at the top of section <i>Meta</i>.
+    <p/>
+    </body>
+</html>

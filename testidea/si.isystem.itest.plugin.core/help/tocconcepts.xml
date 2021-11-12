@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="Concepts" link_to="toc.xml#concepts"> 
+
+  <topic label="testIDEA as standalone application and Eclipse plug-in" href="help/concepts/standaloneAndPlugin.html"/>
+  <topic label="The Main Window" href="help/concepts/mainWindow.html"/>
+  <topic label="Connection to winIDEA" href="help/concepts/connectionToWinIDEA.html"/>
+  <topic label="Configuring isystem.test" href="help/concepts/configuringITest.html"/>
+           
+  <topic label="Test Case Editor">
+      <anchor id="testSpec"/>
+  </topic>
+  
+  <topic label="Groups">
+      <anchor id="testGroup"/>
+  </topic>
+  
+  <topic label="Editing"  href="help/concepts/editing.html"/>
+  <topic label="Comments in test cases"  href="help/concepts/commentsInTestSpecs.html"/>
+  <topic label="Host variables"  href="help/concepts/hostVariables.html"/>
+  <topic label="Test case templates"  href="help/concepts/templates.html"/>
+  
+  <topic label="testIDEA and project configurations"  href="help/concepts/envConfig.html"/>
+  <topic label="Running tests"  href="help/concepts/runningTests.html"/>
+  <topic label="Debugging tests"  href="help/concepts/debugingTests.html"/>
+  <topic label="Test results"  href="help/concepts/results.html"/>
+  <topic label="Test results for DOORS"  href="help/concepts/jenkinsAndOtherTools.html"/>
+  <topic label="testIDEA and Python"  href="help/concepts/scripting.html"/>
+  <topic label="Derived test cases"  href="help/concepts/derivedTests.html"/>
+  <topic label="System tests"  href="help/concepts/systemTests.html"/>
+  <topic label="Multicore testing"  href="help/concepts/multicore.html"/>
+  <topic label="Supported targets"  href="help/concepts/targets.html"/>
+  <topic label="ADA testing"  href="help/concepts/ada.html"/>
+  <topic label="Test cases in C/C++ source files"  href="help/concepts/sourceCodeWithEmbeddedTests.html"/>
+  <topic label="Command line arguments"  href="help/concepts/cmdLineArgs.html"/>
+  
+        
+</toc>

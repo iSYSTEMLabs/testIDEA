@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <title>Automatic test ID assignment</title>
+  </head>
+
+  <body>
+    <h1>Automatic test ID assignment</h1>
+
+    Unique test IDs are important in several use cases, for example
+    when exporting/importing test specifications, or as references
+    to tests used by other tools. Since manual creation of unique IDs
+    is time consuming and error prone, <i>testIDEA</i> provides
+    configurable test ID generator. The test ID generator is configured by
+    format string in project properties dialog
+    (command <code>File | Properties)</code>, with <code>Auto ID
+    Format</code> string:
+    
+
+    <p align="center">
+    <img width="90%" src="images/projPropsAutoId.png"/>
+    </p>
+
+    The format string consists of fixed text and variables, which have
+    the following syntax: <code>${&lt;varName&gt;}</code>.<br>
+
+    The string is broken to parts in the wizard, where all variables
+    are also described:
+    
+    <p align="center">
+    <img width="90%" src="images/autoIdWizard.png"/>
+    </p>
+
+    The main property of IDs is their uniqueness, but we can also
+    include some other information about the test case, for example
+    function parameters. For this reason the test ID generator
+    can create IDs composed of a <i>unique string</i> and some <i>test case parameters</i>.
+    For unique part of an ID we use one of variables <code>${uid},
+    ${nid}, ${uuid}, </code> or <code> ${seq}.</code> It is highly
+    recommended to use the character '/' as a separator for unique part
+    of test ID. If later want to update only informational
+    part, because parameters changed, <i>testIDEA</i> can split the
+    test ID and change only the requested part. Example:
+    <pre>
+      /${uid}/${params}
+    </pre>
+    
+    Since only a limited set of characters is allowed for test IDs,
+    all invalid characters in function names, parameters and tags are
+    replaced by underscore character. '-' is used as a separator between
+    parameters and tags.<p><p>
+
+
+    <h2>Assigning IDs</h2>
+    Once we've defined the format string, we can run automatic
+    ID assignment with command <code>iTools | Set Test IDs</code>:
+
+    <p align="center">
+    <img width="90%" src="images/autoIdCommandDialog.png"/>
+    </p>
+
+    For new tests we can assign ID on creation if we check
+    the <code>Auto generate ID</code> check box in the <code>New test</code> dialog
+    (command <code>File | New Test</code>).
+    &nbsp;<p>
+  <p/>
+    
+  </body>
+</html>

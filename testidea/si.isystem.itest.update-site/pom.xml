@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <relativePath>../pom-plugin.xml</relativePath>
+    <groupId>si.isystem</groupId>
+    <artifactId>testidea</artifactId>
+    <version>${isys.version}</version>
+  </parent>
+  
+  <artifactId>si.isystem.itest.update-site</artifactId>
+  <packaging>eclipse-repository</packaging>
+  
+    <properties>
+    <tycho.version>2.0.0</tycho.version>
+  </properties>
+  
+      <dependencies>
+        <dependency>
+            <groupId>si.isystem</groupId>
+            <artifactId>de.kupzog.ktable</artifactId>
+            <version>${isys.version}</version>
+            <!-- type>eclipse-plugin</type -->
+            <!-- scope>system</scope>
+            <systemPath>${basedir}\..\de.kupzog.ktable\build\libs\de.kupzog.ktable.jar</systemPath -->
+        </dependency>
+        <dependency>
+            <groupId>si.isystem</groupId>
+            <artifactId>si.isystem.icadapter</artifactId>
+            <version>${isys.version}</version>
+            <!-- type>eclipse-plugin</type -->
+            <!--scope>system</scope>
+            <systemPath>${basedir}\..\si.isystem.icadapter\build\libs\si.isystem.icadapter.jar</systemPath -->
+        </dependency>
+        <dependency>
+            <groupId>si.isystem</groupId>
+            <artifactId>si.isystem.jfaceutils</artifactId>
+            <version>${isys.version}</version>
+            <!-- type>jar</type -->
+            <!-- scope>system</scope>
+            <systemPath>D:\tmp\si.isystem.jfaceutils.jar</systemPath -->
+        </dependency>
+        <dependency>
+            <groupId>si.isystem</groupId>
+            <artifactId>si.isystem.itest.plugin.core</artifactId>
+            <version>${isys.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>si.isystem</groupId>
+            <artifactId>si.isystem.itest.plugin.eclipse</artifactId>
+            <version>${isys.version}</version>
+        </dependency>
+    </dependencies>
+  
+    <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-maven-plugin</artifactId>
+        <version>${tycho.version}</version>
+        <extensions>true</extensions>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>target-platform-configuration</artifactId>
+        <version>${tycho.version}</version>
+        <configuration>
+          <pomDependencies>consider</pomDependencies>
+        </configuration>
+      </plugin>
+    </plugins>
+    </build>
+  
+</project>

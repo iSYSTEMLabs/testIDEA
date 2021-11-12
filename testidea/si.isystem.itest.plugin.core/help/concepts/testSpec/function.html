@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <title>iSYSTEM Test Case Editor</title>
+  </head>
+
+  <body>
+    <h1>Function</h1>
+
+    This test section is available only for unit tests, which means
+    testing of a single function in <i>testIDEA</i>. For this kind of
+    tests, target stack is modified in a way, which enables calling of the
+    specified function, and stopping execution when the function
+    returns.<br>
+    
+    This page contains the most important part of unit test specification -
+    the name of the function to be tested, and its parameters. 
+
+    <p align="center">
+    <img width="90%" src="images/function.png"/>
+    </p>
+
+    It is recommended that <i>winIDEA</i> has symbols loaded
+    and <i>testIDEA</i> is connected to winIDEA. This way content
+    assistance is available, and function prototypes are shown in
+    testIDEA.
+    <p/>
+    <i>Timeout</i> specifies when testIDEA terminates test case
+    execution, if it does not end normally. See tooltip for more details.
+    
+    
+    <h4>Fully qualified function names</h4>
+
+    If there are multiple download files, or we use file static
+    functions, multiple functions with the same name may exist. To
+    define the exact function, we can use the extended syntax for
+    function naming:
+
+    <pre>
+    "&lt;sourceFile&gt#"&lt;functionName&gt,,&lt;downloadFile&gt
+    </pre>
+
+     where:
+     <ul>
+     <li> <code>moduleName</code> - name of the C source file, which
+     contains the function (optional)</li>
+     <li> <code>functionName</code> - name of the function</li>
+     <li> <code>downloadFileName</code> - name of the download file,
+     where the function is located</li>
+     </ul>
+     
+    Example:
+    
+    <pre>
+    "calc.c#"add,,math.elf
+    </pre>
+
+    The source file name is needed only for file static functions, for
+    all other functions we can specify only download file, for example:
+
+    <pre>
+    add,,math.elf
+    </pre>
+
+    
+    The setting for using fully qualified or simple function names in
+    content proposals is located in <i>testIDEA</i> <code>File |
+    Properties | General</code> dialog, check-box <i>Use qualified
+    function names</i>.
+<p>    
+
+    <h4>Inlined functions</h4>
+    There exists also special notation for inlined functions, which
+    specifies hex address, "###" and function name, for example: 
+    <pre>
+     "080023AA###"calculate
+    </pre>
+    
+    Since these are not regular functions, they can not be used by testIDEA
+    as tested functions, stubs, user stubs, or profiler areas. 
+
+    <h4>Overloaded functions and methods</h4>
+
+    To specify which of overloaded functions has to be tested, add
+    also list of parameter types to function name, for example:
+
+    <pre>
+    "Vehicle.cpp#"testOverloads(long,long)
+    </pre>
+    
+    Name of the source file is not mandatory.
+
+  </body>
+</html>

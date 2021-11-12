@@ -1,0 +1,57 @@
+
+dependencies {
+
+//    compile fileTree(dir: "$TARGET_PLATFORM_PLUGINS", include: '*.jar')
+
+    compile fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.core.commands_*.jar')
+    compile fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.equinox.common_*.jar')
+    compile fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.jface_*.jar')
+    compile fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.osgi_*.jar')
+    compile fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.ui*.jar')
+    compile fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.core*.jar')
+    compile fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.equinox.preferences_*.jar')
+    compile fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.debug.core_*.jar')
+    compile fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.equinox.app_*.jar')
+    compile fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.debug.ui_*.jar')
+    compile fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.equinox.registry_*.jar')
+    compile fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.swt.win32.win32.x86_64_*.jar')
+                     
+    compile fileTree(dir: "lib", include: '**/*.jar')
+    
+    // dependency on Jars from commons plug-in, because gradle does not know
+    // how to automatically provide those jars to javac.  
+    compile fileTree(dir: "../../common/si.isystem.commons.plugin", include: '**/*.jar')
+}
+
+
+jar {
+   // see also parent build file for other files
+   from('.') {
+       include 'help/**/*.*'
+       include 'icons/**/*.*'
+       include 'OSGI-INF/**/*.*'
+       include 'resources/**/*.*'
+       include 'templates/**/*.*'
+   }
+
+   from file ('license.html')            
+   from file ('plugin_customization.ini')
+   from file ('splash.bmp')
+   from file ('toc.xml')
+   
+   into('si/isystem/itest/common/') {
+       from 'src/si/isystem/itest/common/messages.properties'
+   }
+   
+   // replace version for 'Help | About' dialog and (c) year
+   from(file('plugin.xml')) {
+       filter { String line -> 
+           def currYear = new GregorianCalendar().get(Calendar.YEAR)
+           if (line.contains("(c) iSYSTEM AG, 2010")) {
+               line = "value='iSYSTEM testIDEA&#x0A;&#x0A;(c) iSYSTEM AG, 2010-$currYear&#x0A;Version: ${versionWithScRev}'>"
+           } else {
+               line
+           }
+       }
+   }
+}

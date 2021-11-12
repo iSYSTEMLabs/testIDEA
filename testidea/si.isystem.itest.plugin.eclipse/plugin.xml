@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.navigator.linkHelper">
+      <linkHelper
+            class="si.isystem.itest.views.TestIDEALinkHelper"
+            id="si.isystem.itest.project.view.linkHelper">
+         <editorInputEnablement>
+            <or>
+            <instanceof
+                  value="org.eclipse.ui.IFileEditorInput">
+            </instanceof>
+            </or>
+         </editorInputEnablement>
+         <selectionEnablement>
+            <or>
+               <instanceof
+                     value="si.isystem.itest.model.ModelOutlineNode">
+               </instanceof>
+               <instanceof
+                     value="si.isystem.connect.CTestSpecification">
+               </instanceof>
+               <instanceof
+                     value="org.eclipse.core.resources.IResource">
+               </instanceof>
+               <instanceof
+                     value="org.eclipse.core.resources.IFile">
+               </instanceof>
+            </or>
+         </selectionEnablement>
+      </linkHelper>
+   </extension>
+   <extension
+         point="org.eclipse.ui.navigator.viewer">
+      <viewerContentBinding
+            viewerId="org.eclipse.ui.navigator.ProjectExplorer">
+         <includes>
+            <contentExtension pattern="si.isystem.itest.project.view.contentExtension" />
+            <contentExtension pattern="si.isystem.itest.project.view.linkHelper" />
+         </includes>
+      </viewerContentBinding>
+   </extension>
+   <extension
+         id="si.isystem.itest.project.view.contentProvider"
+         point="org.eclipse.ui.navigator.navigatorContent">
+      <navigatorContent
+            activeByDefault="true"
+            contentProvider="si.isystem.itest.views.ProjectExplorerContentProvider"
+            icon="platform:/plugin/si.isystem.itest.plugin.core/icons/itest_window_16.gif"
+            id="si.isystem.itest.project.view.contentExtension"
+            labelProvider="si.isystem.itest.views.ProjectExplorerLabelProvider"
+            name="testIDEA Test Cases"
+            priority="normal"
+            sortOnly="false">
+         <triggerPoints>
+            <or>
+               <and>
+                  <instanceof
+                        value="org.eclipse.core.resources.IFile">
+                  </instanceof>
+                  <test
+                        property="org.eclipse.core.resources.extension"
+                        value="iyaml">
+                  </test>
+               </and>
+               <instanceof
+                     value="si.isystem.itest.model.ModelOutlineNode">
+               </instanceof>
+               <instanceof
+                     value="si.isystem.connect.CTestSpecification">
+               </instanceof>
+            </or>
+         </triggerPoints>
+         <possibleChildren>
+            <or>
+               <instanceof
+                     value="si.isystem.itest.model.ModelOutlineNode">
+               </instanceof>
+               <instanceof
+                     value="si.isystem.connect.CTestSpecification">
+               </instanceof>
+            </or>
+         </possibleChildren>
+         <commonSorter
+               class="si.isystem.itest.views.ProjectExplorerSorter">
+         </commonSorter>
+         <actionProvider
+               class="si.isystem.itest.views.ProjectExplorerActionProvider"
+               id="si.isystem.itest.views.actionprovider">
+         </actionProvider>
+      </navigatorContent>
+   </extension>
+
+
+  <!-- This extension adds standard Eclipse Run and Debug toolbar buttons. -->
+  <extension point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="si.isystem.itest.perspective">
+         <actionSet
+               id="org.eclipse.debug.ui.launchActionSet">
+         </actionSet>
+         <hiddenToolBarItem
+               id="org.eclipse.search.searchActionSet">
+         </hiddenToolBarItem>
+         <hiddenToolBarItem
+               id="org.eclipse.ui.edit.text.actionSet.navigation">
+         </hiddenToolBarItem>
+         <hiddenToolBarItem
+               id="org.eclipse.ui.edit.text.actionSet.annotationNavigation">
+         </hiddenToolBarItem>
+         <hiddenToolBarItem
+               id="org.eclipse.ui.navigate.next">
+         </hiddenToolBarItem>
+         <hiddenToolBarItem
+               id="org.eclipse.ui.navigate.previous">
+         </hiddenToolBarItem>
+         <hiddenToolBarItem
+               id="org.eclipse.ui.edit.text.gotoLastEditPosition">
+         </hiddenToolBarItem>
+      </perspectiveExtension>
+  </extension>  
+
+</plugin>

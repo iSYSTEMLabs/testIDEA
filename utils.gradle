@@ -1,0 +1,316 @@
+import org.yaml.snakeyaml.Yaml
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
+buildscript {
+  repositories {
+      mavenCentral()
+  }
+  dependencies {
+    classpath group: 'org.yaml', name: 'snakeyaml', version: '1.18'
+  }
+}
+
+// Build/deploy architecture
+ext.PARAM_ARCH = "arch"
+ext.PARAM_ARCH_x86 = "win32"
+ext.PARAM_ARCH_x64 = "x64"
+
+void execBatchFile(vcVarsBatPath, platform, buildType,
+                     buildConfig, buildPlatform, projName, slnDir, slnName) {
+    String target = projName
+    if (buildType != 'build')
+    {
+      target = "${target}:${buildType}"
+    }
+    new File(slnDir, 'build.bat').withWriter('utf-8') { writer ->
+        writer.writeLine "@echo ######### VS Build called from Gradle ############" 
+        writer.writeLine 'call "' + vcVarsBatPath + ' ' + platform + '\n'
+        writer.writeLine "msbuild ${slnName} -target:${target} /p:Configuration=${buildConfig} /p:platform=${buildPlatform} -maxCpuCount"
+    }
+
+    exec {
+        environment "ISYSTEM_IS_GRADLE_BUILD", "on" // see swigBuild.py for comment
+        workingDir slnDir
+        executable = slnDir + "/build.bat"
+    }
+}
+
+
+void execPyScript(scriptDir, scriptFName, buildArgs) {
+    def pyExecutable = 'python3'
+    if (isWindows) {
+        pyExecutable = ext.expandEnvVars("%ISYSTEM_ROOT_DRIVE%") + 'ISYSTEM_APPS/Python36-64bit/python'
+    }
+    exec {
+        workingDir scriptDir
+        executable = pyExecutable
+        args = [scriptFName, *buildArgs]
+    }
+}
+
+
+String getSvnRev() {
+    def svnInfoStream = new ByteArrayOutputStream()
+    exec {
+        executable = 'svn'
+        args = ['info']
+        standardOutput = svnInfoStream
+    }
+    def svnInfo = svnInfoStream.toString()
+    def svnInfoLines = svnInfo.split('\n')
+    for (line in svnInfoLines) {
+        def items = line.split(':')
+        if (items.size() > 1) {
+            if (items[0].equals('Revision')) {
+                return items[1].trim()
+            }
+        }
+    }
+
+    throw new Exception("Can not get svn revision - no matching line found in 'svn info'")
+}
+
+
+void resolveTemplate(folderPath, fileName) {
+    copy {
+       from "$folderPath/$fileName-template"
+       into "$folderPath"
+       rename("$fileName-template", "$fileName")
+       filter { String line -> line.replace("VERSION_TOKEN", version) } 
+    }
+}
+
+void runMavenBuild(pomPath, target, signPass) {
+    println '\n\n---------------------------------------------------------'
+    println '                MAVEN-TYCHO build START'
+    println '---------------------------------------------------------\n'
+    // Example cmd: mvn verify -o -f testIDEA/pom-XXX.xml -Disys.version=9.12.295 -Dmaven.repo.local=local-maven-repo
+    println '- pomPath: ' + pomPath
+    println '- target: ' + target
+    println '- signPass: ' + signPass
+
+    exec {
+        workingDir '.'
+
+        // system installed java (OpenJDK) is used on Linux
+        if (isWindows) {
+            environment "JAVA_HOME", "$ISYSTEM_BUILD_JDK_x64_PATH"
+
+            commandLine("$ISYSTEM_BUILD_MAVEN_PATH/bin/mvn.cmd",
+                        target, // clean, verify...
+                        // '-o',   // work offline
+                        '-f', pomPath,
+                        "-Disys.version=$version",
+                        signPass,
+                        "-Dmaven.repo.local=$MAVEN_LOCAL_REPO")
+        } else {
+            // On linux maven works online, because local repo does not contain
+            // artifacts required on Linux, most likely because of Eclipse version
+            // and runtime native plugins.
+            commandLine("$ISYSTEM_BUILD_MAVEN_PATH/bin/mvn",
+                        target, // clean, verify...
+                        '-f', pomPath,
+                        "-Disys.version=$version",
+                        "-Dmaven.repo.local=$MAVEN_LOCAL_REPO")
+    }
+    }
+    println '\n\n---------------------------------------------------------'
+    println '                MAVEN-TYCHO build FINISHED'
+    println '---------------------------------------------------------\n'
+}
+
+// Export methods by turning them into closures: http://stackoverflow.com/questions/18715137/extract-common-methods-from-gradle-build-script
+ext{
+    mavenBuild = this.&mavenBuild
+    resolveTemplate = this.&resolveTemplate
+    runMavenBuild = this.&runMavenBuild
+}
+
+
+gradle.allprojects {
+
+    /**
+     * Reads version from winIDEA sources. Example of returned string: 9.12.294.0
+     */
+    ext.getISysVer = {
+
+        String major, minor, build, buildSub, svnRev
+
+        file('../Venus/aversion1.h').eachLine('UTF-8') {
+            def tokens = it.split(' ')
+
+            if (tokens.length == 3) {
+
+                if (tokens[1] == 'VER_MAJOR') {
+                    major = tokens[2].trim()
+                } else if (tokens[1] == 'VER_MINOR') {
+                    minor = tokens[2].trim()
+                } else if (tokens[1] == 'VER_BUILD') {
+                    build = tokens[2].trim()
+                } else if (tokens[1] == 'VER_BUILD_SUB') {
+                    buildSub = tokens[2].trim()
+                }
+            }
+        }
+
+        if (major.length() == 0  ||  minor.length() == 0 ||  build.length() == 0) {
+            throw new Exception('Can not read winIDEA version info! ver = ' + verStr)
+        }
+
+        return major + '.' + minor + '.' + build + '.' + buildSub
+    }
+
+
+    /**
+     * Reads version from winIDEA sources. Example of returned string: 9.12.294.0_93888
+     */
+    ext.getISysQualifiedVer = {
+
+        // use '_' for svnRev to respect format of version string in Eclipse
+        return getISysVer() + '_' + getSvnRev()
+    }
+
+    
+    ext.compileCppProjectWin = { isRebuild, isDebugBuild, cfgExt, projName, slnDir, slnName ->    
+        Yaml parser = new Yaml()
+        Map compilerConfig = parser.load((rootProject.file('..\\config.yaml').getAbsolutePath() as File).text)
+        def devenvVCPath = compilerConfig['VisualStudio']['VC_PATH'] + '\\'
+
+        // create a batch file, so that env vars set in the first command are 
+        // preserved for VS build step
+        def batPath = devenvVCPath + 'vcvarsall.bat"'
+
+        def buildType = 'build'
+        if (isRebuild) {
+            buildType = 'rebuild'
+        }
+
+        def buildCfg = 'Release' + cfgExt
+        if (isDebugBuild) {
+            buildCfg = 'Debug' + cfgExt
+        }
+        
+        if (project.hasProperty(PARAM_ARCH)) {
+            def archVal = project.getProperty(PARAM_ARCH)
+            if (archVal == PARAM_ARCH_x86) {
+                execBatchFile(batPath, 'x64', buildType, buildCfg, 'Win32', projName, slnDir, slnName)
+            }
+            else if (archVal == PARAM_ARCH_x64) {
+                execBatchFile(batPath, 'x64', buildType, buildCfg, 'x64', projName, slnDir, slnName)
+            }
+        }
+        else {
+            // by default both 32 and 64 bit apps are built.
+            execBatchFile(batPath, 'x64', buildType, buildCfg, 'Win32', projName, slnDir, slnName)
+            execBatchFile(batPath, 'x64', buildType, buildCfg, 'x64', projName, slnDir, slnName)
+        }
+    }
+
+
+    ext.compileCppProjectLinux = { isRebuild, isDebugBuild ->   
+        // add debug build to buildSDKsLinux.py if needed, but usually debug build
+        // is started from eclipse, where debugger is avaialble
+        
+        if (isRebuild) {
+             execPyScript('../linux', 'buildSDKsLinux.py', ['-c', 'java'])
+        }
+
+        execPyScript('../linux', 'buildSDKsLinux.py', ['-b', 'java'])
+    }
+
+
+    ext.writeAVersionHeaderFile = {
+        execPyScript('../Venus', '-c', 
+            ["import svnUtils; svnUtils.writeAVersionHeaderFileFromSvnInfo()"])
+    }
+
+
+    ext.checkoutConfigYaml = {
+            exec {
+            executable = 'svn'
+            args = ['export', '--force', 
+                    'https://source.isystem.si/svn/venus/BlueBox/trunk/config.yaml']
+        }
+    }
+    
+    ext.expandEnvVars = {String inputString ->
+      // \w+ matches  [a-zA-Z0-9_] one or more times
+      String envVarPattern = "%\\w+%"
+      Pattern expr = Pattern.compile(envVarPattern)
+      Matcher matcher = expr.matcher(inputString)
+      
+      String expandedString = inputString
+      while (matcher.find()) {
+        String envVarExpr = matcher.group()
+        String envVarName = envVarExpr.replaceAll("%", "")
+        String envVarValue = System.getenv(envVarName)
+        if (!envVarValue) {
+          println "WARNING: ${envVarExpr} environment variable not defined!"
+        }
+        else {
+          expandedString = expandedString.replace(envVarExpr, envVarValue)
+        }
+      }
+      return expandedString
+    }
+
+    version = ext.getISysVer()
+        
+    ext.inputsCommon = [
+        'build.gradle', 
+        'settings.gradle',
+
+        '../sdk/java/build/libs/IConnectJNI.jar',
+        '../sdk/java/release-java-x64/IConnectJava64.dll',
+        '../sdk/java/release-java-win32/IConnectJava.dll',
+        
+        '../Venus/aversion1.h',
+
+        'common/si.isystem.jfaceutils/build/libs/si.isystem.jfaceutils-' + version + '.jar',
+        'common/de.kupzog.ktable/build/libs/de.kupzog.ktable-' + version + '.jar',
+        'common/si.isystem.icadapter/build/libs/si.isystem.icadapter-' + version + '.jar',
+        'common/si.isystem.commons.plugin/build/libs/si.isystem.commons.plugin-' + version + '.jar' ]    
+
+    ext.inputsTestIDEA = [ 
+        'testidea/pom-rcp.xml',
+        
+        'testidea/si.isystem.itest.feature.rcp/build.properties',
+        'testidea/si.isystem.itest.feature.rcp/feature-template.xml',
+        'testidea/si.isystem.itest.feature.rcp/pom.xml',
+        'testidea/si.isystem.itest.product/itest.product',
+        'testidea/si.isystem.itest.product/pom.xml',
+
+        'testidea/si.isystem.itest.plugin.rcp/build/libs/si.isystem.itest.plugin.rcp-' + version + '.jar',
+        'testidea/si.isystem.itest.plugin.core/build/libs/si.isystem.itest.plugin.core-' + version + '.jar' ]
+        
+    ext.inputsDebugger = [ 
+        'debugger/pom-plugin.xml',
+    
+        'debugger/si.isystem.eclipse.debug/build/libs/si.isystem.eclipse.debug-' + version + '.jar',
+        'debugger/si.isystem.eclipse.debug/plugin.xml',
+        'debugger/si.isystem.eclipse.debug/resources/',
+        'debugger/si.isystem.eclipse.debug/about.ini',
+        'debugger/si.isystem.eclipse.debug/about.html',
+        'debugger/si.isystem.eclipse.debug/license.html',
+        'debugger/si.isystem.eclipse.debug/build.properties',
+
+        'debugger/si.isystem.eclipse.debugFeature/feature-template.xml',
+        'debugger/si.isystem.eclipse.debugFeature/pom.xml',
+        
+        'debugger/si.isystem.debug.core/src',
+        'debugger/si.isystem.debug.core/build/libs/si.isystem.debug.core-' + version + '.jar',
+        'debugger/si.isystem.debug.core/build.properties',
+        'debugger/si.isystem.debug.core/deployment.properties',
+        'debugger/si.isystem.debug.core/plugin.xml',
+        'debugger/si.isystem.debug.core/lib/',
+        'debugger/si.isystem.debug.core/resources/',
+        'debugger/si.isystem.debug.core/deployment-Open/deployment.properties',
+        'debugger/si.isystem.debug.core/deployment-Regular/deployment.properties',
+        
+        'debugger/si.isystem.debug.core.feature/feature-template.xml',
+        'debugger/si.isystem.debug.core.feature/pom.xml',
+        
+        'si.isystem.debug.update/category-template.xml']
+}
+

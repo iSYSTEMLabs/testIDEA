@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="KTable" default="build" basedir=".">
+    <description>
+     Builds the project KTable. 
+    </description>
+
+    <property name="build.compiler" value="modern"/>
+    <property name="build.sysclasspath" value="ignore"/>
+
+    <property name="projName" value="KTable"/>
+
+    <property name="srcDir" value="${basedir}/src"/>
+    <property name="iconsDir" value="${srcDir}/icons"/>
+    <property name="docDir" value="${basedir}/doc"/>
+    <property name="libDir" value="${basedir}/lib"/>
+    <property name="classDir" value="${basedir}/bin-${bin.dir.suffix}"/>
+    <property name="javadocDir" value="${basedir}/javadoc"/>
+    <property name="deployDir" value="${basedir}/deploy"/>
+    <property name="packages" value="de.*"/>
+
+    <property environment="env"/>  <!-- contains environemnt vars -->
+    <!-- debug messages -->
+
+    <target name='printDebugInfo'>
+        <echo message="Project name: ${ant.project.name}"/>
+        <echo message="- Build file: ${ant.file}"/>
+        <echo message="apps = ${env.ISYSTEM_APPS}"/>
+        <echo message="java.home = ${java.home}"/>
+
+        <echo message="The Ant home directory is: ${ant.home}"/>
+        <echo message="The Ant version is: ${ant.version}"/> 
+        <echo message="The Ant Java version is: ${ant.java.version}"/>
+
+        <echo message="The Java home directory is: ${java.home}"/>
+        <echo message="The User home directory is: ${user.home}"/>
+        <echo message="The User name is: ${user.name}"/>
+
+        <echo message="Eclipse Target Platform: ${eclipse.target.platform}"/>
+    </target>
+
+    <!-- use default properties -->
+    <target name="set-release-properties" unless="isDebug">
+        <echo message="Building RELEASE version"/>
+        <property name="javacDebugInfo" value="off"/>
+    </target>
+
+    <!-- use properties from properties file (those with leading underscore) -->
+    <target name="set-debug-properties" if="isDebug">
+        <echo message="Building DEBUG version"/>
+        <property name="javacDebugInfo" value="true"/>
+    </target>
+
+    <!-- Prepares the project -->
+    <target name="prepare" description="creates directories for generated files">
+        <!-- sets propety isDebug if property is
+             set to true, and then calls two conditional tasks.
+             Property is set in Eclipse project, Builders | Edit | Main |
+             Arguments as -DdebugVersion=true. -->
+        <condition property="isDebug">
+            <istrue value="${debugVersion}"/>
+        </condition>
+
+    	<mkdir dir="${classDir}"/>
+    </target>
+
+    
+    <!-- Cleans up all files that are generated.                        -->
+    <target name="clean" description="removes all generated files, including javadoc">
+        <delete quiet="true" dir="${deployDir}" includes="**/*.*"/>
+        <delete quiet="true" dir="${classDir}"/>
+        <delete quiet="true" dir="${javadocDir}"/>
+    </target>
+
+    
+    <!-- Compiles the source code -->
+	<!-- add these parameters to javac task for debugging: debug="true" debuglevel="lines, vars, and source" -->
+        <target name="compile" depends="prepare, set-release-properties, set-debug-properties"
+                description="compiles java sources" unless="isJavaUpToDate">
+                                                             
+        <echo message="Debug is: ${javacDebugInfo}"/>
+        <javac 
+               srcdir="${srcDir}"
+               destdir="${classDir}"
+               includes="**/*.java"
+               
+       	       optimize="on"
+               verbose="off"
+               encoding="UTF-8"
+        	   
+        	   debug="${javacDebugInfo}"
+        	>
+        	
+            <classpath>
+                <fileset dir="${eclipse.target.platform}/plugins_for_swt_build">
+                    <include name="*.jar"/>
+                </fileset>
+                <fileset dir="${eclipse.target.platform}/plugins">
+                    <include name="org.eclipse.ui*.jar"/>
+                	<include name="org.eclipse.swt.win32.win32.x86*.jar"/>
+                </fileset>
+            </classpath>
+        </javac>
+    </target>
+    
+    <!-- Creates jar file -->
+    <target name="jar" depends="compile" description="creates jar file" unless="isJavaUpToDate">
+
+        <!-- copy icons to be included in the jar file. -->
+        <copy todir="${classDir}/icons">
+            <fileset dir="${iconsDir}"/>
+        </copy>
+      
+        <jar destfile="${deployDir}/${projName}.jar" basedir ="${classDir}"/>
+    </target>
+
+    <target name="upToDateCheck" description="Checks if everything is up to date.">
+        <uptodate property="isJavaUpToDate" targetfile="${deployDir}/${projName}.jar" >
+            <srcfiles dir= "${srcDir}" includes="**/*.java"/>
+            <srcfiles dir= "${iconsDir}" includes="**/*"/>
+            <srcfiles file="build.xml"/>
+        </uptodate>
+    </target>
+
+    <!-- Compiles the project and creates the jar file -->
+    <target name="build" description="executes target 'jar'">
+        <antcall target="printDebugInfo"/>
+        <antcall target="upToDateCheck"/>
+        <antcall target="jar"/>
+        
+        <antcall target="deployToTragetProjects"/>
+    </target>
+
+    <target name="deployToTragetProjects" description="Pushes the built jar to target projects." if="deploy-jar">
+        <echo message="DEPLOYING JAR TO TARGET PROJECTS"/>
+        <copy   file="${deployDir}/${projName}.jar" 
+                todir="../si.isystem.commons.plugin/lib"
+                overwrite="true"
+        />
+    </target>
+
+    <!-- Cleans and then compiles the project -->
+    <target name="rebuild" description="executes targets 'clean' and 'jar'">
+        <antcall target="clean"/>
+        <antcall target="build"/>
+    </target>
+
+    
+    <!-- Creates the API documentation -->
+    <target name="javadoc" description="creates javadoc">
+        <mkdir dir="${javadocDir}"/>
+        <javadoc packagenames="${packages}"
+                 sourcepath="${srcDir}"
+                 destdir="${javadocDir}"
+                 author="true"
+                 version="true"
+                 windowtitle="${projName} API"
+                 doctitle="${projName}"
+                 use="true"
+                 bottom="EPL. All Rights Reserved."
+                 access="public"
+                 />
+    </target>
+
+</project>

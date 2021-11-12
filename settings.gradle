@@ -1,0 +1,73 @@
+
+//-------------------------------------------------------------------------------------------------------------
+//---------------------------------------------  Commons  -----------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------
+
+// Paths
+ext.ICADAPTER_PROJ_PATH = ':si.isystem.icadapter'
+ext.JFACE_UTILS_PROJ_PATH = ':si.isystem.jfaceutils'
+ext.KTABLE_PROJ_PATH = ':de.kupzog.ktable'
+ext.ISYS_COMMONS_PROJ_PATH = ':si.isystem.commons.plugin'
+
+// Includes
+include ICADAPTER_PROJ_PATH
+include JFACE_UTILS_PROJ_PATH
+include KTABLE_PROJ_PATH
+include ISYS_COMMONS_PROJ_PATH
+
+// Projects
+project(ICADAPTER_PROJ_PATH).projectDir = new File('common/si.isystem.icadapter')
+project(JFACE_UTILS_PROJ_PATH).projectDir = new File('common/si.isystem.jfaceutils')
+project(KTABLE_PROJ_PATH).projectDir = new File('common/de.kupzog.ktable')
+project(ISYS_COMMONS_PROJ_PATH).projectDir = new File('common/si.isystem.commons.plugin')
+
+//-------------------------------------------------------------------------------------------------------------
+//---------------------------------------------  testIDEA  ----------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------
+
+// Paths
+ext.TESTIDEA_FEATURE_ECLIPSE_PROJ_PATH = ':si.isystem.itest.feature.eclipse'
+ext.TESTIDEA_FEATURE_RCP_PROJ_PATH = ':si.isystem.itest.feature.rcp'
+ext.TESTIDEA_CORE_PROJ_PATH = ':si.isystem.itest.plugin.core'
+ext.TESTIDEA_PLUGIN_ECLIPSE_PROJ_PATH = ':si.isystem.itest.plugin.eclipse'
+ext.TESTIDEA_RCP_PROJ_PATH = ':si.isystem.itest.plugin.rcp'
+ext.TESTIDEA_PRODUCT_PROJ_PATH = ':si.isystem.itest.product'
+//ext.TESTIDEA_UPDATESITE_PROJ_PATH = ':si.isystem.itest.update-site'
+//ext.TESTIDEA_UITEST_PROJ_PATH = ':si.isystem.itest.uitest'
+
+// Includes
+include TESTIDEA_FEATURE_ECLIPSE_PROJ_PATH
+include TESTIDEA_FEATURE_RCP_PROJ_PATH
+include TESTIDEA_CORE_PROJ_PATH
+include TESTIDEA_PLUGIN_ECLIPSE_PROJ_PATH
+include TESTIDEA_RCP_PROJ_PATH
+include TESTIDEA_PRODUCT_PROJ_PATH
+//include TESTIDEA_UPDATESITE_PROJ_PATH
+//include TESTIDEA_UITEST_PROJ_PATH
+
+// Projects
+project(TESTIDEA_FEATURE_ECLIPSE_PROJ_PATH).projectDir = new File('testidea/si.isystem.itest.feature.eclipse')
+project(TESTIDEA_FEATURE_RCP_PROJ_PATH).projectDir = new File('testidea/si.isystem.itest.feature.rcp')
+project(TESTIDEA_CORE_PROJ_PATH).projectDir = new File('testidea/si.isystem.itest.plugin.core')
+project(TESTIDEA_PLUGIN_ECLIPSE_PROJ_PATH).projectDir = new File('testidea/si.isystem.itest.plugin.eclipse')
+project(TESTIDEA_RCP_PROJ_PATH).projectDir = new File('testidea/si.isystem.itest.plugin.rcp')
+project(TESTIDEA_PRODUCT_PROJ_PATH).projectDir = new File('testidea/si.isystem.itest.product')
+//project(TESTIDEA_UPDATESITE_PROJ_PATH).projectDir = new File('testidea/si.isystem.itest.update-site')
+//project(TESTIDEA_UITEST_PROJ_PATH).projectDir = new File('testidea/si.isystem.itest.uitest')
+
+//-------------------------------------------------------------------------------------------------------------
+//---------------------------------------------  Debugger  ----------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------
+
+// Paths
+ext.DEBUGGER_PROJ_PATH = ':si.isystem.eclipse.debug'
+ext.DEBUGGER_CORE_PROJ_PATH = ':si.isystem.debug.core'
+
+// Includes
+include DEBUGGER_PROJ_PATH
+include DEBUGGER_CORE_PROJ_PATH
+
+// Projects
+project(DEBUGGER_PROJ_PATH).projectDir = new File('debugger/si.isystem.eclipse.debug')
+project(DEBUGGER_CORE_PROJ_PATH).projectDir = new File('debugger/si.isystem.debug.core')
+

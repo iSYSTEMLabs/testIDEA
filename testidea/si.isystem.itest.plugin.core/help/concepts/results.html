@@ -1,0 +1,222 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <link href="../styles.css" rel="stylesheet" type="text/css">
+    <title>Test results</title>
+  </head>
+
+  <body>
+    <h1>Test results</h1>
+
+    After test execution status of each test is marked with green or
+    red overlay icons. Status icons are set also on each section of test
+    case, which has results set. Note that not all sections
+    define constraints on test results. Only the following pages
+    define such constraints:
+
+    <ul>
+      <li><b>Pre-conditions</b><br/>
+        Expressions in this sections are evaluated before the target
+        is started. They can be used to verify initial conditions for
+        the test.
+        
+      <li><b>Expected</b><br/>
+
+        This section cen define stack usage contraints and
+      expressions.
+      Expressions defined in table <i>Expressions</i> must evaluate to
+      non-zero value. If this is not true, expression is marked with
+      red icon. When we click an expression, values of sub-expressions
+      are shown below the table <i>Expected</i>, as shown below.
+
+      <p align="center">
+          <img src="images/expressionsResults.png"/>
+      </p>
+
+      We can see not only that the results of the expression was <i>false</i>,
+      but also the actual value returned from the function.
+      <br/>
+      <b>Note 1:</b> Hex or Dec mode for values printed can be set either in:
+      <ul>
+      <li><i>winIDEA</i> watch window, tool-bar button <code>'0xF'</code>.</li>
+      <li>by appending format specifiers to expression (using 
+          symbols <code>@@</code>, see tool-tip of the expressions table).
+          </li>
+      <li><i>testIDEA</i> settings in  <code>File | Properties | Evaluator</code>.</li>
+      </ul>
+      <b>Note 2:</b> For floating point values the operator '==' must be used 
+      with caution. To make comparison for equality of floating point values
+      more convenient, <i>winIDEA</i> uses vague comparison, where values are 
+      considered equal, if their relative difference is less than <i>epsilon</i>.
+      The default value of <i>epsilon</i> is 1.e-5, but can be customized with 
+      winIDEA option <code>/IDE/Debug.Symbols.Format.VagueFloatPrecision</code>.
+      Enter this option URL and new <i>epsilon</i> value 
+      in <i>testIDEA</i> section <code>Options</code>. Alternatively this value is 
+      accessible in <i>winIDEA</i> <code>Debug | Debug Options</code> dialog, tab <code>Symbol</code>.
+      </li>
+
+      <li><b>Stubs</b><br/>
+        When stubbed function is called, <i>testIDEA</i> can verify
+        values of variables and run scripts. Expressions and scripts
+        must be successful for test to pass.
+        
+      <li><b>Test points</b><br/>
+        Test points can pause test execution anywhere inside the
+        function. <i>testIDEA</i> can verify values of variables and
+        run scripts at these locations. Expressions and scripts must
+        be successful for test to pass.
+        
+      <li><b>Scripts</b><br/>
+        Scripts also have possibility to report errors to <i>testIDEA</i>.
+        
+      <li><b>Coverage</b><br/>
+
+      Coverage section may define minimum amount of coverage for
+      functions called during test. After test execution the
+      requirements, which were not satisfied, are marked with red
+      color.
+      </li>
+
+      <li><b>Profiler</b><br/>
+      
+      Profiler section may define execution times and hit counts for
+      functions called and variables modified during test. After test
+      execution the requirements, which were not satisfied, are marked
+      with red color.
+      </li>
+
+      <li><b>Extension functions</b><br/>
+
+      Extension functions can also report errors. In such case red decoration
+      icons appear next to script function name in the <i>Scripts</i> section.
+      </li>
+    </ul>
+
+    
+    <h1>Test results in the Status view</h1>
+
+    After the test execution the summary of test results is shown in
+    the <i>Status view</i>. The first line shows some statistic, while
+    other lines contain errors, if they occurred.<p>
+
+    Example of the <i>Status View</i> without errors:
+      <p align="center">
+          <img width="90%" src="images/statusViewWithoutErrors.png"/>
+      </p></li>
+
+    Example of the <i>Status View</i> with errors:
+      <p align="center">
+          <img width="90%" src="images/statusViewWithErrors.png"/>
+      </p></li>
+
+    <b>Tip:</b> To see the test case, which has failed, double click
+    the error line in the <i>Status view</i>. The corresponding test case will be
+    selected in the <i>Test tree</i>.
+    
+
+    
+    <h1>Test reports</h1>
+
+    <i>(Professional version only)</i><p>
+
+    To save test results for documentation purposes, red marks in GUI
+    are not very convenient. For this reason we can save test results
+    to file in several different formats.
+    <i>iSYSTEM testIDEA</i> can save test results in XML, YAML, CSV,
+    XLS, or XLSX file formats.<p>
+    
+    <b>XML</b> format is convenient for usage in other tools, including
+    viewing in web browsers, because it is widely supported.<p>
+    
+    <b>YAML</b> format is not so well known, but it
+    is much more readable and as such convenient for quick overview in
+    text editor.<p>
+    
+    <b>CSV</b> (Comma Separated Values) format is also understood by many
+    other tools, for example it can be imported to rquirements
+    management tools, such as DOORS.<p>
+
+    <b>XLS</b> and <b>XLSX</b> are Excel (old and new) formats.
+
+    We can show XML file in web browser with the help of XML
+    Stylesheet Template. This section describes generating of reports,
+    while XSLTs are described in section <a href =
+    "../tasks/xsltAndCss.html">iSYSTEM Test Report Stylesheets</a>
+    <p/>
+
+    Test report can be saved with the main menu option <code>Test |
+    Save Test Report ...</code>. We get the following dialog:
+
+      <p align="center">
+          <img src="images/saveTestReport.png"/>
+      </p></li>
+
+    As usual, description of input fields is given in their
+    tool-tips.<p>
+
+  <b>Note:</b> Internet Explorer does not support document created
+  with option <i>Embed XSLT/CSS into XML report</i> checked. See
+  <a href='https://connect.microsoft.com/IE/feedback/details/789934/ie-10-xml-and-embed-xslt'>
+    IE 10, XML and embed XSLT</a> for more details.<p>
+  
+    An example of the generated test report is shown
+    below. First we can see a table with test configuration
+    parameters, and a table with test statistic. Tables with results
+    of each executed test case are following.
+
+      <p align="center">
+          <img width="90%" src="images/testReportExample.png"/>
+      </p></li>
+
+    Because one test can fail with more than one error, the sum of number
+    of errors per category can be greater than the number of failed
+    tests in the statistic table.
+
+    <h2>Coverage results</h2>
+
+    Coverage report contains the following results:
+
+    <ul>
+        <li><i>Obj. code all</i> - the number of object code statements in the measured code</li>
+        <li><i>Src. lines all</i> - the number of all source lines in the measured code</li>
+        <li><i>Cond. all</i> - the number of all conditions in the measured code</li>
+        <li><i>CC (Outomes)</i> - condition coverage measured in all
+        possible outcomes. The number of all possible outcomes is the
+        number of conditions times 2, because each condition has 2
+        outomes (true and false). For measured outcomes the following
+        equation is used:<br>
+          <code>measured outcomes = cond. false only + cond. true only
+          + cond. both ways * 2</code></li>
+        
+        <li><i>Obj. code executed</i> - expected and measured percentage of
+        executed statements in object code</li>
+        
+        <li><i>Src. lines executed</i> - expected and measured percentage of
+        executed source lines</li>
+        
+        <li><i>Conditions any</i> - the number of conditions, which executed
+        at least once</li>
+        
+        <li><i>Cond. true only</i> - the number of conditions, which
+        evaluated to true only</li>
+        
+        <li><i>Cond. false only</i> - the number of conditions, which
+        evaluated to false only</li>
+        
+        <li><i>Conditions both</i> - the number of conditions, which
+        evaluated both ways (true and false)</li>
+    </ul>
+
+    Example:
+      <p align="center">
+          <img width="90%" src="images/coverageReportExample.png"/>
+      </p></li>
+&nbsp;<p>
+  
+    <p/>
+  </body>
+</html>
+
+      

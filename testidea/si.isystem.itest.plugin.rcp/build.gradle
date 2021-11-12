@@ -1,0 +1,16 @@
+
+dependencies {
+    compile fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.osgi_*.jar')
+    compile fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.ui*.jar')
+    compile fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.core*.jar')
+}
+
+jar {
+   // see also parent build file for other files
+   from('.') {
+       include 'icons/**/*.*'
+       include 'OSGI-INF/**/*.*'
+   }
+   
+   from file ('plugin.xml')            
+}

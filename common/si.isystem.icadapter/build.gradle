@@ -1,0 +1,84 @@
+// Buildship doc:
+// https://github.com/eclipse/buildship/blob/master/docs/pluginbuild/Usage.md
+
+dependencies {
+    compile fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.core.runtime_*.jar')
+    compile fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.osgi_*.jar')
+    
+    compile fileTree(dir: "lib", include: "*.jar")
+    runtime fileTree(dir: "lib", include: "*.jar")
+}
+     
+// Info about trying to build Eclipse projects with Buildship:
+// - the doc is very sparse
+// - couldn't find any example project, which would build a simple plugin with 
+//   gradle and buildship
+// Some doc seems to be not applicable, for example:
+//   https://github.com/eclipse/buildship/blob/master/docs/pluginbuild/Usage.md
+// I found no way for 
+//   apply plugin: eclipsebuild.BuildDefinitionPlugin
+// to work. Should I install the plugin or what???
+        
+        
+// This code seems to be executed for EVERY project, not just icadapter, when refreshing
+// gradle project (Proj Expl. context menu, Gradle | Refresh ...), but only for this
+// project when running from command line: gradle eclipse
+
+// However, the IConnectJNI.jar in proj. icadapter is still not found as exported???
+// Source:
+//   https://discuss.gradle.org/t/adding-a-library-to-eclipse-classpath/19169/5
+//   https://discuss.gradle.org/t/buildship-1-0-18-is-now-available/19012
+// API doc often has no description:
+//   https://docs.gradle.org/current/javadoc/org/gradle/plugins/ide/eclipse/model/AbstractClasspathEntry.html#isExported--
+// Main pages:
+//   https://docs.gradle.org/current/userguide/third_party_integration.html#sec:embedding_introduction
+//   https://www.eclipse.org/community/eclipse_newsletter/2018/february/buildship.php
+//   https://docs.gradle.org/current/dsl/org.gradle.plugins.ide.eclipse.model.EclipseModel.html#org.gradle.plugins.ide.eclipse.model.EclipseModel:classpath
+//
+// Eclipse only works if there is IConnectJNI.jar in .classpath file (in GUI open 
+// proj props Java Build Path) and exported.
+// However, when one in Proj Explorer context menu runs Gradle | Refresh Gradle Project, 
+// these classpath entries are removed. Very likely the build gradle (this file) 
+// is not properly written, but I can't find info how to write it properly. 
+// Bad solution: Never run 'Gradle | Refresh Gradle Project', and 
+// revert .classpath files from SVN, when eclipse runs it automatically.
+   
+eclipse {
+    classpath {
+        file {
+            whenMerged {
+                println("____####____ ${project.configurations.testRuntime}")
+                println("___---____________ $entries")
+                def lib = entries.find { it.path.contains 'IConnectJNI.jar' }
+                println("_______________ $lib")
+                lib.exported = true
+                // entries += lib
+                println("___+++____________ $entries")
+            }
+        }
+    }
+}
+
+
+jar {
+/*
+    manifest {
+        attributes(
+            'Export-Package': "argparser"
+            )
+    } 
+*/
+    doFirst {
+        copy {
+            def libyamlFName = 'libyaml-0.so.1.1.0'
+            def libyamlSrc = '../../../Venus/Externals/yaml/yaml-0.1.2/src/.libs/' + libyamlFName
+            from libyamlSrc
+            into "lib"
+            rename libyamlFName, 'libyaml-0.so'
+        }
+        copy {
+            from '../../../linux/java/build/libs/iconnectJava/shared/release/libiconnectJava.so'
+            into 'lib'            
+        }
+    }
+}

@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>Running tests</title>
+</head>
+
+<body>
+	<h1>Running tests</h1>
+
+	For test execution we have several commands:
+	<ul>
+		<li>Command <code>Run All</code> executes all tests defined in <i>testIDEA</i>.</li>
+		<li>Command <code>Run Selected</code> executes all tests, which
+
+			are selected in test tree. We can select multiple tests to run. Even
+			if any of selected tests has derived tests, they are NOT run with
+			this option.</li>
+
+		<li>Command <code>Run Selected And Derived</code> executes all
+			tests, which are selected in test tree. We can select multiple tests
+			to run. If any of selected tests has derived tests, they are also run
+			with this option.</li>
+
+		<li>Command <code>Run with Filter</code> executes all tests,
+			which satisfy conditions in filter. After executing this command we
+			can select a filter to be used for tests specification execution.
+			There exist two possibilities for fitering:
+
+			<ul>
+				<li><b>built-in filter</b> - this filter is very flexible and
+					should satisfy majority of use cases.<br> All fields in tags
+					section, which are empty, evaluate to true. This means, that with
+					empty filter all tests will be executed. If we want to execute only
+					some tests identified by function name and/or test ID, then we have
+					to define a nonexisting tag in the <i>Must have all tags</i> field.
+					For example, suppose we want to execute tests for functions <code>min()</code>,
+					<code>max()</code>, and <code>average()</code>:
+
+					<p align="center">
+						<img width="90%" src="images/testFilter.png" />
+					</p> Note that we have used a tag, which is not used in any of our test
+					specifications (in the example we used <code>'unusedTag'</code>).
+					Otherwise all tests would satisfy the tags filter. Now only tests
+					specifications for functions mentioned as exceptions will be
+					executed, while others will not pass the tags filter.<br> The
+					second part defines exceptions to the filtering with tags. All
+					exceptions are evaluated in the same order as they are presented in
+					the dialog. They override tag conditions. <br></li>
+
+				<li><b>script function</b> - in this case a function in Python
+					module is called. It is completely up to our implementation which
+					test specifications will be executed. If the function returns <i>true</i>,
+					test specification will be executed.</li>
+				<p>
+			</ul></li>
+
+		<li>Command <code>Run Failed Tests</code> executes all tests,
+			which have failed in the previous run.<br> If test suite
+			contains a large number of tests, and only few of them fail, it may
+			be time consuming to either select failed tests one by one or rerun
+			all tests. In such cases we can fix the problem which has caused the
+			tests to fail, and then use command <code>Run | Run Failed
+			Tests</code>. Only the tests, which have failed on the previous run will be
+			executed.<p></li>
+
+		<li>Boolean menu option <code>Keep test results</code> toggles
+			erasing of test results on test start. When the option is selected,
+			the <code>Run</code> command does not erase results of tests, which
+			are not executed. This way we can execute only tests, which have
+			failed, and get report for all tests.<p> 
+			
+			<b>IMPORTANT! Use this functionality with
+			caution, because fix for one test may break other tests, which have
+			already passed. Do not use this functionality on tests, which are
+			interdependent, or which can be influenced by the fix of the problem.
+			In such cases always rerun all tests!</b></li>
+			
+			        <p align="center">
+                        <img src="images/keepTestResults.png" />
+                    </p> 
+			<br><br>&nbsp;
+	</ul>
+
+</body>
+</html>

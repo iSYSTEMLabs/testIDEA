@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>testIDEA and Python</title>
+</head>
+
+<body>
+	<h1>testIDEA and Python</h1>
+
+	Scripting and GUI are two ways of interaction with computers.
+	Advantages of scripting are flexibility and automation, while GUI
+	enables us quick start-up. This section describes how to connect
+	<i>testIDEA</i> and Python scripts, to get benefits of both worlds. <p>
+	
+    <p>
+        Scripts can be used for two different tasks. The first task is <b>execution</b>
+        of tests and analysis of results, the second task is <b>extending</b>
+        test functionality. Both tasks are described below.
+
+    <h2>Executing tests from Python</h2>
+
+    Tests should be run often to detect errors as soon as possible.
+    Furthermore, we also want to have more flexibility for configuring test
+    environment and the hardware which runs our application. These are
+    tasks for scripts. Now the main question arises - how can we reuse test
+    specifications created with <i>testIDEA</i> in scripting environment?
+    <p />
+
+    The answer is: By loading test specifications from test specification
+    file and executing it with the help of
+    <i>isystem.test</i> API. <p>Detailed step by step instructions are given in
+	section
+	<a href="../tasks/generatingScripts.html">Executing tests with Python scripts</a>. 	
+
+
+	<h2>Extending test functionality</h2>
+
+    If complexity of our test cases exceeds testIDEA capabilities, we can
+    extend tests with Python functions, which offer us full flexibility of
+    a programming language. For example, if function on target calculates
+    Fourier transform of a signal, it is very tedious to type values one by
+    one into test specification. By implementing verification with Python
+    script, we can verify calculations done on the target by independent
+    Python calculation. <p>
+
+    <i>isystem.test</i> contains several points during test execution, where
+    custom scripts can be executed. They can be used to:
+    <ul>
+    <li>filter tests for execution</li>
+    <li>initialize target state (test specification tag <code>initTarget</code>)</li>
+    <li>initialize global variables and function parameters (test specification tag <code>initFunc</code>)</li>
+    <li>verify test results (test specification tag <code>endFunc</code>)</li>
+    <li>simulate behavior of stubbed functions (test specification tag <code>script</code> in section <code>stubs</code>)</li>
+    <li>restore target state (test specification tag <code>restoreTarget</code>)</li>
+    </ul> <p> 
+   
+    
+    Instructions for implementation and usage of script extensions are given in section
+    <a href="../tasks/writingScriptFunctions.html">Writing Script Extensions</a>.    
+    
+	
+</body>
+</html>
+

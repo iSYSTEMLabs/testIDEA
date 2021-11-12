@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <title>System test sections</title>
+  </head>
+
+  <body>
+    <h1><i>System init</i> and <i>Execute test</i></h1>
+
+    These two sections define start point and
+    test execution for tests, which test something else than a single
+    function, for example few lines of code, a set of functions, a set
+    of modules or complete system. This section is visible,
+    if <a href="../systemTests.html"><i>System tests</i></a> are
+    selected in <i>Meta</i> page.<p>
+
+    The <i>System init</i> section specifies where to stop the
+    target before test. It does not need to be specified, if target is
+    already initialized and execution point set as expected.<p>
+
+    The <i>Execute test</i> section must be specified if we want the
+    test to be executed by <i>testIDEA</i>. If it is not specified
+    (option <i>No exec</i> is selected), then script function <a href='scripts.html'><i>Init
+    test</i></a> should be specified, and should run and stop the target
+    to execute the test.  
+      When target stops, target state (variables, ...) is obtained and compared to tests
+    requirements. Analyzer is also stopped and expected values verified.
+    
+    <p align="center">
+    <img width="90%" src="images/stopCondition.png"/>
+    </p>
+    <br/>
+    See tool-tips of input controls for detailed descriptions. See
+    also page <a href='../systemTests.html'>System tests</a> for more
+    detailed description of system tests.
+    <p/>
+  </body>
+</html>

@@ -1,0 +1,459 @@
+import org.yaml.snakeyaml.Yaml
+
+buildscript {
+  repositories {
+      mavenCentral()
+  }
+  dependencies {
+    classpath group: 'org.yaml', name: 'snakeyaml', version: '1.18'
+  }
+}
+
+apply from: "utils.gradle"
+
+def os = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
+ext.isWindows = os.startsWith("windows");
+if (!isWindows) {    
+    ext.writeAVersionHeaderFile()  // aversion_scc.h is not created/updated
+              // on Linux by TortoiseSVN, because these hooks don't work there.
+}
+
+rootProject.version = getISysVer()
+def versionWithRev = getISysQualifiedVer()
+println 'winIDEA version: ' + versionWithRev + '\n'
+
+def PARAM_DEPLOY_PATH = "dstFolder"
+def PARAM_PLUGIN_TYPE = "debugPluginType"
+def PARAM_PLUGIN_REGULAR = "Regular"
+def PARAM_PLUGIN_OPEN = "Open"
+
+ext.signPass = project.hasProperty('isys.signingPassword') ?
+               "-Disys.signingPassword=" + project.getProperty('isys.signingPassword') :
+               ""
+
+ext.MAVEN_LOCAL_REPO = 'local-maven-repo'
+
+def configYamlPath = '../config.yaml'
+
+Yaml parser = new Yaml()
+Map compilerConfig = parser.load((rootProject.rootDir.toPath().toString() + '/' + configYamlPath as File).text)
+ext.ISYSTEM_BUILD_JDK_x64_PATH = ext.expandEnvVars(compilerConfig['jdk_x64']['ISYSTEM_BUILD_JDK_x64_PATH'])
+
+def drive = ext.expandEnvVars("%ISYSTEM_ROOT_DRIVE%")
+if (!isWindows) {
+    drive = System.getenv("HOME")
+}
+ext.ISYSTEM_BUILD_MAVEN_REPO_PATH = ext.expandEnvVars(compilerConfig['maven_repo']['ISYSTEM_BUILD_MAVEN_REPO_PATH'])
+ext.ISYSTEM_BUILD_MAVEN_PATH = ext.expandEnvVars(compilerConfig['maven']['ISYSTEM_BUILD_MAVEN_PATH'])
+
+// def toolsDir = 'AsystLib/tools'
+// if (ext.isWindows) {
+    // // on Windows AsystLib should be checked-out on root of current drive
+    // ext.ASYSTLIB_TOOLS_PATH = rootProject.rootDir.toPath().getRoot().toString() + toolsDir
+// } else {
+    // // on Linux AsystLib should be checked-out in user's home
+    // ext.ASYSTLIB_TOOLS_PATH = System.getProperty("user.home") + "/" + toolsDir
+// }
+
+allprojects {
+    apply plugin: 'java'
+    apply plugin: 'eclipse'
+}
+
+
+subprojects {
+    ext {
+        versionWithScRev = versionWithRev
+    }
+    apply plugin: 'maven'
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    group = 'si.isystem'
+    version = rootProject.version
+
+    ext.TARGET_PLATFORM_PLUGINS = "${drive}/ISYSTEM_APPS/targetPlatform-2020_06/plugins"
+
+    def isDebugBuild = project.hasProperty('debugBuild') ?
+                       project.getProperty('debugBuild') == 'true'  : false
+    compileJava.options.debug = isDebugBuild
+    compileJava.options.debugOptions.debugLevel = "source,lines,vars"
+    compileJava.options.encoding="UTF-8"
+
+    sourceSets {
+        main {
+            java {
+                srcDirs = ['src']
+            }
+        }
+    }
+
+    jar {
+        manifest {
+            def manif = "${projectDir}/META-INF/MANIFEST.MF"
+            if (new File(manif).exists()) {
+                from (manif) {
+                    eachEntry { details ->
+                        if (details.key == 'Bundle-Version') {
+                            details.value = "$version"
+                        }
+                    }
+                }
+            } else {
+                logger.info(project.name + " doesn't have a META-INF/MANIFEST.MF.")
+            }
+        }
+
+        from('.') {
+            include 'lib/**/*.*'
+        }
+
+        //   into('lib') { from project(':si.isystem.jfaceutils').jar }
+    }
+
+    uploadArchives.mustRunAfter assemble
+
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                println "------------- file:///${projectDir}/../../$MAVEN_LOCAL_REPO/"
+                repository(url: "file:///${projectDir}/../../$MAVEN_LOCAL_REPO/")
+            }
+        }
+    }
+}
+
+
+task configure(type: Copy) {
+    from ISYSTEM_BUILD_MAVEN_REPO_PATH
+    into MAVEN_LOCAL_REPO
+}
+
+
+/**
+ * Starts VisualStudio to build iConnect, which calls swigBuild.py,
+ * which in turn starts gradle to build and copy IConnectJNI.jar.
+ */
+task compileCppSDK {
+    doFirst {
+
+        if (isWindows) {
+            compileCppProjectWin(project.hasProperty('rebuild'),
+                                 project.hasProperty('debugBuild'),
+                                 '',
+                                 'IConnectJava', // VS proj name
+                                 file('../sdk').toString(),
+                                 'iconnectSDK.sln')
+        } else {
+            compileCppProjectLinux(project.hasProperty('rebuild'),
+                                   project.hasProperty('debugBuild'))
+        }
+    }
+}
+
+//-------------------------------------------------------------------------------------------------------------
+//---------------------------------------------  Commons  -----------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------
+
+project(':si.isystem.icadapter') {
+    compileJava.dependsOn compileCppSDK
+}
+
+project(':si.isystem.commons.plugin') {
+
+    dependencies {
+        compile project(':si.isystem.jfaceutils'),
+                project(':de.kupzog.ktable'),
+                project(':si.isystem.icadapter')
+    }
+}
+
+def isysDependenciesCommon = [
+    ':si.isystem.jfaceutils:assemble',
+    ':de.kupzog.ktable:assemble',
+    ':si.isystem.icadapter:assemble',
+    ':si.isystem.commons.plugin:assemble',
+    //    ':si.isystem.connectjava:uploadArchives',
+    ':si.isystem.jfaceutils:uploadArchives',
+    ':de.kupzog.ktable:uploadArchives',
+    ':si.isystem.icadapter:uploadArchives',
+    ':si.isystem.commons.plugin:uploadArchives']
+
+//-------------------------------------------------------------------------------------------------------------
+//---------------------------------------------  testIDEA  ----------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------
+
+def POM_RCP_TESTIDEA = 'testidea/pom-rcp.xml'
+def POM_PLUGIN = 'testidea/pom-plugin.xml'
+
+project(':si.isystem.itest.plugin.core') {
+    dependencies {
+        compile project(':si.isystem.commons.plugin')
+    }
+}
+
+project(':si.isystem.itest.plugin.rcp') {
+    dependencies {
+        compile project(':si.isystem.itest.plugin.core')
+    }
+}
+
+project(':si.isystem.itest.plugin.eclipse') {
+    dependencies {
+        compile project(':si.isystem.itest.plugin.core')
+    }
+}
+
+// this project also depends on sub-projects
+dependencies {
+    compile project(':si.isystem.itest.plugin.rcp'),
+            project(':si.isystem.itest.plugin.eclipse')
+}
+
+def isysDependenciesTestIDEA = [
+                                //    ':si.isystem.connectjava:assemble',
+    ':si.isystem.itest.plugin.core:assemble',
+    ':si.isystem.itest.plugin.rcp:assemble',
+    ':si.isystem.itest.plugin.eclipse:assemble',
+    ':si.isystem.itest.plugin.core:uploadArchives',
+    ':si.isystem.itest.plugin.rcp:uploadArchives',
+    ':si.isystem.itest.plugin.eclipse:uploadArchives']
+
+task exeBuildTestIDEA(dependsOn: [isysDependenciesCommon, isysDependenciesTestIDEA]) {
+    group 'iSYSTEM'
+    description('Makes testIDEA as standalone application (Eclipse RCP).')
+
+    inputs.files inputsCommon, inputsTestIDEA
+    outputs.dir 'testidea/si.isystem.itest.product/target'
+
+    doLast{
+        resolveTemplate('testidea/si.isystem.itest.feature.rcp', 'feature.xml')
+        resolveTemplate('testidea/si.isystem.itest.product', 'itest.product')
+
+        runMavenBuild(POM_RCP_TESTIDEA, 'verify', '')
+
+/* Currently Builder copies JRE from ISYSTEM_APPS, no need to copy here.
+         copy {
+             from "$System.env.ISYSTEM_APPS/jre"
+             into "si.isystem.itest.product/target/products/si.isystem.itest.product/win32/win32/x86/jre"
+         }
+         copy {
+             from "$System.env.ISYSTEM_APPS/jre_x64"
+             into "si.isystem.itest.product/target/products/si.isystem.itest.product/win32/win32/x86_64/jre"
+         }
+         println 'JREs copied' */
+    }
+}
+
+task pluginBuildTestIDEA(dependsOn: [isysDependenciesCommon, isysDependenciesTestIDEA]) {
+    group 'iSYSTEM'
+    description('Builds testIDEA as Eclipse plug-in.')
+
+    doLast{
+        resolveTemplate('testidea/si.isystem.itest.feature.eclipse', 'feature.xml')
+        resolveTemplate('testidea/si.isystem.itest.update-site', 'category.xml')
+
+        runMavenBuild(POM_PLUGIN, 'verify', signPass)
+    }
+}
+
+task cleanTestIDEA(dependsOn: clean) {
+  group 'iSYSTEM'
+
+    doLast {
+        resolveTemplate('testidea/si.isystem.itest.feature.rcp', 'feature.xml')
+        runMavenBuild(POM_RCP_TESTIDEA, 'clean', '');
+
+        resolveTemplate('testidea/si.isystem.itest.feature.eclipse', 'feature.xml')
+        runMavenBuild(POM_PLUGIN, 'clean', '');
+    }
+}
+
+// This task has not been tested yet! Usually a better option is
+//   gradle --rerun-tasks assemble
+// All the following lines are unnecessary in such case.
+
+task rebuildTestIDEA(dependsOn: [cleanTestIDEA, exeBuildTestIDEA]) {
+    group 'iSYSTEM'
+    description('Rebuilds testIDEA as standalone application (Eclipse RCP).')
+}
+
+exeBuildTestIDEA.mustRunAfter cleanTestIDEA
+
+//-------------------------------------------------------------------------------------------------------------
+//---------------------------------------------  Debugger  ----------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------
+
+ext.debuggerType = (project.hasProperty(PARAM_PLUGIN_TYPE) ? project.getProperty(PARAM_PLUGIN_TYPE) : PARAM_PLUGIN_REGULAR)
+
+def POM_DEBUG_PLUGIN = 'debugger/pom-plugin.xml'
+
+project(':si.isystem.debug.core') {
+    dependencies {
+        compile project(':si.isystem.commons.plugin')
+    }
+}
+
+project(':si.isystem.eclipse.debug') {
+    dependencies {
+        compile project(':si.isystem.debug.core')
+    }
+}
+
+def isysDependenciesDebugger = [
+    ':si.isystem.debug.core:assemble',
+    ':si.isystem.eclipse.debug:assemble',
+    ':si.isystem.debug.core:uploadArchives',
+    ':si.isystem.eclipse.debug:uploadArchives'
+    ]
+
+task pluginBuildDebugger(dependsOn: [isysDependenciesCommon, isysDependenciesDebugger]) {
+    group 'iSYSTEM'
+    description('Makes the debug plugin.')
+
+    doLast{
+        resolveTemplate("debugger/si.isystem.eclipse.debugFeature", 'feature.xml')
+        resolveTemplate("debugger/si.isystem.debug.core.feature", 'feature.xml')
+        resolveTemplate("debugger/si.isystem.debug.update", 'category.xml')
+        resolveTemplate("debugger/si.isystem.debug.update", 'site.xml')
+
+        runMavenBuild(POM_DEBUG_PLUGIN, 'verify', signPass)
+
+        def targetFolder = "debugger/si.isystem.debug.update/target"
+        def zipFileName = 'si.isystem.debug.update-'+version+'.zip'
+
+        if (debuggerType == PARAM_PLUGIN_REGULAR) {
+            copy {
+                from "$targetFolder/repository"
+                into "$targetFolder/../debuggerJuno42"
+                exclude "*.xml.xz"
+                exclude "p2.index"
+            }
+            copy {
+                from "$targetFolder"
+                into "$targetFolder/../archive"
+                include zipFileName
+                rename zipFileName, 'IConnectDebugger-install.zip'
+            }
+            copy {
+                from "debugger/si.isystem.debug.update"
+                into "$targetFolder/../debuggerJuno42"
+                include "site.xml"
+            }
+        }
+        else if (debuggerType == PARAM_PLUGIN_OPEN) {
+            copy {
+                from "$targetFolder/repository"
+                into "$targetFolder/../debuggerOpenJuno42"
+                exclude "*.xml.xz"
+                exclude "p2.index"
+            }
+            copy {
+                from "$targetFolder"
+                into "$targetFolder/../archive"
+                include zipFileName
+                rename zipFileName, 'IConnectDebugger-open-install.zip'
+            }
+            copy {
+                from "debugger/si.isystem.debug.update"
+                into "$targetFolder/../debuggerOpenJuno42"
+                include "site.xml"
+            }
+        }
+    }
+}
+
+task deployDebugPlugin() {
+    group 'iSYSTEM'
+
+    doLast {
+        if (!project.hasProperty(PARAM_DEPLOY_PATH)) {
+            def msg = String.format("Missing mandatory parameter '%s'", PARAM_DEPLOY_PATH)
+            throw new GradleException(msg)
+        }
+
+        def srcFolder = "debugger/si.isystem.debug.update/target/repository"
+        def dstFolder = project.getProperty(PARAM_DEPLOY_PATH)
+
+        println "Deploying debug plugin:"
+        println "  from: " + srcFolder
+        println "  to: " + dstFolder
+
+        def tree = fileTree(dstFolder)
+        tree.include 'plugins/'
+        tree.include 'features/'
+        tree.include 'artifacts.jar'
+        tree.include 'content.jar'
+        tree.each { it.delete() }
+
+        copy {
+            from srcFolder
+            include 'plugins/'
+            include 'features/'
+            include 'artifacts.jar'
+            include 'content.jar'
+            into(dstFolder)
+        }
+    }
+}
+
+task cleanDebugger(dependsOn: clean) {
+    group 'iSYSTEM'
+
+    delete "debugger/si.isystem.debug.update/archive"
+
+    delete "debugger/si.isystem.debug.core/bin"
+    delete "debugger/si.isystem.debug.core/build"
+
+    delete "debugger/si.isystem.debug.example.extra.debug.info/bin"
+
+    delete "debugger/si.isystem.eclipse.debug/bin"
+    delete "debugger/si.isystem.eclipse.debug/build"
+
+    doLast {
+        if (debuggerType == PARAM_PLUGIN_REGULAR) {
+            delete "debugger/si.isystem.debug.update/debuggerJuno42"
+        }
+        else if (debuggerType == PARAM_PLUGIN_OPEN) {
+            delete "debugger/si.isystem.debug.update/debuggerOpenJuno42"
+        }
+        else {
+            delete "debugger/si.isystem.debug.update/debuggerJuno42"
+            delete "debugger/si.isystem.debug.update/debuggerOpenJuno42"
+        }
+        resolveTemplate("debugger/si.isystem.eclipse.debugFeature", 'feature.xml')
+        resolveTemplate("debugger/si.isystem.debug.core.feature", 'feature.xml')
+        resolveTemplate("debugger/si.isystem.debug.update", 'category.xml')
+        resolveTemplate("debugger/si.isystem.debug.update", 'site.xml')
+
+        runMavenBuild(POM_DEBUG_PLUGIN, 'clean', '');
+    }
+}
+
+deployDebugPlugin.mustRunAfter pluginBuildDebugger
+
+//-------------------------------------------------------------------------------------------------------------
+//-----------------------------------------------  Misc. ------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------
+
+task exeBuildBoth(dependsOn: [exeBuildTestIDEA]){
+    group 'iSYSTEM'
+    description('Makes testIDEA and IDaemon as standalone applications and the debug plugin. (Eclipse RCP).')
+}
+
+help {
+    doLast {
+        println '\n---\n\niSYSTEM specific options:'
+        println "  -PdebugBuild - if specified, compiler adds debug info"
+        println "  -P$PARAM_ARCH [$PARAM_ARCH_x86, $PARAM_ARCH_x64]"
+        println "      - '$PARAM_ARCH_x86' - if specified, compiler builds 32-bit native DLLs."
+        println "      - '$PARAM_ARCH_x64' - if specified, compiler builds 64-bit native DLLs."
+        println "      If none of '$PARAM_ARCH_x86' or '$PARAM_ARCH_x64' is specified, 32 and 64 bit DLLs are created."
+        println "      Note: Specifying this parameter for deployment tasks is mandatory."
+        println "  -P$PARAM_DEPLOY_PATH - must be specified for deployment targets."
+        println "  -P$PARAM_PLUGIN_TYPE - must be specified for buildDebugger - with values '$PARAM_PLUGIN_OPEN' or '$PARAM_PLUGIN_REGULAR'."
+        println "      Default plugin type is 'PARAM_PLUGIN_REGULAR'"
+        println '\n---\n'
+    }
+}

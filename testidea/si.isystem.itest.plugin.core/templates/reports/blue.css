@@ -1,0 +1,114 @@
+/* This file contains CSS for isystem test results.
+
+   (c) iSYSTEM AG, 2010
+
+   You may modify this file to customize report presentations in browser.
+*/
+
+.okBkgColor {background-color: #80ff80;}
+.failBkgColor {background-color: #ff8080;}
+.errorBkgColor {background-color: #e04040;}
+.warnBkgColor {background-color: #ff9422;}
+
+/* styles for the header row */
+.headerRow {background-color: #0099ff; color: white; border: 1px solid black; }
+.headerCell {border: 1px solid black; }   
+
+/* styles for attributes */
+.envHeader { background-color: #7df2ff; font-weight: bold;}
+.groupHeader { text-align: left; font-weight: bold; background-color: #481ee0; border: 1px solid black; }
+.attributeHeader { text-align: left; font-weight: bold; background-color: #b0e8ff; border: 1px solid black; }
+.configHeader { text-align: center; background-color: #1a41b0; color: white; border: 1px solid black; }
+.statisticHeader { text-align: center; background-color: #1a41b0; color: white; border: 1px solid black; }
+.linksToErrorsHeader { text-align: center; background-color: #1a41b0; color: white; border: 1px solid black; }
+
+
+/* styles for the table with links to failed test cases */
+.functionNameFail {font-family: monospace;}
+.functionNameError {font-family: monospace;}
+
+.linksToErrorsStyle A:link {text-decoration: underline; color: red;}
+.linksToErrorsStyle A:visited {text-decoration: underline; color: #c00000;}
+.linksToErrorsStyle A:active {text-decoration: underline; color: blue;}
+.linksToErrorsStyle A:hover {text-decoration: underline; color: blue;}
+
+
+/* styles for the second row */
+.testId {text-align: center; font-weight: bold;}
+.functionName {font-family: monospace; text-align: center; }
+
+.okStyle {text-align: center; background-color: #80ff80;}
+
+.errorStyle {text-align: center; background-color: #ff8080; }
+.errorBkg {background-color: #ff8080; }
+.exceptionStyle {text-align: center; background-color: #ff4040; }
+
+/* styles for expressions section*/
+.expressionsTitle { background-color: #7df2ff;}
+.expressionsHeader { background-color: #7df2ff;}
+.expression {text-align: left; font-family: monospace; }
+.expressionError {text-align: left; font-family: monospace; background-color: #ffb7b7; }
+.testPointSubExpr {
+    margin-top: -1.00em;
+    margin-left: 20px;
+}
+
+/* style used for function names in coverage and profiler sections */
+.analyzedFunctionName {text-align: left; font-family: monospace;}
+
+
+/* styles for coverage section */
+.coverageTitle { background-color: #7df2ff;}
+.coverageHeader { background-color: #7df2ff; font-size: smaller;}
+.coverageError { background-color: #ffbbbb;}
+.cvrgValues {font-size: smaller;}
+
+.scriptOutput { background-color: #7df2ff; }
+.scriptError { background-color: #ffbbbb; }
+.scriptErrorDesc { background-color: #7df2ff; }
+.exceptionError { background-color: #ff8080; }
+.exceptionDesc { background-color: #ffa0a0; }
+.stackUsage { background-color: #7df2ff; }
+.stackUsageError { background-color: #ffbbbb; }
+.errFunctionName {font-family: monospace; text-align: center; background-color: #ffbbbb; }
+
+.testPointTitle { background-color: #7df2ff;}
+.testPointHeader { background-color: #7df2ff;}
+.testPointError { background-color: #3060ff; }
+
+/* styles for profiler sections */
+.codeProfilerTitle { background-color: #7df2ff;}
+.codeProfilerHeader { background-color: #7df2ff;}
+
+.dataProfilerTitle { background-color: #7df2ff;}
+.dataProfilerHeader { background-color: #7df2ff;}
+
+.groupBorder {border-width: 2px;}
+.headerBorder {font-weight: bold} /* {border-width: 2px;} */
+.colHeaderBorder {border-bottom-width: 2px;}
+.rowHeaderBorder {border-right-width: 2px;}
+.leftThickBorder {border-left-width: 2px;}
+
+.numberRow {text-align: right;}
+
+.analyzedVarName {text-align: left; font-family: monospace;}
+
+.profilerError {background-color: #ffbbbb; padding-left: 10;}
+.profilerMeasuredVal {background-color: #e3ffff; padding-left: 5;}
+.profilerValue {padding-left: 5;}
+.errVarName {font-family: monospace; text-align: center; background-color: #ffbbbb; }
+
+
+table {
+  border: 1px solid #000000;
+  background-color: #e6f8ff;
+  font-family: sans-serif;
+  border-collapse: collapse;
+}
+
+td {
+  padding: 2px;
+  border: 1px solid black;
+}
+
+

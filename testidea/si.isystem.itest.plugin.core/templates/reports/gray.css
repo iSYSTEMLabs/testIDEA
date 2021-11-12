@@ -1,0 +1,98 @@
+/* This file contains CSS for isystem test results.
+
+   (c) iSYSTEM AG, 2010
+
+   You may modify this file to customize report presentations in browser.
+*/
+
+
+/* styles for the header row */
+.headerRow {background-color: #696969; color: white; border: 1px solid black; }
+.headerCell {border: 1px solid black; }   
+
+/* styles for attributes */
+.envHeader { background-color: #cacaca; font-weight: bold;}
+.attributeHeader { text-align: center; background-color: #cacaca; border: 1px solid black; }
+.configHeader { text-align: center; background-color: #202020; color: white; border: 1px solid black; }
+.statisticHeader { text-align: center; background-color: #202020; color: white; border: 1px solid black; }
+.linksToErrorsHeader { text-align: center; background-color: #202020; color: white; border: 1px solid black; }
+
+
+/* styles for the table with links to failed test cases */
+.testIdWError {text-align: left; }
+.testIdWException {background-color: #d0d0d0;}
+.functionNameError {font-family: monospace;}
+.functionNameException {font-family: monospace; background-color: #d0d0d0;}
+.exceptionStyle {background-color: #d0d0d0;}
+
+.linksToErrorsStyle A:link {text-decoration: underline; color: #202020;}
+.linksToErrorsStyle A:visited {text-decoration: underline; color: #707070;}
+.linksToErrorsStyle A:active {text-decoration: underline; color: #707070;}
+.linksToErrorsStyle A:hover {text-decoration: underline; color: blue;}
+
+
+/* styles for the second row */
+.testId {text-align: center; }
+.functionName {font-family: monospace; text-align: center; }
+
+.okStyle {text-align: center; background-color: white; }
+
+.errorStyle {text-align: center; background-color: black; color: white}
+.exceptionStyle {text-align: center; background-color: black; color: white}
+
+/* styles for expressions section*/
+.expressionsTitle { background-color: #cacaca;}
+.expressionsHeader { background-color: #cacaca;}
+.expression {text-align: left; font-family: monospace; }
+.expressionError {text-align: left; font-family: monospace; background-color: #e0e0e0;}
+
+/* style used for function names in coverage and profiler sections */
+.analyzedFunctionName {text-align: left; font-family: monospace;}
+
+
+/* styles for coverage section */
+.coverageTitle { background-color: #cacaca;}
+.coverageHeader { background-color: #cacaca;}
+.coverageError { background-color: #e0e0e0; }
+.scriptOutput { background-color: #cacaca; }
+.scriptError { background-color: #e0e0e0; }
+.scriptErrorDesc { background-color: #cacaca; }
+.exceptionError { background-color: #e0e0e0; }
+.exceptionDesc { background-color: #cacaca; }
+.stackUsage { text-align: left; }
+.stackUsageError { background-color: #000000; color: white;}
+.errFunctionName {font-family: monospace; text-align: center; background-color: #e0e0e0; }
+
+/* styles for profiler sections */
+.codeProfilerTitle { background-color: #cacaca;}
+.codeProfilerHeader { background-color: #cacaca;}
+
+.dataProfilerTitle { background-color: #cacaca;}
+.dataProfilerHeader { background-color: #cacaca; }
+
+.groupBorder {border-width: 3px; }
+.leftThickBorder {border-left-width: 3px; }
+
+.numberRow {text-align: right;}
+
+.analyzedVarName {text-align: left; font-family: monospace;}
+
+.profilerError {background-color: #e0e0e0; padding-left: 10;}
+.profilerMeasuredVal {background-color: #f5f5f5; padding-left: 5;}
+.profilerValue {padding-left: 5;}
+.errVarName {font-family: monospace; text-align: center; background-color: #e0e0e0; }
+
+
+table {
+  border: 1px solid black;
+  background-color: white;
+  font-family: sans-serif;
+  border-collapse: collapse;
+}
+
+td {
+  padding: 2px;
+  border: 1px solid black;
+}
+
+

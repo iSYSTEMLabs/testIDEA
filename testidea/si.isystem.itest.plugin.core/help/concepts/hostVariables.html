@@ -1,0 +1,198 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <title>Host variables</title>
+  </head>
+
+  <body>
+    <h1>Host variables</h1>
+
+    Host variables are stored on host (PC). They can be treated like
+    macros, which are replaced with their values in expressions,
+    before they are given to evaluator. They can be used to store
+    information between tests, and to provide better configurability
+    of tests. They are also used by test creation wizard and can be
+    used in exports.
+
+    <h2>Definition</h2>
+
+    Host variables can only be defined in section <i>Variables</i>. They do
+    not have type - values are always treated as strings. They can not
+    be declared table <i>Declarations of test local variables</i> in
+    section <i>Variables</i>, but can have value assigned in
+    table <i>Initialization of local and global variables</i>.<p>
+    
+    Name of
+    host variable must always start with <b>${</b> and end
+    with <b>}</b>:
+    <pre>
+        ${&lt;varName&gt;}
+    </pre>
+    for example:
+    <pre>
+        ${myVar}
+    </pre>
+
+    Example of section <i>Variables</i> with host variables <i>p1,
+    p2</i>, and <i>stackPattern</i> defined:
+
+    <p align='center'>
+    <img width="90%" src="images/hostVars.png"/>
+    </p>
+
+    Assignments to host variables are possible only in Variables section.
+    Stub and test-point steps can assign values only to target variables 
+    (but may use host variables as R-values).
+
+    Assignments can not be done to <a href="#reserved">reserved</a> host vars.
+    
+
+    
+    <h2>Where can we use host variables?</h2>
+    
+    Host variables can be used in places, where values are expected:
+    <ul>
+    <li>function parameters</li>
+    <li>values in section <i>Variables</i></li>
+    <li>script function parameters, except scripts in test filters and target init 
+     sequence</li>
+    <li>pre-condition expressions</li>
+    <li>expressions in section <i>Expected</i></li>
+    <li>values for assignments in steps of sections <i>Stubs</i> and <i>Test points</i>
+    <li>stack usage limits</li>
+    <li>HIL values</li>
+    <li>Option values</li>
+    <li>names of files in analyzer section - document and export file
+    names</li>
+    <li>log expressions - test case and stubs/test-points logging</li>
+    <p>
+    
+    Host variables can <b>not</b> be used where identifiers and types are
+    expected.<br>
+    Coverage and profiler statistic values currently do not support 
+    host vars.<p>
+
+     <b>Note:</b> Sections <i>Pre-conditions, Options,</i> and
+                  scriptf function <i>Init Target</i> are executed <b>before</b>
+                  assignments in Variables section. If you want to use
+                  host variables in these sections, assign them in
+                  test case which executes before this test case!
+
+
+    <h2>Scope</h2>
+
+     Host variables set in one test case, are available to all derived test cases,
+     and test cases with the same parent and on the same hierarchy
+     level. For example, host vars defined in test case <i>test-16</i>
+     (selected on image below), are visible in all derived tests
+     (test-17, test-18, and test-19), and tests having the same parent
+     and following <i>test-16</i>: test-20, test-21, test-22, and test-23.
+
+
+    <p align='center'>
+    <img src="images/hostVarsScope.png"/>
+    </p>
+
+    
+    <h2>Character types</h2>
+
+    Character types are always evaluated as decimal value, unles other
+    format specifier is given.
+
+
+    <h2>Paths as script parameters</h2>
+    
+    If host variable contains '\' characters, for example file paths on Windows,
+    then use Python prefix 'r', when passing host variable as a paramter to 
+    script extension function, for example:
+    
+    <pre>
+    r'${_iyamlDir}'
+    </pre>
+
+    
+    <h2>Strings</h2>
+
+    To assign literal string to host variable we can use quotes:
+
+    <pre>
+    ${mode}        "Velocity"
+    </pre>
+
+    The value stored in ${mode} is <code>Velocity</code> - string
+    without quotes. To use it in assignment to string, we must add quotes, for
+    example:
+
+    <p align='center'>
+    <img width="90%" src="images/hostVarsStrings.png"/>
+    </p>
+
+    Otherwise the value is used as identifier name.
+    
+    
+    <h2>Complex types</h2>
+
+    Host variables always store values as strings, which means that
+    their usage is limited in case of complex types like structures
+    and arrays. For example, if we have structure:
+
+    <pre>
+    struct struct_t {
+        char m_c;
+        int m_i;
+        float m_f;
+        double m_d;
+        char m_ac[7];
+    };
+    </pre>
+
+    then value stored in host variable is the same as string printed
+    in winIDEA watch window:
+
+    <pre>
+    '(\\x00 (0x00),0x00000000,0.0,0.0,"")'
+    </pre>
+
+    This string can not be used in expressions, but it can be used for logging.
+
+    <h2 id="reserved">Reserved host variables</h2>
+    
+    Host variables, which names start with underscore character '_',
+    are reserved for internal testIDEA usage.
+
+    <h2>Predefined host variables</h2>
+
+    testIDEA automatically defines the following host variables:<p>
+
+    <b>${_rv}</b> - if function returns non-void type, this host variable
+    contains function return value. If it contains primitive
+    type (char, int, ...) it can be used in expressions.<p>
+
+    <b>${_env_<environment variable name>}</b> - all environment variables
+    are accessible with prefix <i>_env_</i>. These variables can be
+    used to pass paths for analyzer files, for example:
+
+    <p align='center'>
+    <img width="90%" src="images/hostVarsEnvAndAnalyzer.png"/>
+    </p>
+
+    <b>Context specific host variables</b><p>
+    There exist also additional context specific host variables, for
+    example for diagram output and analyzer file names. They
+    are proposed by content proposal and described in descriptions of
+    content proposals - select proposal (but do not close proposals
+    list) and wait for a second or two until description appears.
+
+    <!-- Output file in section <i>Diagrams</i>:
+    <ul>
+      <li><code>${_function}</code> - name of function under test</li> 
+      <li><code>${_function}</code> - id of current test case</li>
+      <li><code>${_diagramType}</code> - type of the diagram to be created</li>
+    </ul
+     -->
+    
+<p>      
+</body>
+</html>

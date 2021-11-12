@@ -1,0 +1,230 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <title>Stubs</title>
+  </head>
+
+  <body>
+    <h1>Stubs</h1>
+
+    When function under test calls some other function, which we don't
+    want to be called, we can specify a stub. <i>testIDEA</i> supports
+    two types of stubs - <i>normal stubs</i> and <i>user stubs</i>.
+    This section describes normal stubs, while user stubs are
+    described in the next section.<p>
+    When we define a normal stub, the stubbed function will
+    not be called, but target will be stopped and then output
+    parameters and return value will be set according to test
+    specification. 
+    
+    <br> When script extension function is specified, assignments
+    given in
+    <i>testIDEA</i> are executed <i>before</i> the script function is called.
+    <br>
+    The detailed description of test specification entries is given in
+    tool-tips.
+    <p>
+      
+      <h2>Return value assignment</h2>
+
+      Because of calling conventions compilers often
+    use the same register for input parameter and return value. Therefore
+    we should first assign values to parameters, and only then to
+    assign a return value in the <i>Assignments</i>
+    table. <i>testIDEA</i> will issue a warning if this is not the
+    case. If we assign values in Python scripts, the same rule
+    applies, but this time <i>testIDEA</i> can not detect such faults.
+    Example of assignemnt to return value named <code>stubRV</code> in test script:
+
+    <pre>
+        if self.testCtrl == None:
+            self.testCtrl = ic.CTestCaseController(self.connectionMgr,
+                                                   self._isys_testCaseHandle)
+        self.testCtrl.modify('stubRV', '999')
+    </pre>
+    <p>
+      
+      <h2>Using hardware breakpoints</h2>
+      
+    When the tested code is located in flash memory, setting of
+    software breakpoints may be very slow. One possible optimization
+    is setting of option <i>Hardware | CPU Options ... | Debugging |
+    Set/Clear SW BP before Run</i> in winIDEA. If set, all software
+    breakpoints are not written into flash until before the target is
+    started. Usually this means one flash write, instead of several.<p>
+
+    To make testing even faster, hardware breakpoints should be
+    used. Unfortunately the number of these breakpoints is limited, so
+    if there are more stubs and test points then there are HW
+    breakpoints available, we can not use them. However, if we know
+    the order in which stubs or test points will be hit, we can use
+    custom breakpoint activation with setting <i>Is custom act</i>
+    in sections stubs and test points. <b>If stub or test point has this
+    setting set to <i>Yes</i>, then testIDEA will not set
+    breakpoint for this stub or test point. Instead, we have to write
+    a script function, which removes existing breakpoints and sets next
+        ones depending on target state.</b><p>
+      For details about writing scripts please see also section
+      <a href='../../tasks/writingScriptFunctions.html'>Writing script
+        extensions</a>.<p>
+      
+      <i>Example</i><br>
+      Suppose we have only one HW breakpoint available, and want to test a
+      function with three stubs and two test-points:
+      
+    <pre>
+        <b>int testCustomStubActivation()</b>
+        {
+              <b>int</b> numItems = 7;
+              numItems += <b>stubbedFuncInt()</b>; 
+              numItems *= 2;                <i>// tp_tcsa_1</i>
+              <b>stubbedFuncIntPtr</b>(&numItems); 
+              numItems *= 2;                <i>// tp_tcsa_2</i>
+              numItems += (int)<b>stubbedFuncFloat</b>();
+
+              <b>return</b> numItems; 
+        }
+    </pre>
+
+    Stub for function <i>stubbedFuncInt()</i> should be activated by
+    testIDEA, then next stubs and test points will be activated by
+    script function <i>testCustomBPActivation()</i>
+
+    <p align="center">
+    <img width="90%" src="images/stubs-active.png"/>
+    </p>
+
+    <p align="center">
+    <img width="90%" src="images/stubs-custom-activation1.png"/>
+    </p>
+
+    <p align="center">
+    <img width="90%" src="images/stubs-custom-activation2.png"/>
+    </p>
+
+    Script parameters above are recommended - the first one is test
+    case specification needed to get stub or test point data, the next
+    one indicates to the script which stub or test point has been hit.
+    Instead of this we could write new script function for each stub,
+    or the script function could evaluate target variable to decide
+    which stub/test point to activate next.
+
+    <pre>
+    <b>def testCustomBPActivation</b>(<b>self</b>, testSpec, stubOrTpId):
+
+        print('testCustomBPActivation(), Test case ID: ', testSpec.getTestId(),
+              '  stubId:', stubOrTpId)
+
+        testCtrl = self.__getTestCaseCtrl()
+        testCase = ic.CTestCase(self.connectionMgr)
+        
+        <b>if</b> stubOrTpId == 'Int':
+            testCase.setEnableStub(testSpec, 'stubbedFuncInt', False)
+            testCase.setEnableTestPoint(testSpec, 'tp_tcsa_1', True)
+        <b>elif</b> stubOrTpId == 'tp_1':
+            testCase.setEnableTestPoint(testSpec, 'tp_tcsa_1', False)
+            testCase.setEnableStub(testSpec, 'stubbedFuncIntPtr', True)
+        <b>elif</b> stubOrTpId == 'IntPtr':
+            testCase.setEnableStub(testSpec, 'stubbedFuncIntPtr', False)
+            testCase.setEnableTestPoint(testSpec, 'tp_tcsa_2', True)
+        <b>elif</b> stubOrTpId == 'tp_2':
+            testCase.setEnableTestPoint(testSpec, 'tp_tcsa_2', False)
+            testCase.setEnableStub(testSpec, 'stubbedFuncFloat', True)
+        <b>elif</b> stubOrTpId == 'Float':
+            <i># in this case it is the last stub - it will be deleted by testIDEA</i>
+            <b>pass</b>
+        <b>else:</b>
+            raise Exception('Unknown stub or test-point Id: ' + stubOrTpId)
+            
+        <b>return None</b>
+    </pre>
+    
+
+    If we use stubs only (no test points), then instead of the second
+    script parameter we can get the currently hit stub name by the
+    following code snippet:
+
+    <pre>
+    <b>def testCustomBPActivation</b>(<b>self</b>, testSpec):
+
+        testCase = ic.CTestCase(self.connectionMgr)
+    
+        currentAddress = self.debug.getCPUStatus().getExecutionPoint()
+        addressCtrl = self.debug.getAddressController()
+        stubName = addressCtrl.getSymbolAtAddress(ic.IConnectDebug.sFunctions,
+                                                  0,
+                                                  currentAddress,
+                                                  ic.IConnectDebug.sScopeWide)
+        <b>if</b> stubName == 'readADC':
+            testCase.setEnableStub(testSpec, 'readADC', False)
+            testCase.setEnableStub(testSpec, 'writeADC', True)
+           ...
+    </pre>
+
+
+    
+    <b>Note:</b> One breakpoint is used by testIDEA for run control. For
+    example, on system with 4 hardware breakpoints, at most 3
+    stubs and test points may be active at one moment if hardware breakpoints
+    are used. See <i>Run | Configuration ...</i> dialog for selection
+    of breakpoint type.<p>
+
+      
+    <h3>Stub hit actions</h3>
+    Since stubbed functions do not have the same effect for each call
+    during normal run, it is also possible to specify actions for
+    each hit of the stub. We can specify the following:
+    <ul>
+      <li><b>Variables</b><br>
+           Assignments to return value, output parameters, and global variables.</li>
+      <li><b>Script params</b><br>
+           Parameters to script extension function.</li>
+      <li><b>Next step</b><br>
+           Index of the line with actions to be executed on next stub
+           hit. If not specified, actions in the next line are executed on next stub
+           hit. If the last line does not have this item specified,
+           it is used on all following stub hits.</li>
+    </ul>
+
+    <p align="center">
+    <img width="90%" src="images/stubs.png"/>
+    </p>
+
+    Indices of action lines are zero based and are shown in the leftmost
+    column in the stub steps table.
+
+    
+    <h4>Passing parameters to script function</h4>
+
+    If we want to pass parameter of stubbed function to extension
+    script function, then we have to define parameter name, and pass
+    its name as string. Example:
+
+    <p align="center">
+    <img width="50%" src="images/stubParams.png"/>
+    </p>
+
+    This way we can access also struct or array members in scripts and
+    work with pointers and references.
+
+    Script function example:
+
+    <pre>
+    def stubFunc1(self, param1):
+        if self.testCtrl == None:
+            self.testCtrl = ic.CTestCaseController(self.connectionMgr,
+                                                   self._isys_testCaseHandle)
+        print('idx =', self.testCtrl.evaluate(param1))
+    </pre>
+
+    <b>Note:</b> Availability of parameters of stubbed function at
+    time of stub breakpoint hit depends on compiler. Sometimes
+    function prolog must be executed for parameters to be stored at
+    locations as specified in debug information. You can check this in
+    winIDEA - step into function and see when parameter values are
+    available in watch window.
+    
+  </body>
+</html>

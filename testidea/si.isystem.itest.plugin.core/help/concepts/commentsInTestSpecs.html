@@ -1,0 +1,248 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <title>Comments in test cases</title>
+  </head>
+
+  <body>
+    <h1>Comments in test cases</h1>
+
+    The YAML test specification allows comments in test specifications, but
+    they are intended for human readers only, and are ignored by
+    parsers. To preserve comments in test specifications,
+    <i>testIDEA</i> has a modified parser, which saves comments.
+    
+    However, to be able to save comments back to YAML file to proper
+    locations, comments are attached to items in test
+    specifications. This also means, that there are additional rules
+    for writing comments, which extend the official YAML syntax. These
+    rules are not complex, but they are important when editing test
+    specifications in text editor. <i>testIDEA</i> takes care about
+    proper formatting automatically. If you are not editing test cases
+    in text editor, you can skip the next four sections (<i>End of line
+    comments</i>, ...) and continue
+    reading <a href="#commentInTI">Comments in testIDEA</a> below.
+      
+
+
+    <h2>End of line comments</h2>
+
+    <i>End of line comments</i> are written after YAML tokens on the same line.
+    These comments are attached to the last scalar on the same
+    line.<p>
+    Example:
+
+    <pre>
+        locals:     # comment for section 'locals'
+          x: int    # comment for type 'int'
+          y: MyType # comment for type 'MyType'
+    </pre>
+
+        
+    <h2>New line comments</h2>
+
+    <i>New line comments</i> are written before the token. There are no YAML token in
+    this line. These comments are attached to the first token on the
+    next line.<p>
+    Example:
+
+    <pre>
+        # comment for section 'locals'
+        locals:     
+          # comment for var x
+          x: int    
+          # comment for var y
+          y: MyType 
+    </pre>
+
+
+    <h2>Mixed comments</h2>
+
+    For mixed comment the same rules apply for end of line and new
+    line comments. <p>
+
+    Example:
+
+    <pre>
+        # comment for section 'locals'
+        locals:     # comment for section 'locals'
+          # comment for var x
+          x: int    # comment for type 'int'
+          # comment for var y
+          y: MyType # comment for type 'MyType'
+    </pre>
+
+
+    <h2>Ignored comments</h2>
+    
+    Comments in flow sequences are ignored. Use block format when
+    you want to comment items. <p>
+
+    Examples:
+    <p>
+
+    Comments will be preserved in this case
+    <pre>
+        tags:
+        - tagA,  # eol comment A
+        - tagB,  # eol comment B
+        - tagC   # eol comment C
+    </pre>
+
+    Flow style on the other hand, ignores comments and formatting:
+
+    <pre>
+    tags: [tagA,  # ignored comment A
+           tagB,  # ignored comment B
+           tagC   # ignored comment C
+          ] # ignored comment C
+    </pre>
+
+    When saved, the following is written to file:
+    <pre>
+    tags: [tagA, tagB, tagC]
+    </pre>
+
+
+    Comments in the last line of test specification have no scalar
+    to be attached to, so they are ignored and therefore not written to
+    output when the test specification is saved.
+
+    
+    <h2><a name="commentInTI">Comments in testIDEA</a></h2>
+
+    <i>testIDEA</i> supports viewing and editing of comments in test
+    specifications.  Comments are shown in UI as tooltips of input
+    field decorations, and can also be edited by clicking these
+    decorations.<p>
+
+    When we move mouse cursor to decoration icon, the comment is
+    displayed in tooltip as shown in the image.
+       <p align="center">
+         <img width="90%" src="images/commentAsTooltip.png"/>
+       </p>
+      </li>
+
+    If there is no comment, nothing happens.<p>
+    The comment edit dialog opens, when we click active decoration icon:
+
+       <p align="center">
+         <img src="images/commentEditDialog.png"/>
+       </p>
+
+    
+    To visually present status of comment for each test specification
+    item, decoration icons can have one of four states, as shown in
+    the image below:
+
+       <p align="center">
+         <img width="90%" src="images/comments.png"/>
+       </p>
+
+    Description of comment states:
+       
+    <ul>
+      <li><i>non-editable empty comment</i> - fields, which are empty
+        are not written to test specification, so there can be no
+        comment attached to them. Until we enter some value into the
+        input field, comments are disabled.</li>
+        
+      <li><i>existing editable comment</i> - comment is already
+      specified, we can see it as decoration tooltip and edit it by
+      clicking the decoration icon.
+        
+      <li><i>existing non-editable comment</i> - comment is 
+      specified, we can see it as decoration tooltip but we can not
+      edit it, because it is specified in base test specification.
+        To edit it, we have to select the base test specification,
+      where it is defined.
+      </li>
+        
+      <li><i>empty, but editable comment</i> - comment is not
+        specified, but we can edit it by clicking the decoration
+        icon.
+
+      </li>
+      </ul>
+
+    <p>If an item with comment is deleted from test specification, then
+		the comment is also deleted. It is not possible to preserve comments
+		without data. For example, if we specify test ID and its comment, and
+		then decide to delete the id, the comment is also deleted.
+
+    <p>Most edit fields contain data for simple YAML tags. These
+    fields have only one decoration icon on the right. Fields, which
+    refer to structured items, for example the 'Function' field, have
+    additional decoration icon on the left. If we are editing test
+    specifications in <i>testIDEA</i> only, then it does not matter,
+    which decoration we use. If location of the comment in YAML test
+    specification is important, we can enter the comment, then copy the test
+    case to the clipboard and paste it a text editor. There we can see the
+    exact location of the comment.
+      
+      
+		
+    <h2>Comments in tables</h2>
+
+	To set a comment for item in a table, first select the line in the table,
+	then click the decoration icon on the left side of the table. If a
+	table item has a comment assigned, it is marked with blue dot. To see a
+	comment, select a line and move cursor above the comment decoration
+	icon on the left side, as shown in the image below.
+	
+	   <p align = "center">
+         <img width="90%" src="images/commentsInTables.png"/>
+       </p>
+
+    Decoration icons on the left side refer to the <i>locals:</i>
+    section in a test case. The top icon contains comment for
+    the <i>locals</i> tag itself. The bottom icon contains comment for
+    the selected variable declaration.<p>
+           
+    Decoration icons on the right side refer to the <i>init:</i>
+    section in a test case. The top icon contains comment for
+    the <i>init</i> tag itself. The bottom icon contains comment for
+    the selected variable initialization.<p>
+           
+<p>
+	<h2>Limitations of <i>testIDEA</i></h2>
+    
+    When tags or function parameters are edited in <i>testIDEA</i>,
+    comments are not preserved for list items. This means that in
+    these two cases it is possible to write comments in 
+    text editor, but they are not visible or
+    editable in <i>testIDEA</i>. If you modify these two fields in
+    <i>testIDEA</i>, comments for list items are lost. <p>Example:<p>
+
+    The following was written in text editor:
+    <pre>
+    tags:      # part of regression tests
+    - moduleA  # communication functions
+    - moduleB  # math functions
+    func:
+    - f     # test for midnight
+    - - 24  # hours
+      - 00  # minutes
+    </pre>
+
+    This was later modified in testIDEA. The following was saved:
+    <pre>
+    tags:      # part of regression tests
+    - moduleA  
+    - moduleB  
+    func:
+    - f     # test for midnight
+    - - 24  
+      - 00  
+    </pre>
+
+    Note, that other comments than ones for tag items and parameters
+    were preserved.
+
+    <p>
+    All other items in test specification preserve comments.
+<p>      
+</body>
+</html>

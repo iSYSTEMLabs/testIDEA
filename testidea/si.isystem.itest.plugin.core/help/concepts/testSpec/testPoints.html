@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>Test points</title>
+</head>
+
+<body>
+    <h1>Test points</h1>
+
+    Test points are implemented as breakpoints at specific line in
+    source code. They enable us to pause test execution at any location in
+    the tested code, and perform the following actions:
+    <ol>
+    <li> Verify values of variables.<br>
+      This feature can be used to test internal state during
+      function execution.</li>
+    <li>Assign values to variables.<br>
+      This feature can be used to test behavior under conditions, which
+      can not be triggered otherwise, for example to implement fault
+      injection.
+      </li>
+    <li>Log values of variables.<br>
+      These values are stored to reports if we need them for reference anytime later.
+    </li>
+    <li>Run script function<br>
+      Scripts can be used when even more flexibility than described
+      here is required.
+      </li>
+
+    <h2>Location</h2>
+
+    Since test point can be located at any line which generates
+    executable code, we must have a way to tell <i>testIDEA</i> where to set
+    it. File name and line number are often not a good idea, because
+    line numbers change as we edit the code. For this reason there
+    exist several options to define test point location in source
+    code. Two recommended ones are described below:<p/>
+    <ul>
+        <li>If we have access to source code and can modify it, the
+        recommended way is to put a special comment in the line with test
+        point. This comment should contain string <code>TID:
+        &lt;testPointID&gt;</code>, for example:<br> <code>i = 10;   // TID:
+        myTestPoint</code><br> If single line C++ comments can not be
+        used, then the following also works:<p><code>i = 10;   /* // TID:
+        myTestPoint */</code><p>
+        The <code>Source code location</code> dialog
+        should then look like shown below:
+          <p align="center"><img width="90%" src="images/testPointSourceLocationDlg.png"/></p>
+        </li>
+        <p/>
+        <li>
+        If we do not have access to source code or can not modify it, then
+        any string in the line with test point can be used, just make sure
+        it is unique in the given line range.
+        </li>
+    </ul>
+    <p/>
+
+    <b>Note:</b> Not all source code line generate code, and not all
+    declared local variables exist, especially when we use optimizing
+    compiler. Test points can be set only on lines which generate
+    code and can get/set only values of variables which exist. In
+    <i>winIDEA</i> all source code lines which generate code have
+    rectangles on the left edge:
+      <p align="center"><img src="images/testPointObjCodeMarkers.png"/></p>
+    <p/>
+
+    <h3>Test point hit actions</h3>
+    Since one test point can be hit multiple times during test
+    execution, we have possibility to specify different 
+    actions for each hit. We can specify the following:
+    <ul>
+      <li><b>Variables</b><br>
+           Assignments to return value, output parameters, and global variables.</li>
+      <li><b>Script params</b><br>
+           Parameters to script extension function.</li>
+      <li><b>Next step</b><br>
+           Index of the line with actions to be executed on next test point
+           hit. If not specified, actions in the next line are
+           executed on next test point
+           hit. If the last line does not have this item specified,
+           it is used on all following test point hits.</li>
+    </ul>
+
+    <p align="center"><img src="images/testPointSteps.png"/></p>
+
+    Indices of action lines are zero based and are shown in the leftmost
+    column in the table.
+    
+
+    <h2>Using hardware breakpoints</h2>
+
+    See section <i>Stubs</i> in this manual for the description of custom
+    setting of hardware breakpoints.
+
+</body>
+</html>

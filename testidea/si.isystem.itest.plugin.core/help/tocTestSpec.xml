@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- All toc*.xml files must be listed also in plugin.xml,
+     extension 'org.eclipse.help.toc' -->
+
+<toc label="Test Case Editor" link_to="help/tocconcepts.xml#testSpec">
+   <topic label="Overview" href="help/concepts/testSpec/testSpec.html"/>
+   <topic label="Meta"  href="help/concepts/testSpec/meta.html"/>
+   <topic label="Function"  href="help/concepts/testSpec/function.html"/>
+   <topic label="System init and Execute test"  href="help/concepts/testSpec/stopConditions.html"/>
+   <topic label="Persistent variables"  href="help/concepts/testSpec/persistentVariables.html"/>
+   <topic label="Variables"  href="help/concepts/testSpec/variables.html"/>
+   <topic label="Pre-conditions"  href="help/concepts/testSpec/preConditions.html"/>
+   <topic label="Expected results and Stack usage"  href="help/concepts/testSpec/expected.html"/>
+   <topic label="Stubs"  href="help/concepts/testSpec/stubs.html"/>
+   <topic label="User Stubs"  href="help/concepts/testSpec/userStubs.html"/>
+   <topic label="Test points"  href="help/concepts/testSpec/testPoints.html"/>
+
+   <topic label="Analyzer">
+      <anchor id="analyzer"/>
+   </topic>
+
+   <topic label="HIL"  href="help/concepts/testSpec/hil.html"/>
+   <topic label="Scripts"  href="help/concepts/testSpec/scripts.html"/>
+   <topic label="Options"  href="help/concepts/testSpec/options.html"/>
+   <topic label="Dry run"  href="help/concepts/testSpec/dryRun.html"/>
+   <topic label="Diagrams"  href="help/concepts/testSpec/diagrams.html"/>
+</toc>

@@ -1,0 +1,18 @@
+digraph {
+  node[fontsize=10];
+  graph [rank=max];
+  edge[fontsize=10];
+n_134220048n_134220122 [shape=ellipse, style="filled,dashed", fillcolor="paleturquoise", label=<<font color="red">0x8000910</font><br/>Factorial<br align="left"/>>];
+n_134220122->n_134220048n_134220122;
+CPU_Recursion [shape=ellipse, style="filled", fillcolor="aquamarine", label=<<font color="red">0x800093c</font><br/>CPU_Recursion<br align="left"/>>];
+CPU_Recursion->n_134220092;
+n_134220092 [shape=box, style="filled", fillcolor="cornsilk", label=<<font color="green">{</font><br align="left"/>push {r7,r14}<br align="left"/>sub sp,sp,#0008<br align="left"/>add r7,sp,#0000<br align="left"/><font color="green">    g_enumA = TE_INIT;</font><br align="left"/>ldr r3,[pc,#003C]<br align="left"/>mov r2,#00<br align="left"/>strb r2,[r3,#00]<br align="left"/><font color="green">    int x = 0;</font><br align="left"/>mov r3,#00<br align="left"/>str r3,[r7,#04]<br align="left"/><font color="green">    ++x;</font><br align="left"/>ldr r3,[r7,#04]<br align="left"/>add r3,#01<br align="left"/>str r3,[r7,#04]<br align="left"/><font color="green">    g_enumA = TE_RUNNING;</font><br align="left"/>ldr r3,[pc,#002C]<br align="left"/>mov r2,#01<br align="left"/>strb r2,[r3,#00]<br align="left"/><font color="green">    x=Factorial(5); // x must be 120</font><br align="left"/>mov r0,#05<br align="left"/>>];
+n_134220092->n_134220122;
+n_134220122 [shape=octagon, style="filled", fillcolor="moccasin", label=<bl Factorial<br align="left"/>>];
+n_134220122->n_134220126;
+n_134220126 [shape=box, style="filled", fillcolor="cornsilk", label=<mov r3,r0<br align="left"/>str r3,[r7,#04]<br align="left"/><font color="green">    ++x;</font><br align="left"/>ldr r3,[r7,#04]<br align="left"/>add r3,#01<br align="left"/>str r3,[r7,#04]<br align="left"/><font color="green">    ++iCounter;</font><br align="left"/>ldr r3,[pc,#0018]<br align="left"/>ldr r3,[r3,#00]<br align="left"/>add r3,#01<br align="left"/>ldr r2,[pc,#0014]<br align="left"/>str r3,[r2,#00]<br align="left"/><font color="green">    g_enumA = TE_FINISHED;</font><br align="left"/>ldr r3,[pc,#000C]<br align="left"/>mov r2,#04<br align="left"/>strb r2,[r3,#00]<br align="left"/><font color="green">}</font><br align="left"/>add r7,#08<br align="left"/>mov sp,r7<br align="left"/>>];
+n_134220126->n_134220156;
+n_134220156 [shape=hexagon, style="filled", fillcolor="thistle", label=<pop {r7,r15}<br align="left"/>>];
+{rank=same; n_134220122; n_134220048n_134220122; }
+}
+

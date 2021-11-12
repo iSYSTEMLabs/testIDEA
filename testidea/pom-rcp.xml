@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>si.isystem</groupId>
+  <artifactId>testidea</artifactId>
+  <version>${isys.version}</version>
+  <packaging>pom</packaging>
+ 
+  <properties>
+    <tycho.version>2.0.0</tycho.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+
+    <kepler-repo.url>http://download.eclipse.org/releases/kepler</kepler-repo.url>
+    <neon-repo.url>http://download.eclipse.org/releases/neon</neon-repo.url>
+    <repo2020-06.url>http://download.eclipse.org/releases/2020-06</repo2020-06.url>
+  </properties>
+
+  
+  <modules>
+    <module>si.isystem.itest.feature.rcp</module>
+    <module>si.isystem.itest.product</module>
+  </modules>
+
+  
+  <repositories>
+
+    <repository>
+      <id>neon</id>
+      <url>${repo2020-06.url}</url>
+      <layout>p2</layout>
+    </repository>
+
+  </repositories>
+
+  <profiles>
+      <profile>
+        <id>winConfig</id>
+        <activation>
+          <os>
+            <family>Windows</family>
+          </os>
+        </activation>
+        <properties>
+          <isys.env.os>win32</isys.env.os>
+          <isys.env.ws>win32</isys.env.ws>
+        </properties>
+      </profile>
+      <profile>
+        <id>linuxConfig</id>
+        <activation>
+          <os>
+            <family>Linux</family>
+          </os>
+        </activation>
+        <properties>
+          <isys.env.os>linux</isys.env.os>
+          <isys.env.ws>gtk</isys.env.ws>
+        </properties>
+      </profile>
+  </profiles>  
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-maven-plugin</artifactId>
+        <version>${tycho.version}</version>
+        <extensions>true</extensions>
+        <!-- configuration>
+          <includeAllDependencies>true</includeAllDependencies>
+        </configuration -->
+      </plugin>
+
+      <plugin>
+        
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>target-platform-configuration</artifactId>
+        <version>${tycho.version}</version>
+
+        <configuration>
+          <pomDependencies>consider</pomDependencies>
+          
+          <environments>
+            
+            <!-- environment>
+              <os>linux</os>
+              <ws>gtk</ws>
+              <arch>x86_64</arch>
+            </environment -->
+            
+            <environment>
+              <os>${isys.env.os}</os>
+              <ws>${isys.env.ws}</ws>
+              <arch>x86_64</arch>
+            </environment>
+
+          </environments>
+
+          <!-- .ds plugin is no longer present in Eclipse 2020-06. -->
+          <dependency-resolution>
+            <extraRequirements>
+              <requirement>
+                <type>eclipse-plugin</type>
+                <id>org.eclipse.equinox.ds</id>
+                <versionRange>1.0.0</versionRange>
+              </requirement>
+            </extraRequirements>
+          </dependency-resolution>
+        </configuration>
+        
+      </plugin>
+    </plugins>
+  </build>
+</project>

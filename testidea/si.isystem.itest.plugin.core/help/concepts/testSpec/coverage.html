@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <title>Coverage</title>
+  </head>
+
+  <body>
+    <h1>Coverage</h1>
+
+    Coverage section can specify coverage statistics requirements, and
+    export options.
+
+    <br> Coverage also supports accumulation of results from several
+    tests, if we select open mode <i>Append</i> in <i>Analyzer</i>
+    parent setion. To use this feature, we usually create a base test
+    case, which opens the document in <i>Write</i> mode, so that any
+    previous coverage data is cleared. Then derived test cases are
+    created, which start coverage in <i>Append</i> mode.
+
+    <p align="center">
+    <img width="90%" src="images/coverage.png"/>
+    </p>
+
+    Another option for accumulation of coverage recordings is merging
+    of analyzer files. If <i>Merge scope</i> is set to something else
+    than <i>None</i>, then analyzer files from other already executed
+    test cases will be merged. To see which test cases are used for
+    merging, click <i>Edit</i> button for merge filter.The filter can
+    be used to futher limit the set of test cases.<p>
+    
+    
+    Expected minimum coverage can be specified in
+    section <i>Statistics<i>. If coverage is lower than specified,
+    test fails.
+    
+    <p align="center">
+    <img width="90%" src="images/coverageStat.png"/>
+    </p>
+    
+  </body>
+</html>

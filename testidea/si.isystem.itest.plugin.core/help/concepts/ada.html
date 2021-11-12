@@ -1,0 +1,124 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <title>ADA testing</title>
+  </head>
+
+  <body>
+    <h1>ADA testing</h1>
+
+    ADA applications can be tested in testIDEA, but ADA syntax is not
+    supported. All testIDEA features are designed to work with C
+    syntax. In order to correctly call ADA functions from testIDEA
+    some basic C programming knowledge is required.
+
+
+    <h1>ADA procedures</h1>
+
+    ADA procedures are equivalent to C functions without return
+    value, for example:<p>
+    
+      ADA procedure:
+
+      <pre>
+        procedure testFunc2(iVar : in INTEGER);
+      </pre>
+      
+      is equivalent to C function:
+
+      <pre>
+        void testFunc2(int iVar);
+      </pre>
+
+    To test this function in testIDEA you don't have to know C
+    conversion because it is automatically displayed below the
+    selected function, as shown in the image below (if this is not the
+    case, click the <i>Refresh</i> button):
+    
+      <p align="center">
+        <img src="images/adaFuncDecl.png"/>
+      </p>
+
+    Please note that the name of the function is
+    not <code>testFunc2()</code> but <code>adaitest_testfunc2()</code>
+    where <code>adaitest</code> is the name of the package
+    where <code>testFunc2()</code> is located. Function and variable
+    names may be changed (upper to lower case) depending on the
+    compiler that you are using, and it is important to use the names
+    as specified by the compiler.
+
+
+    <h1>Out parameters</h1>
+      
+    If procedure uses <i>out</i> parameter, than this parameter is
+    returned as a return value specified in
+    field <code>Ret. val.</code> in testIDEA. For example, ADA
+    procedure:
+
+    <pre>
+      procedure testFunc3(cVar : in CHARACTER; iVar : out INTEGER);
+    </pre>
+    
+    is equivalent to C function:
+
+    <pre>
+      int testFunc3(char cVar, int iVar)
+    </pre>
+
+    Note that parameter <code>ivar</code> will be passed into function
+    as parameter and returned as return value stored in testIDEA
+    variable <code>rv</code>.
+
+      <p align="center">
+        <img src="images/adaOutValue.png"/>
+      </p>
+
+      <p align="center">
+        <img src="images/adaExpected.png"/>
+      </p>
+
+    If procedure uses more than one output parameter, than all out
+    parameters are packed into a structure and returned as return
+    value. For example, ADA procedure:
+
+      <pre>
+        procedure testFunc5(cVar : in CHARACTER; iVarOut1 : out INTEGER; iVarOut2 : out INTEGER);
+      </pre>
+
+    has two out parameters.
+
+
+    <p align="center">
+        <img src="images/adaMultiOutParams.png"/>
+    </p>
+
+    To correctly evaluate out parameters <code>ivarout1</code>
+    and <code>ivarout2</code> you have to evaluate them as members
+    of a structure, which is created by compiler:
+    
+      <p align="center">
+        <img src="images/adaMultiOutParamsExpected.png"/>
+      </p>
+
+    In this case compiler generated a type RETURN. To see how this
+    data type is composed, go to winIDEA symbols view:
+
+      <p align="center">
+        <img src="images/adaMultiOutParamsStruct.png"/>
+      </p>
+
+      
+    <h1>Other types</h1>
+
+    The following rules also apply:
+    <ul>
+      <li>ADA record variables are treated as C structures.</li> 
+      <li>ADA functions are treated as C functions.</li> 
+      <li>ADA access variables are treated as pointers.</li> 
+    </ul>
+    
+    AdaCore provides more detailed information on this
+    <a href='http://docs.adacore.com/gnat_rm-docs/html/gnat_rm/gnat_rm/implementation_advice.html#rm-b-3-63-71-interfacing-with-c'>
+    topic</a>.

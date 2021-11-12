@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Automatic-Module-Name: de.kupzog.ktable
+Bundle-ManifestVersion: 2
+Bundle-Name: KTable
+Bundle-SymbolicName: de.kupzog.ktable
+Bundle-Version: 9.12.297
+Bundle-Vendor: ktable.sourceforge.net
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ui,
+ org.eclipse.swt
+Export-Package: de.kupzog.ktable,
+ de.kupzog.ktable.editors,
+ de.kupzog.ktable.renderers,
+ icons;x-internal:=true

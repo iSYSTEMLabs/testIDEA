@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>si.isystem</groupId>
+  <artifactId>testidea</artifactId>
+  <version>${isys.version}</version>
+  <packaging>pom</packaging>
+  <name>testIDEA RCP</name>
+
+  <properties>
+    <tycho.version>2.0.0</tycho.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <certificate.dir>/Certificates</certificate.dir>
+    <certificate.file>CurrentISystemCodeSigning.pfx</certificate.file>
+
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+
+    <kepler-repo.url>http://download.eclipse.org/releases/kepler</kepler-repo.url>
+    <neon-repo.url>http://download.eclipse.org/releases/neon</neon-repo.url>
+    <repo2020-06.url>http://download.eclipse.org/releases/2020-06</repo2020-06.url>
+  </properties>
+
+  
+  <modules>
+    <module>si.isystem.itest.feature.eclipse</module>
+    <module>si.isystem.itest.update-site</module>
+  </modules>
+
+  
+  <repositories>
+
+    <repository>
+      <id>neon</id>
+      <url>${repo2020-06.url}</url>
+      <layout>p2</layout>
+    </repository>
+
+  </repositories>
+
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-maven-plugin</artifactId>
+        <version>${tycho.version}</version>
+        <extensions>true</extensions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>target-platform-configuration</artifactId>
+        <version>${tycho.version}</version>
+        <configuration>
+
+          <pomDependencies>consider</pomDependencies>
+          
+          <environments>
+            
+            <!-- environment>
+              <os>linux</os>
+              <ws>gtk</ws>
+              <arch>x86</arch>
+            </environment>
+          
+            <environment>
+              <os>linux</os>
+              <ws>gtk</ws>
+              <arch>x86_64</arch>
+            </environment>
+            
+            <environment>
+              <os>win32</os>
+              <ws>win32</ws>
+              <arch>x86_64</arch>
+            </environment -->
+            
+            <!-- plugin contains 32 and 64 bit dlls, the right one is
+                 loaded at runtime. -->
+            <environment>
+              <os>win32</os>
+              <ws>win32</ws>
+              <arch>x86</arch>
+            </environment>
+            
+          </environments>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>signing-profile</id>
+
+      <activation>
+        <property><name>isys.signingPassword</name></property>
+      </activation>
+      
+      
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jarsigner-plugin</artifactId>
+            <version>1.3.2</version>
+
+            <executions>
+              <execution>
+                <id>sign</id>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>verify</id>
+                <goals>
+                  <goal>verify</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <keystore>NONE</keystore>
+              <storetype>PKCS11</storetype>
+              <alias>te-07a6adfa-4492-4a14-a89f-765585df8f96</alias>
+              <storepass>${isys.signingPassword}</storepass>
+
+              <providerClass>sun.security.pkcs11.SunPKCS11</providerClass>
+              <providerArg>../../eToken.cfg</providerArg>
+              
+              <arguments>
+                <argument>-digestalg</argument><argument>SHA1</argument>
+                <argument>-sigalg</argument><argument>SHA1withRSA</argument>
+              </arguments>
+              <tasks>
+                <!-- does not print during execution, but run
+                       mvn help:effective-pom -Disys.signingPassword='!alsismotan16' -Disys.version=9.12.289-SNAPSHOT
+                     to see value of this property. -->
+                <echo> ******************  ${project.build.directory}</echo>
+              </tasks>
+            </configuration>
+          </plugin>
+          
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

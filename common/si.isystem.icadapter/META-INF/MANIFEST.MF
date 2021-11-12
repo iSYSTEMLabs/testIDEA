@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Automatic-Module-Name: si.isystem.icadapter
+Bundle-ManifestVersion: 2
+Bundle-Name: iSYSTEM Connect Facade
+Bundle-Vendor: iSYSTEM Labs d.o.o.
+Bundle-SymbolicName: si.isystem.icadapter
+Bundle-Version: 9.12.297
+Bundle-Activator: si.isystem.icadapter.IConnectAdapterActivator
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ClassPath: .,
+ lib/IConnectJNI.jar
+Bundle-NativeCode: lib/libiconnectJava.so; lib/libyaml-0.so; 
+ osname=Linux; processor=x86-64, *
+Require-Bundle: org.eclipse.core.runtime
+Export-Package: si.isystem.connect,
+ si.isystem.connect.adapters,
+ si.isystem.connect.data,
+ si.isystem.connect.utils,
+ si.isystem.icadapter;x-internal:=true

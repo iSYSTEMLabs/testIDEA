@@ -1,0 +1,171 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>System tests</title>
+</head>
+
+<body>
+    <h1>System tests</h1>
+
+    In contrast to unit tests, which test behavior of a function,
+    <i>system tests</i> verify behavior of complete system or part of the
+    system which is greater than a single function.
+    <p>
+
+    The main difference to unit tests are target initialization and
+    test execution. While unit tests define test start as function entry, 
+    and test end at function exit, <i>system tests</i>
+    have no such clear definitions of test start and stop, so we have
+    to define them explicitly either in <i>testIDEA</i> or script.<p>
+      
+    There are three main approaches recommended for system tests:
+    <ul>
+      <li><b>Scripts only</b> (using <i>isystem.connect</i>
+          SDK), <i>testIDEA</i> is not used. This approach can be used
+          for complex system tests, where <i>testIDEA</i>
+          functionality does not match test requirements. This
+          approach is the most flexible one, but we have to implement
+          everything in script, including reporting.</li>
+      
+      <li><b>Mixed</b> <i>testIDEA</i> and script extensions. Tests are run from
+          <i>testIDEA</i>, but most functionality is implemented in
+          script. <i>testIDEA</i> is used for test organization and
+          reporting, while scripts provide
+          flexibility. Section <i>Execute test</i> should be empty,
+          target should be run and stopped by script function <a href='testSpec/scripts.html'><i>Init test</i></a>
+          specified in section <i>Scripts</i>. <i>testIDEA</i> can be
+          used to:
+          <ul>
+                <li>Set options defined in section <i>Options</i>.</li>
+                <li>Evaluate pre-conditions.</li>
+                <li>Create persistent vars.</li>
+                <li>Create user stubs. Normal stubs and test points
+                are <i>not</i> used in this configuration.</li>
+                <li>Configure analyzer (trace, coverage, profiler).</li>
+                <li>Configure HIL.</li>
+                <li><b>At this point script <a href='testSpec/scripts.html'><i>Init Test</i></a> is called.</b></li>
+                <li>Get analyzer results(trace, coverage, profiler).</li>
+                <li>Evaluate expected expressions.</li>
+                <li>Save test report.</li>
+          </ul>
+      </li>
+        
+      <li><b><i>testIDEA</i> system tests</b>. This approach can be used for simple
+          system tests, where <i>testIDEA</i> functionality for initialization and
+          execution of tests can be used. Section <i>Execute test</i> must
+          be defined. In this configuration <i>testIDEA</i> also
+          provides handling of stubs and test points.<br>
+        
+          To start test at a specific point, we define
+          section <a href="testSpec/stopConditions.html"><i>System
+          init</i></a>, and to execute the test we define section
+          <a href="testSpec/stopConditions.html"><i>Execute test</i></a>.
+      </li>
+    </ul>
+
+      
+    Test scope can be specified in section <i>Meta</i>.
+
+
+    <p align="center"><img width="90%" src="images/sysTestMetaSection.png"/></p>
+
+    <p>
+
+    Example of minimalistic script extension function:
+
+    <pre>
+    <b>def</b> minimalSystemTest(<b>self</b>):
+
+        <b>self</b>.testCtrl = <b>self</b>.__getTestCaseCtrl()
+        <b>self</b>.testCtrl.run()  <i># Run the target.</i>
+
+        time.sleep(2)  <i># Test specific stuff.</i>
+
+        <b>self</b>.debug.stop()  <i># Stop the target</i>
+
+        <b>return</b> None  <i># None marks success</i>
+    </pre>
+    Example of more complex script extension function:
+    <pre>
+    
+    <b>def</b> systemTestRun(<b>self</b>):
+        <b>self</b>.testCtrl = <b>self</b>.__getTestCaseCtrl()
+
+        <i># 1. Initializa target for system test, for example set SFRs,
+        #    set breakpoint where the test should stop.</i>
+        <b>self</b>.testCtrl.modify('isDebugTest', '1')
+      
+        <i># 2. Use testCtrl to run target.</i>
+        <b>self</b>.testCtrl.run()
+
+        <i># 3. Do test specific stuff, for example wait for stop condition</i>
+        <b>while True:</b>
+            val = <b>self</b>.debug.evaluate(ic.IConnectDebug.fRealTime, 'iCounter')
+            py_iCounter = val.getInt()
+            print('iCounter =', py_iCounter) # print for debugging
+            if py_iCounter > 100:
+                break
+
+        <i># 4. Stop the target explicitly</i>
+        <b>self</b>.debug.stop()
+
+        <i># 5. Make value available in the report.</i>
+        <b>self</b>._isys_initFuncInfo = 'iCounter = ' + str(py_iCounter)
+    
+        <i># 6. Verify results</i>
+        val = <b>self</b>.debug.evaluate(ic.IConnectDebug.fRealTime, 'g_mode')
+        py_g_mode = val.getInt()
+        <b>if</b> py_g_mode > 200:
+            <b>return</b> 'Test failed! g_mode = ' + str(py_g_mode)
+
+        <b>return</b> None  # None marks success
+    </pre>
+
+
+      <!-- 
+    How <i>testIDEA</i> executes system tests
+
+    System test execution is divided in the following steps:
+    <ol>
+      <li>Script <i>Init Target</i> is called.</li>
+      <li>Run until stop point defined in section <i>System init</i>.</li>
+      <li>Set options defined in section <i>Options</i>.</li>
+      <li>Evaluate pre-conditions.</li>
+      <li>Init stack usage measurement.</li>
+      <li>Create persistent vars.</li>
+      <li>Create stubs.</li>
+      <li>Create user stubs</li>
+      <li>Create test points</li>
+      <li>Configure analyzer (trace, coverage, profiler)</li>
+      <li>Configure HIL</li>
+      <li><b>Script <i>Init Function</i> is called.</b></li>
+      <li>Configure stop condition</li>
+      <li>Run target</li>
+      <li>Wait for stop condition, handle stubs and test points.</li>
+      <li>Script <i>End Function</i> is called.</li>
+      <li>Get stack usage</li>
+      <li>Get analyzer results(trace, coverage, profiler)</li>
+      <li>Evaluate expected expressions</li>
+      <li>Script <i>Restore Target</i> is called.</li>
+    </ol>    
+
+    Each step is executed only if data is available. For example, if
+    script function name is empty, the script function is not
+    called. The same is true for <i>System init</i> and <i>Execute test</i>
+    sections.
+
+    If Stop condition is empty, then <i>testIDEA</i> does not:
+    - measure stack usage
+    - start the target
+    - handle stubs and test points. User stubs are active.
+
+    It is responsibility of script <i>Init test</i> to start and stop
+    the target. If target is not started by script, test terminates
+    with error.
+    -->
+</body>
+</html>
+
+        

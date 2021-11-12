@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <title>XML Stylesheet Templates</title>
+  </head>
+
+  <body>
+    <h1>XML Stylesheet Templates</h1>
+
+    XML files in their natural format are not very readable, because
+    tags and delimiters hide the real data. There are also no colors
+    to emphasize important data, font is the same for complete file,
+    ...<br/>
+
+    Since conversion of XML to something more human readable is a
+    common task, a special standard is defined by W3C, called <a
+    href="http://www.w3.org/TR/xslt">XSL Transformations</a>. These
+    transformations are described in XML files, and define how to
+    convert XML file to something else, for example XHTML.
+    <p/>
+
+    XSLTs are used by <i>iSYSTEM testIDEA</i> to display test
+    reports, which are stored in XML format, in web browser. You can
+    use built-in XSLTs, or write your own.
+    <p/>
+
+    When built-in template is used, it is automatically copied to the
+    same folder as XML test report. 
+    
+    <h3>CSS</h3>
+
+    Sometimes we want to show test report in the same form, but with
+    other colors. For example, printing on black-and-white printer may
+    require different colors than viewing on a color monitor. To avoid
+    creation of new XSLT file for each color set, the built-in XSLTs
+    use external <a href
+    ="http://en.wikipedia.org/wiki/Cascading_Style_Sheets">CSS
+    (Cascading Style Sheets)</a> files. This is also configurable in dialog
+    for saving test reports.
+
+    <h3>Custom XSLT and CSS files</h3>
+
+    When we want to customize the test reports, we can take the
+    built-in XSLT and CSS file and modify them according to our
+    needs. 
+    
+    <h3>Embedding XSLT and CSS files</h3>
+    To get complete test report in one XML file, instead of in three files (XML 
+    for data, XSLT for transformation, CSS for colors and other HTML style properties),
+    it is possible to configure <i>testIDEA</i> to embed XSLT and CSS files into 
+    XML report file (<code>Test | Configure Test Report ...</code>). This creates larger file, and makes sense if there are not many 
+    report files. Otherwise, if XSLT and CSS are reused by several XML report
+    files, it is better to keep them as standalone files.
+    <p/>
+    <h4>Browser compatibility</h4>
+    Not all browsers may show standalone and embedded versions of report properly.
+    While Internet Explorer has problems with single file (XSLT and CSS embedded),
+    Chrome does not show report when XSLT is stored to separate file. Firefox
+    properly shows report in both cases.
+  </body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <title>Standalone application and Eclipse plug-in</title>
+  </head>
+
+  <body>
+    <h1>testIDEA as standalone application and Eclipse plug-in</h1>
+
+    testIDEA was originally designed as Eclipse plug-in, but it was
+    deployed as standalone application. Eclipse framework was used
+    under the hood, but without any other UI plug-in.<p>
+
+    To make it possible for Eclipse users to use one application for
+    development and testing, testIDEA has also been released as 
+    Eclipse plug-in. Menus have been adapted to co-exist with other
+    plug-ins, and launchers have been implemented to better integrate
+    testIDEA with existing Eclipse framework. testIDEA launcher provides
+    functionality of running several testIDEA files with single
+    action. This functionality is not available in standalone
+    testIDEA.<p>
+
+      <b>Recommendation</b><br>
+
+    Eclipse enables users to configure views and editors in many
+    different ways. However,
+    for most use cases it is recommended to use testIDEA functionality
+    in testIDEA perspective (<code>Window | Open Perspective | Other... |
+    testIDEA</code>). Although editing and running of iSYSTEM tests is possible also in
+    other perspectives, they originally do not show testIDEA's <i>Test Status</i> view,
+    which displays warnings and errors during editing, and test results
+    after test run. Not all testIDEA menus and tool-bar buttons are
+    visible in other perspectives.
+      
+    <h2>testIDEA as Eclipse plug-in</h2>
+
+    This section describes functionality specific for testIDEA when
+    used as Eclipse plug-in.<p>
+
+    <h3>testIDEA perspective</h3>
+
+    To get the familiar testIDEA layout of views, menus, and tool-bar,
+    testIDEA perspective should be opened with menu <code>Window |
+    Open Perspective | Other... | testIDEA</code>. If we change the
+    layout of this perspective, but would like to restore it to the
+    original settings, we can select menu command <code>iTools | Reset test
+    view</code>.<br>  testIDEA perspective is recommend for test editing and
+    running. While some test related actions are available also in other
+    perspectives, only this perspective provides all information and
+    commands related to iSYSTEM tests.
+
+    <h3>Creating new testIDEA file</h3>
+
+    To create new testIDEA file as part of Eclipse project, open
+    testIDEA perspective, and select menu command <code>File | New | Test
+    Specification file</code>. A wizard opens, where we can select project
+    and enter file name.
+
+    <h3>Project Explorer</h3>
+
+    Eclipse's view called <i>Project Explorer</i> enables management of
+    project resources, including testIDEA files.<br>
+
+    testIDEA files can be expanded to show all test cases. If <i>Link
+    with Editor</i> button in <i>Project Explorer's</i> tool-bar is pressed,
+    test cases selected in <i>Project Explorer</i> is also shown in editor,
+    if the file is opened in Eclipse editor.<br>
+
+    It is also possible to start tests with context menu. Right-click
+    testIDEA file (<i>*.iyaml</i>), and select <code>Run As</code> or <code>Debug As | testIDEA
+    launch</code>. If the file is opened in editor, it should be saved before
+    launching, so that results can be unambiguously shown in editor.
+
+    <h3>Export/Import</h3>
+
+    Standard Eclipse commands <code>File | Export</code>, and <code>File |
+    Import</code> open a wizard, which provides several export/import
+    formats. For testIDEA export/import we should
+    select <code>testIDEA | Test Cases</code> and
+    click <code>Next</code> button. The standard testIDEA
+    export/import dialog opens.<br>  Alternatively, <i>Outline
+    view</i> contains <code>Export</code> and <code>Import</code>
+    buttons in its tool-bar when testIDEA file is displayed there. These
+    buttons open testIDEA export/import dialogs directly.
+
+    <h3>Launch configurations</h3>
+
+    Eclipse launch configurations support execution of groups of
+    testIDEA iyaml files. This way we can run tests from several files
+    with a single action. These files do not need to be opened in
+    Eclipse editors. The first page contains list of files, which
+    contain tests to be run:
+
+    <p align="center">
+    <img width="90%" src="images/launchConfigurationsTestFiles.png"/>
+    </p>
+
+    The first column defines, how to initialize target before running
+    tests from the selected file - init sequence can be taken from the
+    file, it can be skipped, or init sequence specified in this launch
+    configuration (tab <i>Test init</i>) can be used.<p>
+
+    
+    The second page contains target init sequence for this launch
+    configuration. It is used, when Launch configuration is selected as <i>Test
+    Init Source</i> in the table above:
+
+    <p align="center">
+    <img width="90%" src="images/launchConfigurationsTestInit.png"/>
+    </p>
+
+    When tests are run with launch configurations, they are read from
+    file, not editor. It is recommended to save all editors before
+    running tests.<br>
+
+    If report configuration in selected files is empty, then blue
+    style-sheet is selected as default.<p>
+
+    <hr>
+    All other sections in this file apply to standalone and plug-in
+    version of testIDEA.<p>&nbsp;
+  </body>
+</html>

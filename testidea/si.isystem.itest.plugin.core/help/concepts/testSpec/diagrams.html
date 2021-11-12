@@ -1,0 +1,388 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <title>Diagrams</title>
+  </head>
+
+  <body>
+    <h1>Diagrams</h1>
+
+    This section contains configurations for diagrams, which can be
+    created based on information produced during test case execution,
+    or other sources. Term <i>diagram</i> in this text means all types
+    of graphical information, including graphs, charts, ...<p>
+
+      <b>Requirement:</b> For sequence diagrams module <i>seqdiag</i>
+      has to be installed in Python used by winIDEA. It is already
+      present in winIDEA's internal Python, so if you have selected
+      in winIDEA <i>Tools | Options | Script | Internal Python x.y</i>, then
+      there should be no problems. If you have selected one of the
+      other two options in this dialog to use your installation of
+      Python, then you have to install the module <i>seqdiag</i>
+      yourself. See <a href="https://pypi.python.org/pypi/seqdiag/">
+      https://pypi.python.org/pypi/seqdiag/</a> for installation.<p><br>
+      
+
+    <p align="center">
+        <img width="95%" src="images/diagrams.png"/>
+    </p>
+    
+    Columns in the diagram configuration table have the following
+    meaning:
+    <ul>
+      <li><code>isActive</code> - if checked, and complete section is
+        enabled with check-box <i>Is active</i>, the diagram will be
+        created during test execution. After test execution you can
+        always create a diagram with button <i>Create</i>, regardless
+        of this setting.
+      </li>
+
+      <li><code>diagramType</code> - this column contains one of
+      built-in diagram types or defines a custom diagram type. In the
+      later case the script name should be specified in the next
+        column.<br>
+
+        There exist two types of custom diagrams - the
+      normal <i>custom</i> type and type <i>custom-async</i>. As the
+      name already implies, the later type of scripts is executed
+      asynchronously, which means that testIDEA does not wait for
+      results. This type of diagrams can be used when the script
+      itself displays the diagram, and we prefer viewing it in new
+      windows. These diagrams can not be included in reports.
+
+      <li><code>script</code> - for custom diagrams this column
+      specifies name of Python script to be executed to draw a
+        diagram. It is ignored for built-in diagrams. 
+        
+      </li>
+
+      <li><code>params</code> - this column specifies script
+      parameters, if they are required. For built-in diagrams
+      this column should be empty.
+      </li>
+
+      <li><code>outFile</code> - this column specifies name of the
+      file, which will contain the diagram. It is mandatory, and may
+        contain host variables
+        <code>${_testId}</code>, <code>${_function}</code>,
+        and <code>${_diagramType}</code>. If file name is relative
+        (recommended),
+        diagrams are saved relative to test report directory. It is
+        highly recommended to specify test report file with command
+        <code>Test | Configure Test Report</code> before running
+        tests.
+        For built-in diagrams the value of '_diagramType' is the name of
+        built-in type, for custom diagrams, it is string 'custom'.
+        If two lines have the same output file name,
+        warning is written in Status view.    
+      </li>
+
+      <li><code>isAddToReport</code> - if checked, the link to diagram
+      file is included in test report, when saved. Diagrams of type
+      <i>custom-async</i> can not be added to test report. Diagram files
+        are part of test report, so they must not be deleted to be
+        shown in report.
+      </li>
+
+      <li><code>viewer</code> - for quick preview, diagrams are shown
+      in the bottom pane of the <i>Diagrams</i> test case section. For
+      better view, we can open them as documents, either as one
+      diagram per tab (<i>singlePage</i>) , or as one tab in
+      multi-page document (<i>multiPage</i>). <i>externalApp</i> opens
+      diagram image in an external application.
+      </li>
+
+      <li><code>dataFormat</code> - testIDEA can show diagrams saved
+      to bitmap file formats (<i>png</i> is recommended) and vector format (only
+      <i>svg</i> is supported). The recommended value for this column
+      is <i>byExtension</i> and specified extension <i>png</i>
+      or <i>svg</i> in output file. Both formats are supported by
+      matplotlib and graphwiz, and can be shown by web browsers in
+      test report. Other formats may not be shown in web browser.
+      </li>
+
+      <li><code>externalViewer</code> - if output format is not
+      supported by testIDEA, or for some other reason we want to see
+      a diagram in external application, we can specify its
+      name here. If <i>externalApp</i> is selected in column <i>viewer</i>,
+      then Button <i>Show</i> will open the output file
+      with this application. If <i>externalApp</i> is selected, but
+      this field is empty, then default system viewer for the given
+      output file extension will be used.
+      </li>
+      </ul>
+
+    Tips:
+    <ol>
+      <li>To generate diagram during test case execution, check-box
+        <i>Is active</i> and table column <i>isActive</i> must both be
+        checked. Button <i>Create</i> generates a diagram regardless
+        of these two settings.</li>
+
+
+      <li>If a diagram is produced by script extension or
+        stub/test-point script during test case execution, then add
+        new line to table, set diagram type to <i>custom</i>, leave
+        <i>script</i> column empty, and specify file name. </li>
+
+      <li>If one script produces more than one file, add new line to
+        table, set diagram type to <i>custom</i>, leave <i>script</i>
+        column empty, and specify file name. This way it is also
+        possible to show the same file in multiple viewers, for
+        example internal testIDEA viewer and external viewer.</li>
+
+      <li>
+        When opening diagrams in multi-page editor, text on tab on the
+        bottom of the page is taken from file name as text before
+        extension, and after the last '-', for example:
+        <code>test-0-myFunc-callGraph.png ==> callGraph</code>. To get
+        full file name as tab name, replace all '-' in file name with
+        some other character, for example underscore.</li>
+    </ol>    
+    
+    
+<h2>Built-in diagrams</h2>
+
+testIDEA contains the following types of built-in diagrams:
+    <p>
+    <b>Flow chart</b><br>
+      This chart is created from <b>static object code
+      analysis</b>. Test does not need to be run to get information
+      for this diagram, but the code has to be downloaded to the target.
+
+    <p>
+    <b>Call graph</b><br>
+    This diagram shows which function has called which function, and
+    how many times this call has been executed. It shows runtime
+    information, which is obtained from profiler recording. Profiler has to be
+    properly configured for this diagram (see button <i>Auto-configure
+    profiler</i>) and the test executed.
+
+    <p>
+    <b>Static call graph</b><br>
+    This diagram shows function call hierarchy. It shows static
+    information obtained from download file, so the test does not need
+    to be run to create this graph.<p>
+    Parameters:<br>
+    <code>-t</code> : By default functions called form the function under test are
+    shown. If we specify this parameter, then functions
+    which call function under test are shown. <br>
+    <code>-d &lt;n&gt;</code> : By default complete hierarchy is
+    shown. By specifying depth value, we can limit call depth shown. 
+    
+    <p>
+    <b>Sequence diagram</b><br>
+    This diagram shows UML sequence diagram - function calls in the
+    same sequence as they occurred.
+
+    <p>
+    <b>Flame graph</b><br>
+
+    This graph shows time spent in each call stack. The detailed
+    description is available at
+    <a href="http://www.brendangregg.com/FlameGraphs/cpuflamegraphs.html">CPU
+      Flame Graphs</a>, except that testIDEA shows execution time,
+      not execution count.<p>
+    Summary adapted for testIDEA flame graphs:<ul>
+    <li>Each box represents a function in the stack (a "stack frame").</li>
+    <li>The y-axis shows stack depth (number of frames on the
+      stack). The top box shows the running function. Boxes below show
+      functions, which called the function above them.</li>
+    <li>The x-axis <b>does not show the passing of time</b> from left to
+      right. The left to right ordering has no meaning (it's sorted
+      alphabetically).</li>
+    <li>The width of the box shows the total execution time for
+      sequence of stack frames at and above the box.</li>
+    <li>The same function may appear more than once in the graph, if
+        it is called from different functions.</li>
+    <li>Precision of execution times depends on On-Chip trace
+      module. Typically it is low for short functions.</li>
+    </ul>
+
+    <i>Example:</i><br>
+    Suppose we have the following code:
+    <pre>
+      g() {}
+      
+      h() {}
+      
+      a() {
+          g();
+      }
+      
+      b() {
+          g();
+          h();
+          g();
+      }
+
+      f() {
+          b();
+          b();
+          a();
+      }
+      </pre>
+
+    Flame graph with added explanations is shown below. It can be seen
+    that two calls of <code>b()</code> and four calls
+    of <code>g()</code> are merged together. Call stacks are shown in
+    alphabetical order, not execution order.
+
+    <p align="center">
+        <img width="95%" src="images/flameExample.png"/>
+    </p>
+
+    <i>Script parameters</i><br>
+    See tool-tip in table in section <i>Diagrams</i> for most useful parameters.
+    To see all possible parameters and their values, run the script
+    from command line:
+    <pre>
+        python <pyInstallDir>/Lib/site-packages/isystem/flameGraph.py -h
+    </pre>
+
+    Note that title, profiler export, and output file name are already
+    specified by testIDEA.<p>
+
+    <i>Interactivity</i><br>
+    Flame graphs are interactive, which means clicking a function box
+    performs zoom. Unfortunately testIDEA SVG viewer does not support
+    these features, so it is recommended to open it in javascript
+    capable SVG viewer, for example Firefox or Chrome web browser (IE
+    and Edge do not support all functionality). In table with diagrams
+    select <i>externalApp</i> in column <i>viewer</i>, and enter path to your browser
+    in column <i>externalViewer</i>:
+
+    <p align="center">
+        <img width="95%" src="images/extViewer.png"/>
+    </p>
+    
+    
+
+<h2>Directories</h2>
+    
+    Files in testIDEA (analyzer output and export files, scripts,
+    reports, images, ...) can be specified with relative or absolute
+    paths. When relative paths are specified, the so called <i>working
+    directory</i> (this is directory where relative path starts) depends
+    on file type:
+    <ul>
+      <li>Analyzer files are saved relative to winIDEA workspace directory, because
+        they are created by winIDEA.</li>
+      
+      <li>Scripts created by testIDEA are also saved relative to
+        winIDEA workspace directory, so that they have access to
+        analyzer output files.
+
+      <li>Test report is saved relative to iyaml file directory.</li>
+
+      <li>Diagram images are created in directory relative to report
+        file directory,
+        so report file should be specified before test run, if it is going to
+        be located in directory other than iyaml file.</li>
+    </ul>
+
+      
+<h2>Scripts for diagrams</h2>
+      
+    testIDEA already contains Python scripts for built-in diagrams. On
+    request for drawing a diagram, the script is saved to winIDEA
+    workspace directory.<br>
+    Script files for built-in scripts always start with prefix <i>_isys_</i>,
+    for example <i>_isys_flowChart.py</i>. <b>Never modify these scripts,</b> as
+    they will be overwritten by testIDEA. Always rename them, and use
+    them as custom scripts if you want to customize them.<p>
+
+
+<h2>Custom scripts</h2>
+
+<h3>How to write custom scripts</h3>
+
+To write custom scripts it is highly recommended to generate template
+script with button <i>GW template</i> or <i>MP template</i>. The first
+button generates a template script which uses <i>graphwiz</i> utility, the
+second one uses <i>matplotlib</i>. As comments in generated scripts suggest,
+use provided function for command line argument parsing. If arguments
+will change in future versions of testIDEA, it will not be necessary to
+update all custom scripts.
+    <p/>
+
+    <h2>Description of custom script parameters</h2>
+
+Several optional parameters and one positional are provided to custom
+scripts. Optional parameters are available only if the item is
+specified in test case.
+
+    <ul>
+      <li><code>args.dotDir</code> - directory with graphwiz tools
+      bundled with winIDEA.
+      </li>
+      <li><code>args.testID</code> - test ID of the executed test case
+      </li>
+      <li><code>args.functionName</code> - name of function under test
+      </li>
+      <li><code>args.cvrgExport</code> - name of coverage export file
+      </li>
+      <li><code>args.profExport</code> - name of profiler export file
+      </li>
+      <li><code>args.traceExport</code> - name of trace export file
+      </li>
+      <li><code>args.analyzerDoc</code> - name of analyzer document (<i>trd</i> file)
+      </li>
+      <li><code>args.outFileName</code> - name of image file. This
+        parameter is always present, and is always the last item
+        specified in command line, even if user arguments are provided.
+      </li>
+      </ul>
+
+
+    In order to run scripts for diagrams from testIDEA and Python test
+    script, scripts for diagrams should use the following rules:
+        
+        <ul>
+          <li>It should import <code>_isys_diagutils</code>. This
+              module is created by testIDEA, when you create a
+              template. Never modify this module, because it is
+              repeatedly overwritten by testIDEA when you create
+              template scripts!
+            
+          <li>It must define function <code>main(args)</code>, and call it
+              with command line arguments, as shown below:
+            
+        <pre>
+        import sys
+        import _isys_diagutils
+
+        def main(cmdLineArgs):
+
+            args = _isys_diagutils.parseArgs(cmdLineArgs, None)
+
+            < ... your code ... >
+
+
+        if __name__ == '__main__':
+            main(sys.argv[1:])
+        </pre>
+        
+              See documentation in source code of template scripts for more information.
+          </li>
+        </ul>
+    
+        
+    Test case with diagrams should be started at least once from testIDEA,
+    so that built-in scripts are copied from testIDEA resources to winIDEA
+    working directory.
+
+
+    <h3>Script return values</h3>
+
+    The script should return 0, if it created diagram image
+    successfully, any other number otherwise. It is a good practice to
+    throw an exception with informative error message in case of
+    failure, so that user gets more information about the
+    problem. Throwing an exception in Python automatically returns
+    non-zero value.
+
+  </body>
+</html>

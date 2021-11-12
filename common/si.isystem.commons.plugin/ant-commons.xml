@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="si.isystem.ant.commons" basedir=".">
+    <description>
+        Builds iSYSTEM commons plug-in.
+    </description>
+
+    <!-- Properties that should be adapted for each build machine -->
+    <target name="sign-jar" 
+            if="${signjar}"
+            description="Signs the given jar file.">
+    	
+    	<echo message="Signing jar ${signJarPath}"/>
+    	<property name="configurationPath" location="../../eToken.cfg"/>
+    	
+        <exec executable="jarsigner.exe">
+            <arg line="-keystore NONE"/>
+            <arg line="-storepass ${certPassword}"/>
+            <arg line="-storetype PKCS11"/>
+            <arg line="-tsa http://timestamp.globalsign.com/scripts/timestamp.dll"/>
+            <arg line="-providerClass sun.security.pkcs11.SunPKCS11"/>
+            <arg line="-providerArg ${configurationPath}"/>
+            <arg line="${signJarPath}"/>
+            <arg line="-digestalg SHA1"/>
+            <arg line="-sigalg SHA1withRSA"/>
+            <arg line="te-07a6adfa-4492-4a14-a89f-765585df8f96"/>
+        </exec>
+    </target>
+</project>

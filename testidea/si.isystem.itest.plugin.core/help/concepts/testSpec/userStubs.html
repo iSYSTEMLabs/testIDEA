@@ -1,0 +1,52 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <title>User Stubs</title>
+  </head>
+
+  <body>
+    <h1>User Stubs</h1>
+
+    The advantage of normal stubs described above is flexibility.
+    They also don't require any changes in target code. However, their
+    execution is slow, because the target is stopped for each stub
+    hit. <br>
+
+    User stubs, on the other hand, are implemented as modification of
+    the stubbed function on the target. Modifications can be of two
+    types:
+    <ul>
+      <li>Call to other function on target is put at the start of the
+      stubbed function. The other function is called <i>replacement</i> or
+      <i>stub</i> function, and is usually written specifically for testing
+      purposes. It is not used during normal execution of the
+      program.</li>
+      
+      <li>Return instruction is put at the stubbed function
+      start. This means that return value and output parameters are
+      not set, so this approach is generally useful only for functions
+      returning void and without output parameters or other side
+      effects, like modifications of global variables. These type of
+      stubs are called <i>skip stubs</i>, because they skip function
+      call.</li>
+      
+    </ul>
+
+    Note that both modifications mentioned above are performed in
+    object code on the target by testIDEA, so you don't have to
+    rebuild and download the code. After test the original object
+    code is restored.
+    
+    <br>
+
+    <p align="center">
+    <img width="90%" src="images/userStubs.png"/>
+    </p>
+
+    <b>Note:</b> It is important that prototypes of the stubbed and
+    replacement functions match, otherwise results can be unpredictable.
+    
+  </body>
+</html>

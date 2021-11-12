@@ -1,0 +1,61 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <title>Persistent Variables</title>
+  </head>
+
+  <body>
+    <h1>Persistent variables</h1>
+
+    This page contains declarations of persistent variables. As their
+    name implies, persistent variables have lifetime of several test
+    cases. They are created in the test case where they are declared,
+    and exist until they are deleted either explicitly or when all
+    persistent variables are deleted. <p>
+
+    Examples for usage of persistent variables are objects or
+    structures, which contain intermediate results during several
+    function calls.<p>
+
+    <p align="center">
+    <img width="90%" src="images/persistentVariables.png"/>
+    </p>
+
+    Persistent variables can be created in different memory regions,
+    for example on stack, or some free RAM. Configuration of memory
+    region can be done in <i>winIDEA</i>, menu <code>Test | isystem.test
+    Options ... | Persistent variables location</code>.<br>
+    <b>WARNING:</b> When persistent variable are created on target stack,
+    the stack pointer is not restored after test, so running anything else than
+    unit test will most likely crash the target. Using persistent variables
+    on the stack with system tests is highly discouraged (you really have to know 
+    what you are doing - there will be no return from current function).  
+    <p>
+
+    Initialization of persistent variables can be done in <i>testIDEA</i>
+    section <i>Variables</i>.<p>
+    
+    <b>Recommendation:</b> Use persistent variable only when results of one
+    test case are needed in another test case. Otherwise prefer test local
+    variables (section <i>Variables</i>), because they are
+    automatically deleted after test cases execution, so no memory
+    leaks can occur.<p>
+
+    
+    <h2>Content proposals</h2>
+
+    When we are entering name of persistent variables to be deleted in
+    the bottom table, testIDEA tries to provide list of persistent
+    variables, which are available at this point. To get this list, it
+    has to parse many test cases. Since this may take up to several
+    seconds for test suites with more than 10000 test cases on slow machines, 
+    testIDEA enables button <i>Refresh content proposals</i> in such
+    case. By pressing the button we can generate the list explicitly.<br>
+    If it manages to get the list quickly, the button is
+    disabled and contains text <i>Proposals updated</i>.
+        
+    
+  </body>
+</html>

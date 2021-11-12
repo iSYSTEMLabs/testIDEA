@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="Tasks" link_to="toc.xml#tasks"> 
+	<!-- topic label="Main Topic"  href="help/tasks/maintopic.html"> 
+		<topic label="Sub Topic" href="help/tasks/subtopic.html" /> 
+	</topic>
+	<topic label="Main Topic 2">
+		<topic label="Sub Topic 2" href="help/tasks/subtopic2.html" /> 
+	</topic -->
+
+  <topic label="Testing of global variables" href="help/tasks/testGlobalVars.html"/> 
+  <!-- topic label="Debugging test specifications" 
+       href="help/tasks/debugTestSepcifications.html"/ --> 
+  <topic label="XML stylesheet templates" href="help/tasks/xsltAndCss.html"/> 
+  <topic label="Generating scripts for test execution"
+         href="help/tasks/generatingScripts.html"/> 
+  <topic label="Exporting and Importing test specifications"
+         href="help/tasks/exportImport.html"/> 
+  <topic href="help/tasks/writingScriptFunctions.html" label="Writing script extensions">
+  </topic> 
+  <topic label="Renaming of identifiers" href="help/tasks/renaming.html"/> 
+  <topic href="help/tasks/verification.html" label="Verification of test specifications"/>
+  <topic href="help/tasks/autoIDs.html" label="Automatic test ID assignment"/>
+  <topic href="help/tasks/usingTestCaseGenerator.html" label="Test Case Generator and Dry Run"/>
+  <topic href="help/tasks/optimizingTestVectors.html" label="Test Vector Optimization Based on Coverage"/>
+  <topic href="help/tasks/jenkinsConfig.html" label="Continuous Integration with iSYSTEM and Jenkins"/>
+        
+</toc>

@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Automatic-Module-Name: si.isystem.itest.plugin.eclipse
+Bundle-ManifestVersion: 2
+Bundle-Name: iSYSTEM testIDEA for Eclipse
+Bundle-Vendor: iSYSTEM Labs d.o.o.
+Bundle-SymbolicName: si.isystem.itest.plugin.eclipse;singleton:=true
+Bundle-Version: 9.12.294
+Bundle-Activator: si.isystem.itest.plugin.eclipse.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.eclipse.ui.ide,
+ si.isystem.icadapter,
+ si.isystem.itest.plugin.core
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy

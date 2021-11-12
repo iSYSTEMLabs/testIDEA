@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <title>Expected results and Stack usage</title>
+  </head>
+
+  <body>
+    <h1>Expected results and Stack usage</h1>
+
+    The table <i>Expressions</i> can contain expressions, which are evaluated
+    after the test execution ends. All valid C expressions can be
+    used.<br>
+    We can test the following data:
+    <ul>
+      <li>function return value, for example: <code>rv == 34</code></li>
+      <li>variables declared in the variables section, for example: <code>*ptr == 42</code></li>
+      <li>target global variables</li>
+      <li>target registers by using prefix '@', for example: <code>@R3 == 42</code></li>
+      <li>IO module inputs by using back quotes as a prefix,
+          for example: <code>`DigitalIn.DIN0 == 1</code></li>
+    </ul>
+
+    See also the tool tip of the table (place mouse cursor over the table header).
+
+    <h2>Exceptions</h2>
+
+    Some languages support exceptions for error handling. If
+    option <i>Expect target exception</i> is selected, then testIDEA
+    handles exception as an expected test outcome. This can be used
+    for example, when we want to test error handling in our code.
+    To evaluate thrown exception object, internal variable
+    <i>isystem_test_exception</i> can be used in the <i>Expressions</i>
+    table.
+    
+    <h1>Stack usage</h1>
+
+    Stack memory is always a limited resource, and problems related to
+    overlapping data and stack region are hard to find, and can produce
+    everything from strange non-reproducible target behavior to fatal
+    crashes. <br>
+    
+    With <i>testIDEA</i> we can measure and test amount of stack used
+    by code executed in test. The information is not retrieved from
+    debug info, but it is measured by counting unmodified stack memory
+    locations.<p>
+
+    To measure stack usage, we must first configure stack addresses
+    and seeding pattern in <i>testIDEA</i> <code>File | Properties | Stack
+    usage </code> page:
+
+    <p align="center">
+    <img width="90%" src="images/stackUsageConfig.png"/></p>
+
+    Stack base address (<i>baseAddr</i>) is the lowest address we
+    expect to be used for stack, and Stack end address (<i>endAddr</i>) is the
+    last address - top of the stack, usually stack pointer is set to
+    this value at target init.<br>
+    If we expect less stack to be used during test that it is actually
+    available, we can enter higher base address - test will still
+    pass, but execution will be a bit faster since less memory needs
+    to be analyzed.<p>
+
+    Seeding <i>pattern</i> is a byte value written to unused stack
+    area. <i>testIDEA</i> reads stack memory area after test, and
+    considers locations with other values to be used for stack during
+    test.<p>
+
+    Once we've configured stack measurements, we can specify the
+    maximum allowed amount of stack used for each test:
+
+    <p align="center">
+    <img width="90%" src="images/stackUsageTest.png"/></p>
+
+    <p><br><p>
+    Test reports contain also amounts of stack used before the test
+    started, amount used by testIDEA for test local variables, and the
+    actual amount used by application code under test.
+    <p>
+
+      
+    <b>Limitations</b><p>
+    
+    <i>Seeding pattern</i><p>
+    Since the pattern used for stack initialization can occur
+    also in normal program execution, this approach may not be 100%
+    accurate in all cases. However, probability that it will give
+    wrong results for more than few bytes is very small, and depends
+    also on selection of seeding pattern in <code>File | Properties |
+    Stack usage</code>. It is recommended to use a pattern, which can
+    not be valid address. For example, if our target has no memory or
+    other addressable items at 0xCCCCCCCC, then 0xCC is a good choice.
+    <p>
+
+    <i>Stack overflow</i><p>
+
+    <i>testIDEA</i> can measure stack usage under normal conditions,
+    when there is still some space on the stack left. Stack overflows
+    will not be detected. This is normally not a problem for unit
+    tests, as single function usually uses much less space than there
+    is used during normal application run.<p>
+
+    <i>Recursion</i><p>
+    Stack usage in case of recursion heavily depends on values of
+    input parameters, so successful tests of recursive functions do
+    not guarantee limited stack usage.
+    <p>
+
+  </body>
+</html>

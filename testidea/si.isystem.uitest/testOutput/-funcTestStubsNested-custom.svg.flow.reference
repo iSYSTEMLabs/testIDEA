@@ -1,0 +1,49 @@
+digraph {
+  node[fontsize=10];
+  graph [rank=max];
+  edge[fontsize=10];
+n_3 [shape=ellipse, style="filled,dotted", fillcolor="lightpink", label=<3<br align="left"/>>];
+n_2->n_3 [label=<<font color="red">0x3</font><br/>>, constraint=false];
+n_1000n_5 [shape=ellipse, style="filled,dashed", fillcolor="paleturquoise", label=<<font color="red">0x3e8</font><br/><br align="left"/>>];
+n_5->n_1000n_5;
+n_6_indirectCall [shape=ellipse, style="filled,dotted", fillcolor="paleturquoise", label=<indirectCall<br align="left"/>>];
+n_6->n_6_indirectCall;
+n_10 [shape=ellipse, style="filled,dotted", fillcolor="lightpink", label=<10<br align="left"/>>];
+n_8->n_10 [label=<<font color="red">0xa</font><br/>True>, constraint=false];
+n_1001n_11 [shape=ellipse, style="filled,dashed", fillcolor="paleturquoise", label=<<font color="red">0x3e9</font><br/><br align="left"/>>];
+n_11->n_1001n_11 [label=<True>, constraint=false];
+n_12_indirectCall [shape=ellipse, style="filled,dotted", fillcolor="paleturquoise", label=<indirectCall<br align="left"/>>];
+n_12->n_12_indirectCall [label=<True>, constraint=false];
+funcTestStubsNested [shape=ellipse, style="filled", fillcolor="aquamarine", label=<<font color="red">0x0</font><br/>funcTestStubsNested<br align="left"/>>];
+funcTestStubsNested->n_0;
+n_0 [shape=box, style="filled", fillcolor="cornsilk", label=<ld a, 0<br align="left"/>ld b, 0<br align="left"/>>];
+n_0->n_2;
+n_2 [shape=hexagon, style="filled", fillcolor="moccasin", label=<jmp addr<br align="left"/>>];
+n_2->n_3 [style=invis];
+n_3 [shape=hexagon, style="filled", fillcolor="thistle", label=<jmp (HL)<br align="left"/>>];
+n_4 [shape=box, style="filled", fillcolor="cornsilk", label=<ld c, 0<br align="left"/>>];
+n_4->n_5;
+n_5 [shape=octagon, style="filled", fillcolor="moccasin", label=<call addr<br align="left"/>>];
+n_5->n_6;
+n_6 [shape=octagon, style="filled", fillcolor="thistle", label=<call (HL)<br align="left"/>>];
+n_6->n_7;
+n_7 [shape=box, style="filled", fillcolor="cornsilk", label=<ld d, 0<br align="left"/>>];
+n_7->n_8;
+n_8 [shape=diamond, style="filled", fillcolor="moccasin", height="1", label=<jnc addr3<br align="left"/>>];
+n_8->n_9 [label=<False>];
+n_9 [shape=diamond, style="filled", fillcolor="thistle", height="1", label=<jnz (A)<br align="left"/>>];
+n_9->n_10 [label=<False>];
+n_10 [shape=box, style="filled", fillcolor="cornsilk", label=<ld e, 0<br align="left"/>>];
+n_10->n_11;
+n_11 [shape=Mdiamond, style="filled", fillcolor="moccasin", height="1", label=<call_nz addr4<br align="left"/>>];
+n_11->n_12 [label=<False>];
+n_12 [shape=Mdiamond, style="filled", fillcolor="thistle", height="1", label=<call_nz (HL)<br align="left"/>>];
+n_12->n_13 [label=<False>];
+n_13 [shape=box, style="filled", fillcolor="cornsilk", label=<ld ix, 0<br align="left"/>ld iy, 0<br align="left"/>>];
+n_13->OutOfFunction;
+{rank=same; n_5; n_1000n_5; }
+{rank=same; n_11; n_1001n_11; }
+{rank=same; n_12; n_12_indirectCall; }
+{rank=same; n_6; n_6_indirectCall; }
+}
+

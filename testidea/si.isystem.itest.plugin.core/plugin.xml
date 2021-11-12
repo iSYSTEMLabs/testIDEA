@@ -1,0 +1,1660 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="si.isystem.itest.perspectives"
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="si.isystem.itest.main.TestPerspective"
+            icon="icons/editor_16.gif"
+            id="si.isystem.itest.perspective"
+            name="testIDEA">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            category="si.isystem.itest.viewcategory"
+            class="si.isystem.itest.ui.spec.StatusView"
+            icon="icons/status_view.gif"
+            id="si.isystem.itest.ui.spec.errorsView"
+            name="Test Status">
+      </view>
+      <category
+            id="si.isystem.itest.viewcategory"
+            name="testIDEA">
+      </category>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="si.isystem.itest.commands.fileSaveTestReport"
+            name="%command.name.Save_Test_Report">
+      </command>
+      <command
+            defaultHandler="si.isystem.itest.handlers.ShowTestCaseInIYAMLSourceCmd"
+            id="si.isystem.itest.commands.showTestSpecInSource"
+            name="%command.name.Show_Test_Source">
+      </command>
+      <command
+            categoryId="si.isystem.itest.cmdGroup"
+            description="Pastes test configurations from clipboard as derived test specifications of the selected test specification."
+            id="si.isystem.itest.commands.editPasteAsDerived"
+            name="%command.name.Paste_As_Derived">
+      </command>
+      <command
+            categoryId="si.isystem.itest.cmdGroup"
+            id="si.isystem.itest.commands.editPasteAndOverwrite"
+            name="Paste And Overwrite">
+      </command>
+      <command
+            categoryId="si.isystem.itest.cmdGroup"
+            defaultHandler="si.isystem.itest.handlers.RunAllCmdHandler"
+            id="si.isystem.itest.commands.runAll"
+            name="%command.name.Run_All">
+      </command>
+      <command
+            categoryId="si.isystem.itest.cmdGroup"
+            defaultHandler="si.isystem.itest.handlers.RunSelectedCmdHandler"
+            id="si.isystem.itest.commands.runSelected"
+            name="%command.name.Run_Selected">
+      </command>
+      <command
+            categoryId="si.isystem.itest.cmdGroup"
+            defaultHandler="si.isystem.itest.handlers.InitTargetCmdHandler"
+            id="si.isystem.itest.commands.initTarget"
+            name="%command.name.Init_Target">
+      </command>
+      <command
+            id="si.isystem.itest.commands.runOptions"
+            name="%command.name.Options">
+      </command>
+      <command
+            defaultHandler="si.isystem.itest.handlers.RunConfigurationCmdHandler"
+            id="si.isystem.itest.commands.runConfigurationCmd"
+            name="Configuration...">
+      </command>
+      <command
+            categoryId="si.isystem.itest.cmdGroup"
+            defaultHandler="si.isystem.itest.handlers.RunSelectedAndDerivedCmdHandler"
+            id="si.isystem.itest.commands.runSelectedAndDerived"
+            name="Run Selected And Derived">
+      </command>
+      <command
+            categoryId="si.isystem.itest.cmdGroup"
+            defaultHandler="si.isystem.itest.handlers.ToolsConnectToWinIDEACmdHandler"
+            id="si.isystem.itest.commands.toolsConnect"
+            name="Connect to winIDEA (hold SHIFT for dialog)">
+      </command>
+      <command
+            categoryId="si.isystem.itest.cmdGroup"
+            defaultHandler="si.isystem.itest.handlers.ToggleDryRunHandler"
+            id="si.isystem.itest.commands.toggleDryRun"
+            name="Dry Run">
+         <state
+               class="org.eclipse.jface.commands.ToggleState"
+               id="org.eclipse.ui.commands.toggleState">
+         </state>
+      </command>
+      <command
+            categoryId="si.isystem.itest.cmdGroup"
+            defaultHandler="si.isystem.itest.handlers.ToggleAnalyzerOnOffHandler"
+            id="si.isystem.itest.commands.toggleAnalyzerOnOff"
+            name="Disable Analyzer">
+         <state
+               class="org.eclipse.ui.handlers.RegistryToggleState:false"
+               id="org.eclipse.ui.commands.toggleState">
+         </state>
+      </command>
+      <command
+            categoryId="si.isystem.itest.cmdGroup"
+            defaultHandler="si.isystem.itest.handlers.ToggleDebugModeHandler"
+            id="si.isystem.itest.commands.toggleDebugMode"
+            name="Debug Mode">
+         <state
+               class="org.eclipse.jface.commands.ToggleState"
+               id="org.eclipse.ui.commands.toggleState">
+         </state>
+      </command>
+      <command
+            defaultHandler="si.isystem.itest.handlers.ClearTestSectionCmdHandler"
+            description="Clears selected section of test specification"
+            id="si.isystem.itest.commands.ClearSection"
+            name="Clear Section">
+      </command>
+      <command
+            defaultHandler="si.isystem.itest.handlers.NewBaseTestCmdHandler"
+            id="si.isystem.itest.commands.newBaseTest"
+            name="New Test ...">
+      </command>
+      <command
+            defaultHandler="si.isystem.itest.handlers.NewDerivedTestCmdHandler"
+            id="si.isystem.itest.commands.NewDerivedTest"
+            name="New Derived Test ...">
+      </command>
+      
+      <command
+            defaultHandler="si.isystem.itest.handlers.NewTestGroupCmdHandler"
+            id="si.isystem.itest.commands.newGroup"
+            name="New Group ...">
+      </command>
+      <command
+            defaultHandler="si.isystem.itest.handlers.NewSubGroupCmdHandler"
+            id="si.isystem.itest.commands.newSubGroup"
+            name="New Sub-Group ...">
+      </command>
+      
+      
+      <command
+            defaultHandler="si.isystem.itest.handlers.DeleteTestSpecsCmdHandler"
+            id="org.eclipse.ui.edit.delete"
+            name="Delete Test">
+      </command>
+      <command
+            defaultHandler="si.isystem.itest.handlers.TestConfigureReportHandler"
+            id="si.isystem.itest.commands.testConfigureReport"
+            name="Configure Test Report ...">
+      </command>
+      <command
+            defaultHandler="si.isystem.itest.handlers.ToolsGenerateScriptCmdHandler"
+            description="Generates Python script, which executes tests"
+            id="si.isystem.itest.commands.toolsGenerateScript"
+            name="Generate Test Script ...">
+      </command>
+      <command
+            defaultHandler="si.isystem.itest.handlers.NewTestFromTemplateCmdHandler"
+            id="si.isystem.itest.commands.fileNewTestFromTemplate"
+            name="New Test From Template ...">
+      </command>
+      <command
+            categoryId="si.isystem.itest.cmdGroup"
+            defaultHandler="si.isystem.itest.handlers.ToolsRefreshGlobalsCmdHandler"
+            description="Refresh Global Symbols From winIDEA"
+            id="si.isystem.itest.commands.toolsRefresh"
+            name="Refresh">
+      </command>
+      <command
+            categoryId="si.isystem.itest.cmdGroup"
+            defaultHandler="si.isystem.itest.handlers.RunFilterCmdHandler"
+            id="si.isystem.itest.commands.runFilter"
+            name="Run with Filter">
+      </command>
+      <command
+            defaultHandler="si.isystem.itest.handlers.ToolsRenameCmdHandler"
+            id="si.isystem.itest.commands.toolsRename"
+            name="%command.name.Rename">
+      </command>
+      <command
+            categoryId="si.isystem.itest.cmdGroup"
+            defaultHandler="si.isystem.itest.handlers.RunSelectedInDebugModeHandler"
+            id="si.isystem.itest.commands.runDebugSelected"
+            name="Quick Debug">
+      </command>
+      <command
+            defaultHandler="si.isystem.itest.handlers.ToolsVerifyCmdHandler"
+            id="si.isystem.itest.commands.toolsVerify"
+            name="Verify Symbols">
+      </command>
+      <command
+            defaultHandler="si.isystem.itest.handlers.ToolsResetPerspectiveHandler"
+            id="si.isystem.itest.commands.resetPerspective"
+            name="Reset test view">
+      </command>
+      <command
+            defaultHandler="si.isystem.itest.handlers.KeepTestResultsCmdHandler"
+            id="si.isystem.itest.commands.keepTestResults"
+            name="Keep Test Results">
+         <state
+               class="org.eclipse.ui.handlers.RegistryToggleState:false"
+               id="org.eclipse.ui.commands.toggleState">
+         </state>
+      </command>
+      <command
+            defaultHandler="si.isystem.itest.handlers.RunFailedCmdHandler"
+            id="si.isystem.itest.commands.runFailedTests"
+            name="Run Failed Tests">
+      </command>
+      <command
+            defaultHandler="si.isystem.itest.handlers.ToolsAutoIdCmdHandler"
+            id="si.isystem.itest.commands.toolsSetTestIDs"
+            name="Set Test IDs">
+      </command>
+      <command
+            defaultHandler="si.isystem.itest.handlers.ToolsScriptExtensionsWizard"
+            id="si.isystem.itest.commands.toolsScriptExtensionsWizard"
+            name="Script Extensions Wizard ...">
+      </command>
+      <command
+            defaultHandler="si.isystem.tbltableeditor.handlers.CopyFromTableHandler"
+            description="Copies selected cells / columns / rows in table to clipboard"
+            id="si.isystem.itest.commands.ktable.copy"
+            name="%command.name.KTable_Copy">
+      </command>
+      <command
+            defaultHandler="si.isystem.tbltableeditor.handlers.DeleteColumnHandler"
+            description="Deletes column from table."
+            id="si.isystem.itest.commands.ktable.deleteCol"
+            name="%command.name.KTable_Delete_column">
+      </command>
+      <command
+            defaultHandler="si.isystem.tbltableeditor.handlers.DeleteRowHandler"
+            description="Deletes selected rows"
+            id="si.isystem.itest.commands.ktable.deleteRow"
+            name="%command.name.KTable_Delete_row">
+      </command>
+      <command
+            defaultHandler="si.isystem.tbltableeditor.handlers.PasteToTableHandler"
+            description="Pastes to selected table cells"
+            id="si.isystem.itest.commands.ktable.paste"
+            name="%command.name.KTable_Paste">
+      </command>
+      <command
+            defaultHandler="si.isystem.tbltableeditor.handlers.CutFromTableHandler"
+            description="Cuts selected cells from table"
+            id="si.isystem.itest.commands.ktable.cut"
+            name="%command.name.KTable_Cut">
+      </command>
+      <command
+            defaultHandler="si.isystem.tbltableeditor.handlers.InsertColumnHandler"
+            description="Inserts column to empty section"
+            id="si.isystem.itest.commands.ktable.insertColumn"
+            name="%command.name.KTable_Insert_column">
+      </command>
+      <command
+            defaultHandler="si.isystem.tbltableeditor.handlers.InsertColumnLeftHandler"
+            description="Inserts empty column to the left of selected columns"
+            id="si.isystem.itest.commands.ktable.insertColLeft"
+            name="%command.name.KTable_Insert_column_left">
+      </command>
+      <command
+            defaultHandler="si.isystem.tbltableeditor.handlers.InsertColumnRightHandler"
+            description="Inserts empty column right to the selected column"
+            id="si.isystem.itest.commands.ktable.insertColRight"
+            name="%command.name.KTable_Insert_column_right">
+      </command>
+      <command
+            defaultHandler="si.isystem.tbltableeditor.handlers.PasteColumnRightHandler"
+            description="Pastes (inserts) columns right to the selected columns"
+            id="si.isystem.itest.commands.ktable.pasteColRight"
+            name="%command.name.KTable_Paste_columns_right">
+      </command>
+      <command
+            defaultHandler="si.isystem.tbltableeditor.handlers.PasteColumnLeftHandler"
+            description="Pastes (inserts) columns left to the selected columns"
+            id="si.isystem.itest.commands.ktable.pasteColLeft"
+            name="%command.name.KTable_Paste_columns_left">
+      </command>
+      <command
+            defaultHandler="si.isystem.tbltableeditor.handlers.PasteRowAboveHandler"
+            description="Pastes (inserts) rows above the slected rows"
+            id="si.isystem.itest.commands.ktable.pasteRowAbove"
+            name="%command.name.KTable_Paste_rows_above">
+      </command>
+      <command
+            defaultHandler="si.isystem.tbltableeditor.handlers.PasteRowBelowHandler"
+            description="Pastes (inserts) rows below the selected rows"
+            id="si.isystem.itest.commands.ktable.pasteRowBelow"
+            name="%command.name.KTable_Paste_rows_below">
+      </command>
+      <command
+            defaultHandler="si.isystem.tbltableeditor.handlers.InsertRowAboveHandler"
+            description="Inserts empty row above the selected rows"
+            id="si.isystem.itest.commands.ktable.insertRowAbove"
+            name="%command.name.KTable_Insert_row_above">
+      </command>
+      <command
+            defaultHandler="si.isystem.tbltableeditor.handlers.InsertRowBelowHandler"
+            description="Inserts empty row below the selected rows"
+            id="si.isystem.itest.commands.ktable.insertRowBelow"
+            name="%command.name.KTable_Insert_row_below">
+      </command>
+      <command
+            defaultHandler="si.isystem.tbltableeditor.handlers.PasteColumnLeftHandler"
+            description="Pastes (inserts) columns from clipboard"
+            id="si.isystem.itest.commands.ktable.pasteColToEmptySection"
+            name="%command.name.KTable_Paste_columns">
+      </command>
+      <category
+            id="si.isystem.itest.cmdGroup"
+            name="testIDEA commands">
+      </category>
+      <command
+            defaultHandler="si.isystem.itest.handlers.ToolsTestCaseGeneratorHandler"
+            id="si.isystem.itest.plugin.core.testcasegenerator"
+            name="Generate Test Cases ...">
+      </command>
+      <command
+            defaultHandler="si.isystem.itest.handlers.ToolsTestVectorOptimizerHandler"
+            description="Optimize test vectors - marks all test cases derived from the selected test case, which do not increase coverage."
+            id="si.isystem.itest.plugin.core.testvectoroptimizer"
+            name="Optimize Test Vectors">
+      </command>
+      <command
+            defaultHandler="si.isystem.itest.handlers.ToolsAnalyzerFileNameCmdHandler"
+            id="si.isystem.itest.commands.setAnalyzerFileName"
+            name="%command.name.Set_Analyzer_File_Names">
+      </command>
+      <command
+            defaultHandler="si.isystem.itest.handlers.ToolsCreateGroupsCmdHandler"
+            description="Greates groups with filters for core, partition, module and function."
+            id="si.isystem.itest.commands.toolsCreateGroups"
+            name="Create Gro&amp;ups ...">
+      </command>
+      <command
+            defaultHandler="si.isystem.itest.handlers.ToolsDeleteEmptyGroupsCmdHandler"
+            description="Deletes groups which have no children and no test cases."
+            id="si.isystem.itest.commands.toolsDeleteEmptyGroups"
+            name="Delete Empty Groups">
+      </command>
+      <command
+            defaultHandler="si.isystem.itest.handlers.ToolsExecCustomScriptCmdHandler"
+            id="si.isystem.itest.plugin.core.execCustomPyScript"
+            name="Custom script">
+         <commandParameter
+               id="si.isystem.itest.plugin.core.exeCustomPyScript.scriptOrMethod"
+               name="methodName"
+               optional="true">
+         </commandParameter>
+         <commandParameter
+               id="si.isystem.itest.plugin.core.exeCustomPyScript.isStandaloneScript"
+               name="isScript"
+               optional="true">
+         </commandParameter>
+         <commandParameter
+               id="si.isystem.itest.plugin.core.exeCustomPyScript.method"
+               name="methodName"
+               optional="true">
+         </commandParameter>
+      </command>
+      <command
+            categoryId="si.isystem.itest.cmdGroup"
+            defaultHandler="si.isystem.itest.handlers.TestShowSourceCode"
+            id="si.isystem.itest.commands.testShowSource"
+            name="Show source code">
+      </command>
+      <command
+            defaultHandler="si.isystem.itest.handlers.TestRemoveEmptySectionsHandler"
+            id="si.isystem.itest.commands.testRemoveEmptySections"
+            name="Remove Empty Sections">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu">
+         <menu
+               id="edit"
+               label="Edit"
+               mnemonic="E">
+            <command
+                  commandId="si.isystem.itest.commands.editPasteAsDerived"
+                  mnemonic="D"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="false">
+                  <reference
+                        definitionId="isTestIDEAPasteSpecialVisible">
+                  </reference>
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="si.isystem.itest.commands.editPasteAndOverwrite"
+                  mnemonic="O"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="false">
+                  <reference
+                        definitionId="isTestIDEAPasteSpecialVisible">
+                  </reference>
+               </visibleWhen>
+            </command>
+         </menu>
+         <menu
+               id="si.isystem.itest.mainMenu.run"
+               label="Test"
+               mnemonic="T">
+            <command
+                  commandId="si.isystem.itest.commands.newBaseTest"
+                  mnemonic="N"
+                  style="push">
+            </command>
+            <command
+                  commandId="si.isystem.itest.commands.NewDerivedTest"
+                  mnemonic="D"
+                  style="push">
+            </command>
+            <command
+                  commandId="si.isystem.itest.commands.fileNewTestFromTemplate"
+                  mnemonic="T"
+                  style="push">
+            </command>
+            <separator
+                  name="si.isystem.itest.separator333"
+                  visible="true">
+            </separator>
+            
+            <command
+                  commandId="si.isystem.itest.commands.newGroup"
+                  mnemonic="G"
+                  style="push">
+            </command>
+            <command
+                  commandId="si.isystem.itest.commands.newSubGroup"
+                  mnemonic="u"
+                  style="push">
+            </command>
+            
+            <separator
+                  name="si.isystem.itest.separator3334"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="si.isystem.itest.commands.initTarget"
+                  icon="platform:/plugin/si.isystem.commons.plugin/resources/icons/enabled/init_target.gif"
+                  mnemonic="I"
+                  style="push">
+            </command>
+            <separator
+                  name="si.isystem.itest.separator3"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="si.isystem.itest.commands.runAll"
+                  icon="icons/run_all.gif"
+                  mnemonic="R"
+                  style="push">
+            </command>
+            <command
+                  commandId="si.isystem.itest.commands.runSelected"
+                  icon="icons/run_selected_test.gif"
+                  mnemonic="S"
+                  style="push">
+            </command>
+            <command
+                  commandId="si.isystem.itest.commands.runSelectedAndDerived"
+                  icon="icons/run_selected_and_derived.gif"
+                  mnemonic="D"
+                  style="push">
+            </command>
+            <command
+                  commandId="si.isystem.itest.commands.runFilter"
+                  icon="platform:/plugin/si.isystem.commons.plugin/resources/icons/enabled/filter_ps.gif"
+                  mnemonic="F"
+                  style="push">
+            </command>
+            <command
+                  commandId="si.isystem.itest.commands.runFailedTests"
+                  mnemonic="a"
+                  style="push">
+            </command>
+            <separator
+                  name="si.isystem.itest.separator321"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="si.isystem.itest.commands.testRemoveEmptySections"
+                  mnemonic="M"
+                  style="push"
+                  tooltip="Recursively scans selected test cases and groups for empty sections and removes them. This releases memory and optimizes table view.">
+            </command>
+            <command
+                  commandId="si.isystem.itest.commands.toggleAnalyzerOnOff"
+                  mnemonic="Y"
+                  style="toggle"
+                  tooltip="If pressed, analyzer is not active even if set in test cases. To be used during test development to speed up test execution.">
+            </command>
+            <command
+                  commandId="si.isystem.itest.commands.keepTestResults"
+                  mnemonic="K"
+                  style="toggle">
+            </command>
+            <separator
+                  name="si.isystem.itest.separator32"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="si.isystem.itest.commands.testConfigureReport"
+                  mnemonic="o"
+                  style="push">
+            </command>
+            <command
+                  commandId="si.isystem.itest.commands.fileSaveTestReport"
+                  mnemonic="e"
+                  style="push">
+            </command>
+            <separator
+                  name="si.isystem.itest.separator8"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="si.isystem.itest.commands.runConfigurationCmd"
+                  mnemonic="C"
+                  style="push">
+            </command>
+            <visibleWhen
+                  checkEnabled="false">
+               <reference
+                     definitionId="isTestIDEAPerspectiveActive">
+               </reference>
+            </visibleWhen>
+         </menu>
+         <menu
+               id="si.isystem.itest.mainMenu.itools"
+               label="iTools"
+               mnemonic="i">
+            <command
+                  commandId="si.isystem.itest.commands.toolsConnect"
+                  icon="platform:/plugin/si.isystem.commons.plugin/resources/icons/enabled/connect_to_winIDEA.png"
+                  mnemonic="C"
+                  style="push">
+            </command>
+            <command
+                  commandId="si.isystem.itest.commands.toolsRefresh"
+                  icon="platform:/plugin/si.isystem.commons.plugin/resources/icons/enabled/refresh.gif"
+                  mnemonic="R"
+                  style="push">
+            </command>
+            <separator
+                  name="si.isystem.itest.separator1"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="si.isystem.itest.commands.toolsRename"
+                  mnemonic="e"
+                  style="push">
+            </command>
+            <command
+                  commandId="si.isystem.itest.commands.toolsSetTestIDs"
+                  mnemonic="S"
+                  style="push">
+            </command>
+            <command
+                  commandId="si.isystem.itest.commands.setAnalyzerFileName"
+                  mnemonic="A"
+                  style="push">
+            </command>
+            <command
+                  commandId="si.isystem.itest.commands.toolsVerify"
+                  mnemonic="V"
+                  style="push">
+            </command>
+            <separator
+                  name="si.isystem.itest.plugin.core.separator1"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="si.isystem.itest.commands.toolsCreateGroups"
+                  icon="icons/test_group.gif"
+                  mnemonic="T"
+                  style="push"
+                  tooltip="Opens dialog for automatic test group creation.">
+            </command>
+            <command
+                  commandId="si.isystem.itest.commands.toolsDeleteEmptyGroups"
+                  icon="icons/remove_many.gif"
+                  mnemonic="D"
+                  style="push"
+                  tooltip="Deletes groups which have no children and no test cases.">
+            </command>
+            <separator
+                  name="si.isystem.itest.plugin.core.separator2h"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="si.isystem.itest.plugin.core.testcasegenerator"
+                  icon="icons/class_hi.gif"
+                  mnemonic="T"
+                  style="push"
+                  tooltip="Opens wizard for automatic test case generation">
+            </command>
+            <command
+                  commandId="si.isystem.itest.plugin.core.testvectoroptimizer"
+                  icon="platform:/plugin/si.isystem.commons.plugin/resources/icons/enabled/exclusion_filter_attrib.gif"
+                  mnemonic="O"
+                  style="push"
+                  tooltip="Marks all test cases derived from the selected test case, which do not increase coverage.">
+            </command>
+            <command
+                  commandId="si.isystem.itest.commands.toolsGenerateScript"
+                  mnemonic="G"
+                  style="push">
+            </command>
+            <command
+                  commandId="si.isystem.itest.commands.toolsScriptExtensionsWizard"
+                  icon="icons/external_tools.png"
+                  mnemonic="x"
+                  style="push">
+            </command>
+            <separator
+                  name="si.isystem.itest.separator2"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="si.isystem.itest.commands.resetPerspective"
+                  style="push">
+            </command>
+            <separator
+                  name="si.isystem.itest.separator2a"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="org.eclipse.ui.window.preferences"
+                  mnemonic="P"
+                  style="push">
+            </command>
+            <visibleWhen
+                  checkEnabled="false">
+               <reference
+                     definitionId="isTestIDEAPerspectiveActive">
+               </reference>
+            </visibleWhen>
+            <separator
+                  name="si.isystem.itest.plugin.core.separator1x"
+                  visible="true">
+            </separator>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            locationURI="toolbar:org.eclipse.ui.main.toolbar">
+         <toolbar
+               id="si.isystem.itest.coolbar"
+               label="testIDEA">
+            <command
+                  commandId="si.isystem.itest.commands.initTarget"
+                  icon="platform:/plugin/si.isystem.commons.plugin/resources/icons/enabled/init_target.gif"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="false">
+                  <reference
+                        definitionId="isTestIDEAPerspectiveActive">
+                  </reference>
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="si.isystem.itest.commands.runAll"
+                  icon="icons/run_all.gif"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="false">
+                  <reference
+                        definitionId="isTestIDEAPerspectiveActive">
+                  </reference>
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="si.isystem.itest.commands.runSelected"
+                  icon="icons/run_selected_test.gif"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="false">
+                  <reference
+                        definitionId="isTestIDEAPerspectiveActive">
+                  </reference>
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="si.isystem.itest.commands.runSelectedAndDerived"
+                  icon="icons/run_selected_and_derived.gif"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="false">
+                  <reference
+                        definitionId="isTestIDEAPerspectiveActive">
+                  </reference>
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="si.isystem.itest.commands.runFilter"
+                  icon="platform:/plugin/si.isystem.commons.plugin/resources/icons/enabled/filter_ps.gif"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="false">
+                  <reference
+                        definitionId="isTestIDEAPerspectiveActive">
+                  </reference>
+               </visibleWhen>
+            </command>
+            <separator
+                  name="si.isystem.itest.separator100"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="si.isystem.itest.commands.toggleDryRun"
+                  icon="icons/dry_run_mode_on.gif"
+                  style="toggle"
+                  tooltip="Dry run mode. If pressed, test cases are modified during test execution according to test results and settings in section 'Dry run'.">
+               <visibleWhen
+                     checkEnabled="false">
+                  <reference
+                        definitionId="isTestIDEAPerspectiveActive">
+                  </reference>
+               </visibleWhen>
+            </command>
+            <separator
+                  name="si.isystem.itest.separatorQ"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="si.isystem.itest.commands.testShowSource"
+                  icon="platform:/plugin/si.isystem.commons.plugin/resources/icons/enabled/linkToEditor.png"
+                  style="push"
+                  tooltip="Show source code for item selected in Outline view. Hold SHIFT to show analyzer file.">
+            </command>
+            <command
+                  commandId="si.isystem.itest.commands.runDebugSelected"
+                  icon="icons/debug_selected.gif"
+                  style="push"
+                  tooltip="Quick debug runs the selected test by stopping execution at the function start.">
+               <visibleWhen
+                     checkEnabled="false">
+                  <reference
+                        definitionId="isTestIDEAPerspectiveActive">
+                  </reference>
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="si.isystem.itest.commands.toggleDebugMode"
+                  disabledIcon="icons/debug_mode_off.gif"
+                  icon="icons/debug_mode_on.gif"
+                  style="toggle"
+                  tooltip="Debug mode - if pressed, test environment is not restored after test execution error - you can see the actual point of failure in winIDEA.">
+               <visibleWhen
+                     checkEnabled="false">
+                  <reference
+                        definitionId="isTestIDEAPerspectiveActive">
+                  </reference>
+               </visibleWhen>
+            </command>
+            <separator
+                  name="si.isystem.itest.separator3"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="si.isystem.itest.commands.toolsConnect"
+                  icon="platform:/plugin/si.isystem.commons.plugin/resources/icons/enabled/connect_to_winIDEA.png"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="false">
+                  <reference
+                        definitionId="isTestIDEAPerspectiveActive">
+                  </reference>
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="si.isystem.itest.commands.toolsRefresh"
+                  icon="platform:/plugin/si.isystem.commons.plugin/resources/icons/enabled/refresh.gif"
+                  style="push"
+                  tooltip="Refresh global symbols from winIDEA">
+               <visibleWhen
+                     checkEnabled="false">
+                  <reference
+                        definitionId="isTestIDEAPerspectiveActive">
+                  </reference>
+               </visibleWhen>
+            </command>
+            <visibleWhen
+                  checkEnabled="true">
+               <reference
+                     definitionId="isTestIDEAPerspectiveActive">
+               </reference>
+            </visibleWhen>
+         </toolbar>
+      </menuContribution>
+      <menuContribution
+            allPopups="true"
+            locationURI="popup:si.isystem.itest.testEditorSectionCtxMenu">
+         <command
+               commandId="org.eclipse.ui.edit.cut"
+               style="push">
+         </command>
+         <command
+               commandId="org.eclipse.ui.edit.copy"
+               style="push">
+         </command>
+         <command
+               commandId="org.eclipse.ui.edit.paste"
+               style="push">
+         </command>
+         <separator
+               name="si.isystem.itest.separator1"
+               visible="true">
+         </separator>
+         <command
+               commandId="si.isystem.itest.commands.ClearSection"
+               icon="platform:/plugin/si.isystem.commons.plugin/resources/icons/enabled/delete_section.gif"
+               mnemonic="e"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="true"
+            locationURI="popup:si.isystem.itest.ui.spec.TestTreeView">
+         <command
+               commandId="si.isystem.itest.commands.newBaseTest"
+               mnemonic="T"
+               style="push">
+         </command>
+         <command
+               commandId="si.isystem.itest.commands.NewDerivedTest"
+               mnemonic="D"
+               style="push">
+         </command>
+         <command
+               commandId="si.isystem.itest.commands.fileNewTestFromTemplate"
+               mnemonic="P"
+               style="push">
+         </command>
+         <separator
+               name="si.isystem.itest.separator1"
+               visible="true">
+         </separator>
+         <command
+               commandId="si.isystem.itest.commands.newGroup"
+               mnemonic="G"
+               style="push">
+         </command>
+         <command
+               commandId="si.isystem.itest.commands.newSubGroup"
+               mnemonic="u"
+               style="push">
+         </command>
+         <separator
+               name="si.isystem.itest.separator198"
+               visible="true">
+         </separator>
+         <command
+               commandId="si.isystem.itest.commands.showTestSpecInSource"
+               icon="platform:/plugin/si.isystem.commons.plugin/resources/icons/enabled/linkToEditor.png"
+               mnemonic="S"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <count
+                     value="1">
+               </count>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="si.isystem.itest.commands.runSelected"
+               icon="icons/run_selected_test.gif"
+               mnemonic="R"
+               style="push">
+         </command>
+         <separator
+               name="si.isystem.itest.separator2"
+               visible="true">
+         </separator>
+         <command
+               commandId="org.eclipse.ui.edit.cut"
+               style="push">
+         </command>
+         <command
+               commandId="org.eclipse.ui.edit.copy"
+               style="push">
+         </command>
+         <command
+               commandId="org.eclipse.ui.edit.paste"
+               style="push">
+         </command>
+         <command
+               commandId="si.isystem.itest.commands.editPasteAsDerived"
+               mnemonic="A"
+               style="push">
+         </command>
+         <command
+               commandId="si.isystem.itest.commands.editPasteAndOverwrite"
+               mnemonic="O"
+               style="push">
+         </command>
+         <command
+               commandId="si.isystem.itest.commands.toolsSetTestIDs"
+               mnemonic="I"
+               style="push">
+         </command>
+         <command
+               commandId="org.eclipse.ui.edit.delete"
+               icon="platform:/plugin/si.isystem.commons.plugin/resources/icons/enabled/delete_section.gif"
+               mnemonic="e"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="true"
+            locationURI="popup:si.isystem.itest.testBaseTableCtxMenu">
+         <command
+               commandId="si.isystem.itest.commands.ktable.cut"
+               icon="platform:/plugin/si.isystem.commons.plugin/resources/icons/enabled/cut_edit.gif"
+               mnemonic="t"
+               style="push">
+            <visibleWhen>
+               <with
+                     variable="activeMenuSelection">
+                  <not>
+                     <instanceof
+                           value="si.isystem.tbltableeditor.EmptyColumnSelection">
+                     </instanceof>
+                  </not>
+               </with>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="si.isystem.itest.commands.ktable.copy"
+               icon="platform:/plugin/si.isystem.commons.plugin/resources/icons/enabled/copy_edit.gif"
+               mnemonic="C"
+               style="push">
+            <visibleWhen>
+               <with
+                     variable="activeMenuSelection">
+                  <not>
+                     <instanceof
+                           value="si.isystem.tbltableeditor.EmptyColumnSelection">
+                     </instanceof>
+                  </not>
+               </with>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="si.isystem.itest.commands.ktable.paste"
+               icon="platform:/plugin/si.isystem.commons.plugin/resources/icons/enabled/paste_edit.gif"
+               mnemonic="P"
+               style="push">
+            <visibleWhen>
+               <with
+                     variable="activeMenuSelection">
+                  <not>
+                     <instanceof
+                           value="si.isystem.tbltableeditor.EmptyColumnSelection">
+                     </instanceof>
+                  </not>
+               </with>
+            </visibleWhen>
+         </command>
+         <separator
+               name="si.isystem.itest.commands.ktable.separator1"
+               visible="true">
+         </separator>
+         <command
+               commandId="si.isystem.itest.commands.ktable.deleteCol"
+               icon="platform:/plugin/si.isystem.commons.plugin/resources/icons/enabled/delete_section.gif"
+               style="push">
+            <visibleWhen>
+               <with
+                     variable="activeMenuSelection">
+                     <instanceof
+                           value="si.isystem.tbltableeditor.ColumnSelection">
+                     </instanceof>
+               </with>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="si.isystem.itest.commands.ktable.deleteRow"
+               icon="platform:/plugin/si.isystem.commons.plugin/resources/icons/enabled/delete_section.gif"
+               style="push">
+            <visibleWhen>
+               <with
+                     variable="activeMenuSelection">
+                     <instanceof
+                           value="si.isystem.tbltableeditor.RowSelection">
+                     </instanceof>
+               </with>
+            </visibleWhen>
+         </command>
+         <separator
+               name="si.isystem.itest.commands.ktable.separator2"
+               visible="true">
+         </separator>
+         <command
+               commandId="si.isystem.itest.commands.ktable.insertColumn"
+               style="push">
+            <visibleWhen>
+               <with
+                     variable="activeMenuSelection">
+                     <instanceof
+                           value="si.isystem.tbltableeditor.EmptyColumnSelection">
+                     </instanceof>
+               </with>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="si.isystem.itest.commands.ktable.insertColLeft"
+               style="push">
+            <visibleWhen>
+               <with
+                     variable="activeMenuSelection">
+                     <instanceof
+                           value="si.isystem.tbltableeditor.ColumnSelection">
+                     </instanceof>
+               </with>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="si.isystem.itest.commands.ktable.insertColRight"
+               style="push">
+            <visibleWhen>
+               <with
+                     variable="activeMenuSelection">
+                     <instanceof
+                           value="si.isystem.tbltableeditor.ColumnSelection">
+                     </instanceof>
+               </with>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="si.isystem.itest.commands.ktable.pasteColLeft"
+               style="push">
+            <visibleWhen>
+               <with
+                     variable="activeMenuSelection">
+                     <instanceof
+                           value="si.isystem.tbltableeditor.ColumnSelection">
+                     </instanceof>
+               </with>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="si.isystem.itest.commands.ktable.pasteColRight"
+               style="push">
+            <visibleWhen>
+               <with
+                     variable="activeMenuSelection">
+                     <instanceof
+                           value="si.isystem.tbltableeditor.ColumnSelection">
+                     </instanceof>
+               </with>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="si.isystem.itest.commands.ktable.insertRowAbove"
+               style="push">
+            <visibleWhen>
+               <with
+                     variable="activeMenuSelection">
+                     <instanceof
+                           value="si.isystem.tbltableeditor.RowSelection">
+                     </instanceof>
+               </with>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="si.isystem.itest.commands.ktable.insertRowBelow"
+               style="push">
+            <visibleWhen>
+               <with
+                     variable="activeMenuSelection">
+                     <instanceof
+                           value="si.isystem.tbltableeditor.RowSelection">
+                     </instanceof>
+               </with>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="si.isystem.itest.commands.ktable.pasteRowBelow"
+               style="push">
+            <visibleWhen>
+               <with
+                     variable="activeMenuSelection">
+                     <instanceof
+                           value="si.isystem.tbltableeditor.RowSelection">
+                     </instanceof>
+               </with>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="si.isystem.itest.commands.ktable.pasteRowAbove"
+               style="push">
+            <visibleWhen>
+               <with
+                     variable="activeMenuSelection">
+                     <instanceof
+                           value="si.isystem.tbltableeditor.RowSelection">
+                     </instanceof>
+               </with>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="si.isystem.itest.commands.ktable.pasteColToEmptySection"
+               style="push">
+            <visibleWhen>
+               <with
+                     variable="activeMenuSelection">
+                     <instanceof
+                           value="si.isystem.tbltableeditor.EmptyColumnSelection">
+                     </instanceof>
+               </with>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="si.isystem.itest.handlers.TestSaveTestReportCmdHandler"
+            commandId="si.isystem.itest.commands.fileSaveTestReport">
+         <activeWhen>
+            <with
+                  variable="si.isystem.itest.isSaveTestReportActive">
+               <equals
+                     value="ResultsAvailable">
+               </equals>
+            </with>
+         </activeWhen>
+      </handler>
+      
+      <handler
+            commandId="org.eclipse.ui.edit.undo"
+            class="si.isystem.itest.handlers.EditUndoCmdHandler">
+        <activeWhen>
+          <or>
+            <with variable="activeEditorId">
+              <equals
+                   value="si.isystem.itest.editors.TestCaseEditorPart">
+              </equals>
+            </with>
+            <with variable="selection">
+              <iterate ifEmpty="false">
+                <instanceof value="si.isystem.connect.CTestSpecification"/>
+              </iterate>
+            </with>
+          </or>
+        </activeWhen>      
+      </handler>
+      
+
+      <handler
+            commandId="org.eclipse.ui.edit.redo"
+            class="si.isystem.itest.handlers.EditRedoCmdHandler">
+        <activeWhen>
+          <or>
+            <with variable="activeEditorId">
+              <equals
+                   value="si.isystem.itest.editors.TestCaseEditorPart">
+              </equals>
+            </with>
+            <with variable="selection">
+              <iterate ifEmpty="false">
+                <instanceof value="si.isystem.connect.CTestSpecification"/>
+              </iterate>
+            </with>
+          </or>
+        </activeWhen>      
+      </handler>
+      
+
+      <handler
+            commandId="org.eclipse.ui.edit.cut"
+            class="si.isystem.itest.handlers.EditCutCmdHandler">
+        <activeWhen>
+          <or>
+            <with variable="activeEditorId">
+              <equals
+                   value="si.isystem.itest.editors.TestCaseEditorPart">
+              </equals>
+            </with>
+            <with variable="selection">
+              <iterate ifEmpty="false">
+                <instanceof value="si.isystem.connect.CTestSpecification"/>
+              </iterate>
+            </with>
+          </or>
+        </activeWhen>      
+      </handler>
+      
+
+      <handler
+            commandId="org.eclipse.ui.edit.copy"
+            class="si.isystem.itest.handlers.EditCopyCmdHandler">
+        <activeWhen>
+          <or>
+            <with variable="activeEditorId">
+              <equals
+                   value="si.isystem.itest.editors.TestCaseEditorPart">
+              </equals>
+            </with>
+            <with variable="selection">
+              <iterate ifEmpty="false">
+                <instanceof value="si.isystem.connect.CTestSpecification"/>
+              </iterate>
+            </with>
+          </or>
+        </activeWhen>      
+      </handler>
+      
+      
+      <handler
+            commandId="org.eclipse.ui.edit.paste"
+            class="si.isystem.itest.handlers.EditPasteCmdHandler">
+        <activeWhen>
+          <or>
+            <with variable="activeEditorId">
+              <equals
+                   value="si.isystem.itest.editors.TestCaseEditorPart">
+              </equals>
+            </with>
+            <with variable="selection">
+              <iterate ifEmpty="false">
+                <instanceof value="si.isystem.connect.CTestSpecification"/>
+              </iterate>
+            </with>
+          </or>
+        </activeWhen>      
+      </handler>
+
+      
+      <handler
+            class="si.isystem.itest.handlers.EditPasteAsDerivedCmdHandler"
+            commandId="si.isystem.itest.commands.editPasteAsDerived">
+         <activeWhen>
+            <with
+                  variable="activeEditorId">
+               <equals
+                     value="si.isystem.itest.editors.TestCaseEditorPart">
+               </equals>
+            </with>
+         </activeWhen>
+      </handler>
+
+      
+      <handler
+            class="si.isystem.itest.handlers.EditPasteAndOverwriteCmdHandler"
+            commandId="si.isystem.itest.commands.editPasteAndOverwrite">
+         <activeWhen>
+            <with
+                  variable="activeEditorId">
+               <equals
+                     value="si.isystem.itest.editors.TestCaseEditorPart">
+               </equals>
+            </with>
+         </activeWhen>
+      </handler>
+      
+      
+      <!-- handler If this one is enabled, then cmd Select All always selects 
+      test cases in Outline view, even if control in editor or Status view is selected!
+            commandId="org.eclipse.ui.edit.selectAll"
+            class="si.isystem.itest.handlers.EditSelectAllCmdHandler">
+        <activeWhen>
+          <or>
+            <with variable="activeEditorId">
+              <equals
+                   value="si.isystem.itest.editors.TestCaseEditorPart">
+              </equals>
+            </with>
+            <with variable="selection">
+              <iterate ifEmpty="false">
+                <instanceof value="si.isystem.connect.CTestSpecification"/>
+              </iterate>
+            </with>
+          </or>
+        </activeWhen>      
+      </handler -->
+
+      
+      <handler
+            commandId="org.eclipse.ui.file.properties"
+            class="si.isystem.itest.handlers.FilePropertiesCmdHandler">
+        <activeWhen>
+          <or>
+            <with variable="activeEditorId">
+              <equals
+                   value="si.isystem.itest.editors.TestCaseEditorPart">
+              </equals>
+            </with>
+            <with variable="selection">
+              <iterate ifEmpty="false">
+                <instanceof value="si.isystem.connect.CTestSpecification"/>
+              </iterate>
+            </with>
+          </or>
+        </activeWhen>      
+      </handler>
+      
+   </extension>
+   
+   
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true">
+      </toc>
+      <toc
+            file="help/tocconcepts.xml">
+      </toc>
+      <toc
+            file="help/tocgettingstarted.xml">
+      </toc>
+      <toc
+            file="help/toctasks.xml">
+      </toc>
+      <toc
+            file="help/tocTestSpec.xml">
+      </toc>
+      <toc
+            file="help/tocAnalyzer.xml">
+      </toc>
+      <toc
+            file="help/tocTestGroup.xml">
+      </toc>
+   </extension>
+
+   <extension
+         id="isystem.test.product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="si.isystem.itest.plugin.rcp.application"
+            description="Application for editing and running unit tests with iSYSTEM tools."
+            name="iSYSTEM testIDEA">
+         <property
+               name="windowImages"
+               value="icons/launcherIcons/itest_window_16x16-32.bmp,icons/launcherIcons/itest_window_32x32-32.bmp">
+         </property>
+         <property
+               name="aboutImage"
+               value="icons/launcherIcons/itest_window_128x128-32.png">
+         </property>
+         <!-- when modifying value in aboutText, see also script build.bradle 
+              for version replacement code in task 'jar' -->
+         <property
+               name="aboutText"
+               value="iSYSTEM testIDEA&#x0A;&#x0A;(c) iSYSTEM AG, 2010-2016&#x0A;Version: 9.17.123">
+         </property>
+         <property
+               name="startupProgressRect"
+               value="5,271,482,13">
+         </property>
+         <property
+               name="preferenceCustomization"
+               value="plugin_customization.ini">
+         </property>
+         <property
+               name="appName"
+               value="iSYSTEM testIDEA">
+         </property>
+      </product>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="si.isystem.itest.preferences.GeneralPrefsPage"
+            id="si.isystem.itest.preferences.testIDEAPreferencePage"
+            name="testIDEA">
+      </page>
+      <page
+            category="si.isystem.itest.preferences.testIDEAPreferencePage"
+            class="si.isystem.itest.preferences.ScriptPrefsPage"
+            id="si.isystem.itest.preferences.ScriptPreferences"
+            name="Scripts">
+      </page>
+      <page
+            category="si.isystem.itest.preferences.testIDEAPreferencePage"
+            class="si.isystem.itest.preferences.InitSequencePrefsPage"
+            id="si.isystem.itest.preferences.initSeqPreferencePage"
+            name="Initialization sequence">
+      </page>
+      <page
+            category="si.isystem.itest.preferences.testIDEAPreferencePage"
+            class="si.isystem.itest.preferences.RunPrefsPage"
+            id="si.isystem.itest.preferences.runConfigPreferencePage"
+            name="Run configuration">
+      </page>
+      <page
+            category="si.isystem.itest.preferences.testIDEAPreferencePage"
+            class="si.isystem.itest.preferences.TargetConfigPrefsPage"
+            id="si.isystem.itest.preferences.multicoreConfigPreferencePage"
+            name="Multicore configuration">
+      </page>
+      <page
+            category="si.isystem.itest.preferences.testIDEAPreferencePage"
+            class="si.isystem.itest.preferences.EvaluatorPrefsPage"
+            id="si.isystem.itest.preferences.evaluatorConfigPreferencePage"
+            name="winIDEA evaluator">
+      </page>
+      <page
+            category="si.isystem.itest.preferences.testIDEAPreferencePage"
+            class="si.isystem.itest.preferences.TestCaseInitPrefsPage"
+            id="si.isystem.itest.preferences.testCaseInitPrefsPagePreferencePage"
+            name="Target Initialization Before Each Test Case">
+      </page>
+      <page
+            category="si.isystem.itest.preferences.testIDEAPreferencePage"
+            class="si.isystem.itest.preferences.ToolsConfigPrefsPage"
+            id="si.isystem.itest.preferences.toolsConfigPreferencePage"
+            name="Tools configuration">
+      </page>
+      <page
+            category="si.isystem.itest.preferences.testIDEAPreferencePage"
+            class="si.isystem.itest.preferences.UIPrefsPage"
+            id="si.isystem.itest.preferences.UIPreferencePage"
+            name="User Interface">
+      </page>
+      <page
+            category="si.isystem.itest.preferences.testIDEAPreferencePage"
+            class="si.isystem.itest.preferences.StackUsagePrefsPage"
+            id="si.isystem.itest.preferences.stackUsageConfigPreferencePage"
+            name="Stack usage">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="si.isystem.itest.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.equinox.preferences.preferences">
+      <scope
+            class="si.isystem.itest.preferences.UserScope"
+            name="userScope">
+      </scope>
+      <initializer
+            class="si.isystem.itest.preferences.UserScopePreferenceInitializer">
+      </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+         
+            <!-- contributorClass="si.isystem.itest.editors.TestCaseEditorContributor" -->
+      <editor
+            class="si.isystem.itest.editors.TestCaseEditorPart"
+            default="true"
+            extensions="iyaml"
+            icon="icons/editor_16.gif"
+            id="si.isystem.itest.editors.TestCaseEditorPart"
+            name="Test Case Editor">
+      </editor>
+
+            <!-- contributorClass="si.isystem.itest.editors.ImageEditorContributor" -->
+      <editor
+            class="si.isystem.itest.editors.ImageEditorPart"
+            default="true"
+            extensions="png"
+            icon="icons/diagrams_editor.gif"
+            id="si.isystem.itest.editors.ImageEditorPart"
+            name="Diagram">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors.documentProviders">
+      <provider
+            class="org.eclipse.ui.editors.text.TextFileDocumentProvider"
+            extensions="iyaml"
+            id="si.isystem.itest.docprovider">
+      </provider>
+   </extension>
+   <extension point="org.eclipse.core.expressions.definitions">
+      <definition id="isTestIDEAPerspectiveActive">
+         <with variable="activeWorkbenchWindow.activePerspective">
+               <equals value="si.isystem.itest.perspective"/>
+          </with>
+      </definition>
+      <definition
+            id="isTestIDEAPasteSpecialVisible">
+         <with
+               variable="activeEditorId">
+            <equals
+                  value="si.isystem.itest.editors.TestCaseEditorPart">
+            </equals>
+         </with>
+      </definition>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="si.isystem.itest"
+            name="testIDEA">
+      </category>
+      <wizard
+            category="si.isystem.itest"
+            class="si.isystem.itest.wizards.NewITestFileWizard"
+            finalPerspective="si.isystem.itest.perspective"
+            icon="icons/launcherIcons/itest_window_16x16-32.bmp"
+            id="si.isystem.itest.wizards.NewITestFileWizard"
+            name="Test Specification file">
+      </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="si.isystem.itest.perspective">
+         <newWizardShortcut
+               id="si.isystem.itest.wizards.NewITestFileWizard">
+         </newWizardShortcut>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.exportWizards">
+      <wizard
+            category="si.isystem.itest.export.category"
+            class="si.isystem.itest.wizards.ExportWizard"
+            icon="icons/launcherIcons/itest_window_16x16-32.bmp"
+            id="si.isystem.itest.exportwizard"
+            name="Test Cases">
+      </wizard>
+      <category
+            id="si.isystem.itest.export.category"
+            name="testIDEA">
+      </category>
+   </extension>
+   <extension
+         point="org.eclipse.ui.importWizards">
+      <wizard
+            category="si.isystem.itest.export.category"
+            class="si.isystem.itest.wizards.ImportWizard"
+            icon="icons/launcherIcons/itest_window_16x16-32.bmp"
+            id="si.isystem.itest.importwizard"
+            name="Test Cases">
+      </wizard>
+      <category
+            id="si.isystem.itest.export.category"
+            name="testIDEA">
+      </category>
+   </extension>
+   
+   <extension point = "org.eclipse.debug.core.launchConfigurationTypes">
+     <launchConfigurationType
+       id="si.isystem.itest.launchISystemTest"
+       name="iSYSTEM Test"
+       delegate="si.isystem.itest.launch.TestIDEALaunchDelegate"
+       modes="run, debug"/>
+      <!-- sourceLocatorId="si.isystem.itest.launch.ITestSourceLookupDirector"
+       sourcePathComputerId="si.isystem.itest.launch.ITestSourcePathComputer" -->
+   </extension>
+   
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+      <launchConfigurationTypeImage
+            id="si.isystem.itest.launchImage"
+            icon="icons/launcherIcons/itest_window_16x16-32.bmp"
+            configTypeID="si.isystem.itest.launchISystemTest"/>
+   </extension>
+    
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            class="si.isystem.itest.launch.TestIDEALaunchConfigTabGroup"
+            description="iSYSTEM testIDEA Launcher"
+            id="si.isystem.itest.launch.tabGroup"
+            type="si.isystem.itest.launchISystemTest"/>
+   </extension>
+   
+  <extension
+         point="org.eclipse.debug.ui.launchShortcuts">
+      <shortcut
+            class="si.isystem.itest.launch.TestIDEALaunchShortcut"
+            description="This launch configuration runs iSYSTEM testIDEA tests on embedded target."
+            icon="icons/launcherIcons/itest_window_16x16-32.bmp"
+            id="si.isystem.itest.launch.testIDEALaunchShortcut"
+            label="testIDEA launch"
+            modes="run, debug">
+         <contextualLaunch>
+           <enablement>
+             <with variable="selection">
+               <count value="1"/>
+               <iterate>
+                 <or>
+                   <test property="org.eclipse.debug.ui.matchesPattern" value="*.iyaml"/>
+                 </or>
+               </iterate>
+             </with>
+           </enablement>
+         </contextualLaunch>
+      </shortcut>
+  </extension>
+  
+  <extension
+        point="org.eclipse.ui.services">
+     <sourceProvider
+           provider="si.isystem.itest.editors.SaveReportCmdEnabler">
+        <variable
+              name="si.isystem.itest.isSaveTestReportActive"
+              priorityLevel="workbench">
+        </variable>
+     </sourceProvider>
+  </extension>
+  <extension
+        point="org.eclipse.ui.bindings">
+      <key
+          commandId="si.isystem.itest.commands.toolsConnect"
+          schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+          sequence="Ctrl+Alt+O">
+      </key>
+     
+      <key
+          commandId="si.isystem.itest.commands.editPasteAsDerived"
+          schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+          sequence="Ctrl+D">
+      </key>
+      <key
+          commandId="si.isystem.itest.commands.initTarget"
+          schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+          sequence="Ctrl+I">
+      </key>
+      <key
+          commandId="si.isystem.itest.commands.runAll"
+          schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+          sequence="Ctrl+R"></key>
+      <key
+          commandId="si.isystem.itest.commands.runSelectedAndDerived"
+          schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+          sequence="Ctrl+T">
+      </key>
+      <key
+          commandId="si.isystem.itest.commands.runSelected"
+          schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+          sequence="Ctrl+Shift+Q">
+      </key>
+      <key
+          commandId="si.isystem.itest.commands.editPasteAndOverwrite"
+          schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+          sequence="Ctrl+Alt+V">
+      </key>
+      <key
+          commandId="si.isystem.itest.commands.toolsRefresh"
+          schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+          sequence="Ctrl+Shift+F5">
+      </key>
+     
+  </extension>   
+  
+
+</plugin>

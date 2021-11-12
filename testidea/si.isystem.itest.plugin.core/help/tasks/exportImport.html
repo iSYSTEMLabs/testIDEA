@@ -1,0 +1,331 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <title>Export Import</title>
+  </head>
+
+  <body>
+    <h1>Exporting and Importing test cases</h1>
+
+    <i>(Professional version only)</i><p>
+
+    To enhance testIDEA with functionality offered by other
+    applications, we have several possibilities for exporting and
+    importing test cases. The usual procedure involves
+    creation of the base test case in testIDEA, exporting it,
+    creating variants in external tool, and then importing of the
+    generated tests. Then we run tests with testIDEA.<p>
+
+    Available export formats can be seen in the export dialog:
+
+            <p align="center">
+            <img width="90%" src="images/exportImportDialog.png"/>
+            </p>
+
+    They are described in the following sections:
+    <ul>
+      <li><a href="#csv">Spreadsheets and CSV</a></li>
+      <li><a href="#cte">Testona</a></li>
+    </ul>
+    
+
+    <a name="csv"/>
+    <h2>Spreadsheets and CSV</h2>
+    
+    When we want to create a set of test cases for the same
+    function, but with different values of parameters, editing is
+    easier with tools like Excel or Open Office Calc. For this purpose
+    we can use <i>testIDEA's</i> export and import functionality. The
+    general procedure is the following:<p>
+
+    <ol>
+      <li>Create base test case in testIDEA. It should
+      specify the function to be tested and any other items, which
+      define the test. For example, the most common such items are
+      function parameters and expected return values. <i>testIDEA</i>
+      exports the following items, if defined:
+        <ul>
+          <li>Function parameters</li>
+          
+           <li>Expected values. The expected expression is split to
+           two parts where the split point is the last operator. The
+           first part is written in the second row, while the second
+           part is added to the first one on import. For example, the
+           expression <code>'rv == 3'</code> is split to <code>'rv
+           =='</code> and <code>'3'</code>. If we enter values <code>'4'</code>,
+           <code>'5'</code>, and <code>'6'</code> in the column
+           below <code>'rv =='</code> in the exported spread sheet,
+           derived tests will have expected expressions <code>'rv ==
+           4'</code>, <code>'rv == '5'</code>, and <code>'rv ==
+           6'</code>.
+           </li>
+           
+           <li>Initialized variables</li>
+           <li>Assignments for stubs</li>
+           <li>Statistics requirements for coverage</li>
+           <li>Profiler timing and hits requirements</li>
+           <li>HIL parameters</li>
+           <li>winIDEA options</li>
+           </ul>
+        
+        Please note again, that the above items are exported only if
+        they are defined in the base test case. For example,
+        if the base test case does not specify HIL
+        parameters, HIL section will not be exported.<p>
+
+        Comments are also exported to Excel, but it is <b>not</b> recommended to
+        edit them in Excel, because certain format must be
+        used. Otherwise comments can't be imported back to testIDEA.<p>        
+        
+        Sections, which are not exported, for example declarations of
+        variables, <b>are lost on import</b>. The same is true for comments
+        in these sections.<p>
+        
+
+        The base test case must have test ID defined,
+        otherwise <i>testIDEA</i> reports an error. <p>
+      </li>
+      
+      <li>Select the test case(s) in testIDEA, then execute
+      command <code>File | Export</code>. All selected test
+      cases get exported to the selected file. In XLS file
+      each test case gets its own sheet, while in CSV file
+      they are separated by lines with test IDs. An example of
+        exported test case is shown below:
+        
+            <p align="center">
+            <img width="90%" src="images/exportedTestSpec.png"/>
+            </p>
+      </li>
+
+      <li>Edit the exported file in some third party tool, like Excel,
+      Calc, ...). The following rules must be taken into account while
+      editing:
+        <ul>
+          <li> Do not edit the first row of each test
+          case. It defines test sections, and the naming and
+          order are important here. 
+            </li>
+          <li>
+            Edit the second row with identifier names only when
+            renaming them, or modifying expected expression. It is
+            preferred to rename items in <i>testIDEA</i>, and then
+            export the test case again.
+            </li>
+          <li>
+            The third row contains values of the base test
+            case. It is there for information only - it
+            is not parsed on import, so any changes done
+            here are ignored.
+            </li>
+            <li>
+              The fourth and next rows should contain values to be
+              used for derived test cases. If we enter
+              formulas, the calculated values will be used.
+            </li>
+          </ul>
+          Empty rows in CSV files are ignored, rows which start with '#'
+          character are treated as comments and are also ignored.
+        </li>
+      <p>
+      An example of edited test case is shown below:
+            <p align="center">
+            <img width="90%" src="images/editedTestSpec.png"/>
+            </p>
+
+      <li>
+        Save the file and import it in <i>testIDEA</i>. If we want to
+        import derived test cases only for some base test
+        cases, we can select those base test cases
+        and then check the 'Import data only to selected test
+        cases' check box in the import dialog.
+        <b>All existing derived test cases of the selected test
+        cases are deleted on import!</b>
+      </li>
+    </ol>
+
+   After import we can execute the tests. If we want to modify the
+   values of derived tests parameters, we don not have to export the
+   test case again, but simply change values in the exported
+   file and import them again.
+
+  <p/>
+  <br/>
+  <br/>
+  <hr>
+  <br/>
+  <br/>
+
+  <a name="cte"/>
+  <h2>Testona</h2>
+
+  Testona (former CTE XL Professional) provides graphical view of
+  test cases with variations of test inputs, and enables rule based
+  creation of tests cases, while <i>testIDEA</i> provides
+  execution of test cases with analyzer measurements and HIL.<br>
+  
+  To use the benefits of both applications, we can use testIDEA's
+  export/import functionality and share the data in both ways.<p>
+
+  Usual workflow includes the following steps:
+  <ul>
+  <li> Create base test case in testIDEA. Define all sections,
+    which are needed for testing.</li>
+  <li> (optional) Create few derived test cases, which contain
+    typical values of test inputs (Testona classes)</li>
+  <li> Select the base test case in testIDEA and export it to
+    Testona format with command <code>File | Export</code>.</li>
+  <li> Open the file in Testona and generate additional test cases. Save
+    the data.</li>
+  <li> Import the file to testIDEA and run tests.</li>
+  <li> (optional) Export tests with results and view results in
+    Testona.</li>
+  </ul>
+
+  Note: When importing Testona file to testIDEA, information about
+  rules is lost.
+  
+
+  <h3>Testona Classification Tree as created by testIDEA</h3>
+  
+  Information from testIDEA test cases is divided into two
+  parts, when exported to Testona. All the data, which define the
+  execution of tests cases (test inputs), is shown in the Testona
+  Classification Tree. Compositions and classifications in this tree
+  are created according to data in the selected test case,
+  while classes are created according to values found in the derived
+  test cases.
+
+            <p align="center">
+            <img width="90%" src="images/fullCteTree.png"/>
+            </p>
+
+  
+  The Classification Tree generated by testIDEA includes:
+
+  <ul>
+    <li>function parameters</li>
+    <li>test local and target global variables</li>
+    <li>stub assignments and script function parameters</li>
+    <li>HIL outputs</li>
+    <li>script extension functions parameters</li>
+  </ul>
+
+  If any of these sections is empty in testIDEA, it is not exported.<p/>
+  
+  Other parts of test case, for example expected results,
+  coverage and profiler sections are exported as properties of test
+  cases in Testona. Each testIDEA section creates one tab, which contains
+  test case data in YAML format. You are free to modify these
+  data, as long as the <a href="https://www.isystem.com/downloads/winIDEA/SDK/iSYSTEM.Python.SDK/documentation/isystem-connect-api/yaml_spec.html">
+  syntax</a> is valid.
+  <br><p/>
+
+            <p align="center">
+            <img width="90%" src="images/cteTestCaseProperties.png"/>
+            </p>
+
+  <h3>Test cases and test groups</h3>
+
+  Testona supports several forms of test cases and their
+  grouping, while testIDEA contains only one. This section describes
+  mapping of these data between testIDEA and Testona:
+
+  <p align="center">
+  <table border = "1" cellpadding="3" cellspacing="0" width="80%">
+    <tr bgcolor="#e0e0e0"><th>Testona Type</th><th>testIDEA Type</th></tr>
+
+    <tr><td>Test Group</td><td>Base test case. Because Test
+    Group in Testona can not be executed, it is recommended to
+    configure base test cases as abstract ones. These test
+    cases do not have marks associated so them, so in Testona we can
+    modify them only via properties. </td></tr>
+
+    <tr><td>Test Case</td><td>Derived test case.</td></tr>
+    
+    <tr><td>Test Sequence</td><td>Not supported by export/import.</td></tr>
+
+    <tr><td>Test Step</td><td>Not supported by export/import.</td></tr>
+
+  </table>
+
+  </p>
+  
+  
+  <h3>Editing the exported Classification Tree in Testona</h3>
+
+  When editing the composition tree in Testona, which we plan to import
+  into testIDEA, we have to be aware that the structure and names of
+  compositions are fixed. They may be missing, but when present they
+  must be one of:
+
+  <ul>
+    <li>the root element has a name composed of test ID and function name</li>
+    <li><b>params</b> - parameters of function under test</li>
+    <li><b>variables</b> - contains the <i>Variables</i> section of testIDEA</li>
+    <li><b>stubs</b> - contains stubs. Its children are compositions with
+    names of stubbed functions, which may have two
+    compositions. The <b>assignments</b> composition contains testIDEA
+    stub assignments expressions, while the <b>scriptParams</b>
+    composition contains stub script extension function parameters.
+    </li>
+    <li><b>HIL</b> - contains HIL output parameters</li>
+    <li><b>scripts</b> - this composition may have up to four children
+    compositions, with names of script extension functions.
+    </li>
+  </ul>
+  
+  Classifications and classes may be modified at will. <p>
+
+  If test case does not have some section specified, it is merged from
+  parent test group on import. For example, if we create a new test
+  case in Testona, it does not have variables section defined. On import,
+  testIDEA first copies the variables section from the base test group
+  and then executes assignments specified with marks in Testona.
+  
+
+  <h4>Function parameters</h4>
+
+  Each function parameter is shown as one Testona class in the
+  Classification Tree. Since parameters must be passed to function in 
+  proper order, each class has a tag <code>paramIdx</code>, which
+  determines position of parameter in parameters list. If position
+  of parameter changes, we have to modify this value. Names of
+  parameters are not used on import and can be freely modified.
+
+  <h4> Variable and HIL classes </h4>
+  For these classes names of Testona classes are used on import.
+
+
+  <h4> Custom classifications and comments </h4>
+
+  Custom classifications, classes and
+  compositions may be added between classifications with
+  parameter or variable info, and Testona class containing value, as shown
+  on the image below.
+  
+            <p align="center">
+            <img width="60%" src="images/cteCustomNodes.png"/>
+            </p>
+
+  Since custom nodes have no data representation in testIDEA, they are
+  ignored and therefore can not be restored on export.<p>
+  Content of tag <i>Description</i> is preserved on import from
+  testIDEA, but it is currently not exported. 
+  
+
+  <h3>Test results</h3>
+
+  When tests are executed in testIDEA, test results are also exported
+  to Testona format file. To view them in Testona, right click in the
+  Test Case Tree view, and select option <code>Show Columns | Test Result</code>.
+  
+            <p align="center">
+            <img width="90%" src="images/cteTestResults.png"/>
+            </p>
+
+  <br/><br/>
+  </body>
+</html>

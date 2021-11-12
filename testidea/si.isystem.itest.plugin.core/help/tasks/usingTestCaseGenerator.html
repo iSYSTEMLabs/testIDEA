@@ -1,0 +1,334 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <title>Test Case Generator and Dry Run</title>
+  </head>
+
+  <body>
+    <h1>Test Case Generator</h1>
+
+    <i>(Professional version only)</i><p>
+
+<b>IMPORTANT: Test case generator may help with test case creation, but
+it should not be used blindly. Test designer should understand the
+function under test and make sure that relevant test cases are
+present. Machine can help humans with test design, but can not replace them!
+</b>  
+<p>
+  
+    testIDEA's <i>Test Case Generator</i> can be used to quickly
+generate set of test vectors with different inputs. Set of inputs
+is specified with a wizard, which is started with command
+<code>iTools | Generate Test Cases ...</code>:
+
+            <p align="center">
+            <img width="90%" src="images/testCaseGenerator.png"/>
+            </p>
+
+On each of wizard's input pages we can specify set of input values for
+each group of identifiers. The following groups of identifiers can be
+specified with the wizard:
+<ol>
+  <li>Function parameters</li>
+  <li>Variables (target global, test local and host variables)</li>
+  <li>Assignments in stub step</li>
+  <li>Assignments in test point step</li>
+  <li>HIL output values</li>
+  <li>winIDEA options</li>
+  <li>Parameters of script functions</li>
+  <li>Asserts (expected expressions)</li>
+  <li>Dry run</li>
+</ol>
+
+Since the last five section are used less often, they are not shown
+by default. If we want to set them, we have to select <b>Show all
+pages</b> check-box on the first page:
+
+            <p align="center">
+            <img src="images/tcgShowAllPages.png"/>
+            </p>
+
+<b>Persistence:</b> Data in the wizard is persistent in one testIDEA
+session. This is useful, if we want to generate additional set of
+vectors with slightly changed input values. Wizard contents can be
+cleared at any time by pressing the <i>Clear</i> button on the first
+page (see image above).<p>
+
+<b>Limitations:</b><br>
+&nbsp;&nbsp;<b>Stubs:</b> Only assignments of one step of one stub can
+be modified with test case generator.<br>
+&nbsp;&nbsp;<b>Test points:</b> Only assignments of one step of one
+test point can be modified with test case generator.
+
+
+<h2>Before we start the wizard</h2>
+
+<b>Tip:</b> It is always useful to have testIDEA connected to winIDEA, which
+has symbols loaded. This way testIDEA can propose symbol names and
+save us a lot of typing.<p>
+
+Wizard always creates a set of test cases as derived tests, so 
+one test case must be selected before starting the wizard. This test
+case also serves as a template for the generated derived test cases.
+For this reason, definition of the base test case should be done before
+starting the wizard, which uses it in the following way:
+
+<ul>
+  <li>
+    Function section is inherited, only parameters are generated. If
+    symbols are available, the wizard adds all input parameters
+    automatically.
+  </li>
+  <li>
+    Assignments in section Variables are first copied from base test
+    case, then generated assignments are applied. If the same variable
+    is assigned a new value by the generator, it overwrites
+    assignments from the base test case.
+  </li>
+  <li>
+    If stub vectors are defined in the wizard, then all stubs are copied
+    from base test case to the derived generated test cases. After copying
+    the assignments of the stub defined in the wizard are modified.
+  </li>
+  <li>
+    The same as for stubs is true for test points.
+  </li>
+  <li>
+    Copying of analyzer sections can be configured on the <a href="#testCasePage">Test Case
+    wizard page</a>. 
+  </li>
+  <li>
+    Other sections are inherited, if they are not defined by the wizard.
+  </li>
+</ul>
+
+
+<h2>Definition of input vectors</h2>
+
+Generated test vectors depend on two entries - set of values, and the
+number of required occurrences of each value in the generated vectors.
+
+Sets of input values for each identifier are defined in the upper
+table. If the number of occurrences is the same for all values, it can
+be set above the table.
+
+     <p align="center">
+     <img width="90%" src="images/tcgDefaultOccurrence.png"/>
+     </p>
+
+If some value should have the number of
+occurrences different from the default one, we have to select custom
+occurrence, and then define the number of occurrences for each
+identifier. If we select custom occurrence also for identifier, then we
+can define occurrence for each value of that identifier.
+
+
+     <p align="center">
+     <img width="90%" src="images/tcgCustomOccurrence.png"/>
+     </p>
+
+     
+This number defines the <i>minimum</i> number of occurrences for the value in
+the set of generated test vectors. Depending on the occurrence
+setting for values in other identifiers, more vectors containing the
+value may be generated. For example, in the above image we can see,
+that values of the first parameter appear more than once, even if
+their occurrence is specified as 1, because this is the only way
+to satisfy the number of occurrences for values of parameter 2.
+<p>
+
+
+<b>Disclaimer:</b> The generator uses algorithm, which tries to
+minimize the number of generated vectors, which satisfy the specified
+value occurrence conditions, but may not produce the best possible
+result always.
+
+     
+<a name="testCasePage"/>
+<h2>Test case wizard page</h2>
+
+Input values on this page are vectors generated on previous pages.
+We can not modify them here, but can specify their occurrence numbers.
+
+Additionally we can specify which analyzer sections to copy from the
+selected base test case, if they are defined there. For coverage
+sections test case generator can change open mode to append, so that
+we get accumulated coverage.
+
+
+     <p align="center">
+     <img width="90%" src="images/tcgTestCasesPage.png"/>
+     </p>
+
+
+
+<h2>Asserts and Dry run pages</h2>
+
+These two pages are available only if check box <i>Show all pages</i>
+is selected on the first page. Settings on these two pages are copied
+to all generated test cases. Usually it is better to inherit these
+sections from the base test case instead of specifying them here.
+
+
+  
+<h1>Dry Run</h1>
+
+This functionality can be used to record behavior of existing and
+tested target code before we modify it. With test case generator we
+create a set of test cases, then we use dry run to record state of
+target, and analyzer result for each test case. Then we can modify the
+target code and rerun the tests. Test results can show us what has
+changed.<p>
+
+To be able to use dry run functionality, test cases must be designed
+properly. Namely, they should have section <i>Dry run</i>
+defined. This section contains assignments, which store target state
+immediately after the test execution, usually in host variables. This
+state is then copied to section <i>Variables</i>, and can therefore be
+used in next test runs.
+
+     <p align="center">
+     <img src="images/tcgDryRunCycle.png"/>
+     </p>
+
+<b>Example:</b><p>
+
+Suppose we know that a function works correctly before modification, so
+it returns correct values. We want to remember these values and use
+them on next test runs. To accomplish this, we define the following
+assignment in dry run section:
+
+<pre>
+  <table border='1' cellpadding='5' cellspacing='0'>
+  <tr><td><code>${dr_expectedRetVal}</code></td><td width='100', align
+ ='right'><code>rv</code></td></tr>
+  </table>
+</pre>  
+
+After dry run, value of <i>rv</i> is evaluated. Let's suppose it
+evaluates to 3. The assignment:
+
+<pre>
+  <table border='1' cellpadding='5' cellspacing='0'>
+  <tr><td><code>${dr_expectedRetVal}</code></td><td width='100', align
+ ='right'><code>3</code></td></tr>
+  </table>
+</pre>
+
+is then added to section Variables. If section <i>Expected</i>
+contains the expression:
+
+<pre>
+  rv == ${dr_expectedRetVal}
+</pre>  
+
+function return value will be compared to value recorded during dry
+run on next normal runs.
+<p>
+
+Coverage and profiler statistic values may also be updated on dry run
+if we decide so. Only values, which are already defined, are modified,
+while other values are left empty.
+<p>
+
+<b>Important: Quality of test vectors is much more important than their
+quantity, so knowing of target code and good design is of crucial importance
+here. Human intelligence can not be replaced by generator.
+</b>
+<p>
+
+
+<b>Tip:</b> Add a prefix to all host variables set in dry run section, to
+make it clear that they are overwritten in Dry Run, for example
+<code>DRY_retVal</code>, or <code>dr_retVal</code>.
+
+<h2>Example with Test Case Generator and Dry Run:</h2>
+
+In this example we'll generate test cases for the following function:
+
+<pre>
+void modifyStructT(struct_td *pStruct, int value);
+</pre>
+
+where:
+
+<pre>
+struct struct_t {
+    int m_i;
+    float m_f;
+    
+    char *m_pc;
+    int *m_pi;
+    float *m_pf;
+    double *m_pd; 
+};
+
+typedef struct struct_t struct_td;
+</pre>
+
+First we create base test case:
+
+     <p align="center">
+     <img width="90%" src="images/tcgExampleBaseFunc.png"/>
+     </p>
+
+     <p align="center">
+     <img width="90%" src="images/tcgExampleBaseVars.png"/>
+     </p>
+     <p align="center">
+     <img width="90%" src="images/tcgExampleBaseExpected.png"/>
+     </p>
+     <p align="center">
+     <img width="90%" src="images/tcgExampleBaseDryRun.png"/>
+     </p>
+
+Then we start test case generator with command <code>iTools | Generate
+  Test Cases...</code>, enter data and generate derived test cases:
+
+     <p align="center">
+     <img width="90%" src="images/tcgExampleFuncPage.png"/>
+     </p>
+     <p align="center">
+     <img width="90%" src="images/tcgExamplesVarsPage.png"/>
+     </p>
+     <p align="center">
+     <img width="90%" src="images/tcgExampleTestCasesPage.png"/>
+     </p>
+
+If we execute the generated test cases now, all will fail, because
+host variables, which are used in section <i>Expected</i>, are not
+defined in section <i>Variables</i>. We'll use dry run, to 
+initialize these variable with proper values. Click the <i>Dry Run</i>
+tool-bar button to switch on <i>Dry Run</i> mode. Since this test
+execution mode <b>modifies</b> existing test cases, it is also marked
+with colored border of the Outline view:
+
+     <p align="center">
+     <img width="90%" src="images/tcgExampleDryRunMode.png"/>
+     </p>
+
+Then we select the base test case and command <code>Test | Run
+Selected and Derived</code>. Test cases execute, but all of them end
+with error, because assignments in <i>Dry run</i> section are copied
+to section <i>Variables</i> after test execution. To get successful
+test execution, all we have to do is to switch off <i>Dry Run</i> mode
+and rerun the tests.
+
+     <p align="center">
+     <img width="90%" src="images/tcgExampleAllTestsExecuted.png"/>
+     </p>
+    
+
+      
+<!-- Coverage filtering
+
+With coverage filtering we may specify more test cases than actually
+needed, and then remove all tests, which did not increase
+coverage. Please note that this approach may be used as a
+starting step in test creation, not as fully automatic procedure for
+test design. 
+-->
+  </body>
+</html>

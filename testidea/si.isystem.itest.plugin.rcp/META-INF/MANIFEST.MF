@@ -1,0 +1,14 @@
+Automatic-Module-Name: si.isystem.itest.plugin.rcp
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: iSYSTEM testIDEA for RCP
+Bundle-Vendor: iSYSTEM Labs d.o.o.
+Bundle-SymbolicName: si.isystem.itest.plugin.rcp;singleton:=true
+Bundle-Version: 9.12.294
+Bundle-Activator: si.isystem.itest.rcp.main.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ si.isystem.itest.plugin.core
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Export-Package: si.isystem.itest.rcp.main

@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <title>Test Vector Optimization Based on Coverage</title>
+  </head>
+
+  <body>
+    <h1>Test Vector Optimization Based on Coverage</h1>
+
+    <i>(Professional version only)</i><p>
+
+    When coverage is the main test requirement, we can use testIDEA
+    command <i>iTools | Optimize Test Vectors</i> to select test cases,
+    which did not increase coverage. Then we can decide whether to delete
+    them or to move them under some other base test case, which is
+    executed less frequently. For example, suppose we have test cases
+    <i>test-01, test-02, test-03, test-04, test-05</i>,
+    and <i>test-06</i> with the following coverage statistic values:<p>
+
+      <table>
+        <tr><th>Test case ID&nbsp;&nbsp;</th><th>Coverage</th></tr>
+        <tr><td>test-01</td><td>10%</td></tr>
+        <tr><td>test-02</td><td>23%</td></tr>
+        <tr><td>test-03</td><td>23%</td></tr>
+        <tr><td>test-04</td><td>53%</td></tr>
+        <tr><td>test-05</td><td>53%</td></tr>
+        <tr><td>test-06</td><td>100%</td></tr>
+    </table>
+    
+    <p>
+    We can see that tests <i>test-03</i> and <i>test-05</i> have the
+    same coverage statistic value as previous test, which means they
+    do not execute any previously not executed code. We can select all
+    such test cases with this command.
+    <p>
+
+    <h1>Usage</h1>
+
+    The recommended way to use this feature:
+
+    <ol>
+      <li>Select a base test case, which has 
+          derived test cases for the same function and with
+          coverage section defined. Do not select derived test cases!</li>
+      <li>Select command <i>Test | Run Selected And Derived</i> to
+          execute test cases.</li>
+      
+      <li> After tests finish execution, and still with the base test
+    selected, execute command <i>iTools | Optimize Test
+    Vectors</i>.</li>
+      <li>Decide what to do with the selected test cases.</li>
+      </ol>
+
+    <h1>Requirements</h2>
+
+    To optimize a set of test vectors, test cases must first be run with
+    coverage mode set to append. Only test cases, which have coverage
+    defined and at least one statistics section with at least one
+    statistics item criteria defined, can be considered for optimization
+    process. If any of the test cases does not fulfill the condition, an
+    error is issued.
+
+
+  </body>
+</html>

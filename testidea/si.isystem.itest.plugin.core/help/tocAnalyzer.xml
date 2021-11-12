@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- All toc*.xml files must be listed also in plugin.xml,
+     extension 'org.eclipse.help.toc' -->
+
+<toc label="Analyzer" link_to="help/tocTestSpec.xml#analyzer">
+
+   <topic label="Common analyzer configuration"  href="help/concepts/testSpec/analyzer.html"/>
+   <topic label="Coverage"  href="help/concepts/testSpec/coverage.html"/>
+   <topic label="Profiler"  href="help/concepts/testSpec/profiler.html"/>
+   <topic label="Trace"  href="help/concepts/testSpec/trace.html"/>
+</toc>

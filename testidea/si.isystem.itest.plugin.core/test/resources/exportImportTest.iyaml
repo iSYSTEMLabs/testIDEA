@@ -1,0 +1,651 @@
+env:
+  autoConnect: false
+  initBeforeRun: false
+  downloadOnInit: true
+  resetOnInit: false
+  runOnInit: true
+  stopFunction: main
+  defaultRetValName: rv
+tests:
+- id: 'T1'
+  func: [funcTestInt2, [], rv]
+  params: [10, 20, 30]
+  expect:
+  - rv == 61
+- id: 'T2'
+  locals:
+    lvarA: long
+    lvarB: long
+  init:
+    lvarA: 1
+    lvarB: 2
+  func: [funcTestLong2, [], rv]
+  params: [lvarA, lvarB, 40]
+  expect:
+  - rv == 44
+- id: T3
+  run: true
+  desc: 'only expected section is specified'
+  func: [funcTestGlobals]
+  expect:
+  - rv == 4
+- id: 'T4'
+  desc: 'intentionally empty test spec'
+  func: [funcTestGlobals]
+- id: 'T5'
+  func: [funcForIntStubTest, [], rv]
+  stubs:
+  - func:
+    - 'stubbedFuncInt'
+    - srv
+    assign:
+      srv: 235
+  expect:
+  - rv == 234
+- id: 'T6'
+  init:
+    iCounter: 0
+  func: [funcTestUInt1, [], rv]
+  params: [3]
+  expect:
+  - rv == 4
+  - iCounter == 0
+- id: 'full'
+  tags:
+  - noDerived
+  options:
+    /IDE/opt1: "ValX"
+  locals:
+    dblA: double
+    dblB: double
+  init:
+    dblA: 9
+    dblB: 8
+  func: [funcTestDouble2, [], rv]
+  params: [dblA, 3, dblB]
+  stubs:
+  - func:
+    - 'stubbedFunc3'
+    - srv
+    params:
+    - pI
+    assign:
+      pI: 0
+      srv: 0
+  expect:
+  - rv == dblA + dblB + 3 + 1
+  coverage:
+    runMode: start
+    document: 'cover.ccv'
+    statistics:
+    - func: 'Func1'
+      code: 10
+      branches: 20
+      taken: 30
+      notTaken: 40
+    - func: 'Func2'
+      code: 60
+      branches: 70
+      taken: 80
+      notTaken: 90
+      both: 100
+  profiler:
+    runMode: start
+    document: 'prof.xml'
+    codeAreas:
+    - name: 'ProfilerC_1'
+      minTime:
+      - 1
+      - 2
+      maxTime:
+      - 3
+      - 4
+      totalTime:
+      - 5
+      - 6
+      hits:
+      - 7
+      - 8
+    - name: 'ProfilerC_2'
+      minTime:
+      - 11
+      - 12
+      maxTime:
+      - 13
+      - 14
+      totalTime:
+      - 15
+      - 16
+      hits:
+      - 17
+      - 18
+    dataAreas:
+    - name: 'g_char1'
+      minTime:
+      - 21
+      - 22
+      maxTime:
+      - 23
+      - 24
+      totalTime:
+      - 25
+      - 26
+      hits:
+      - 27
+      - 28
+    - name: 'g_char1, 3'
+      minTime:
+      - 99
+      - 0
+      maxTime:
+      - 0
+      - 0
+      totalTime:
+      - 0
+      - 0
+      hits:
+      - 0
+      - 0
+    - name: 'g_char1, 4'
+      minTime:
+      - 100
+      - 0
+      maxTime:
+      - 0
+      - 0
+      totalTime:
+      - 0
+      - 0
+      hits:
+      - 0
+      - 0
+  hil:
+    params:
+      AnalogIn.AIN0: 10
+      DigitalIn.DIN0: 20
+- id: 'full-1Derived'
+  options:
+    /IDE/opt1: "ValX"
+  locals:
+    dblA: double
+    dblB: double
+  init:
+    dblA: 9
+    dblB: 8
+  func: [funcTestDouble2, [], rv]
+  params: [dblA, 3, dblB]
+  stubs:
+  - func:
+    - 'stubbedFunc3'
+    - srv
+    params:
+    - pI
+    assign:
+      pI: 0
+      srv: 0
+  expect:
+  - rv == dblA + dblB + 3 + 1
+  coverage:
+    runMode: start
+    document: 'cover.ccv'
+    statistics:
+    - func: 'Func1'
+    - func: 'Func2'
+      code: 60
+      branches: 70
+      taken: 80
+      notTaken: 90
+      both: 100
+  profiler:
+    runMode: start
+    document: 'prof.xml'
+    codeAreas:
+    - name: 'ProfilerC_1'
+      minTime:
+      - 1
+      - 2
+      maxTime:
+      - 3
+      - 4
+      totalTime:
+      - 5
+      - 6
+      hits:
+      - 7
+      - 8
+    - name: 'ProfilerC_2'
+      minTime:
+      - 11
+      - 12
+      maxTime:
+      - 13
+      - 14
+      totalTime:
+      - 15
+      - 16
+      hits:
+      - 17
+      - 18
+    dataAreas:
+    - name: 'g_char1'
+      minTime:
+      - 21
+      - 22
+      maxTime:
+      - 23
+      - 24
+      totalTime:
+      - 25
+      - 26
+      hits:
+      - 27
+      - 28
+  hil:
+    params:
+      AnalogIn.AIN0: 10
+      DigitalIn.DIN0: 20
+  tests:
+  - options:
+      /IDE/opt1: "ValY"
+    init:
+      dblA: 10
+      dblB: 11
+    params: [3, 4, 5]
+    stubs:
+    - func:
+      - 'stubbedFunc3'
+      - srv
+      params:
+      - pI
+      assign:
+        pI: 1
+        srv: 2
+    coverage:
+      runMode: start
+      document: 'cover.ccv'
+      statistics:
+      - func: Func1
+        code: 1
+        branches: 11
+        taken: 111
+      - func: Func2
+        code: 61
+        branches: 62
+        taken: 63
+        notTaken: 64
+        both: 65
+    profiler:
+      runMode: start
+      document: 'prof.xml'
+      codeAreas:
+      - name: ProfilerC_1
+        minTime:
+        - 15
+        - 25
+        maxTime:
+        - 35
+        - 45
+        totalTime:
+        - 55
+        - 65
+        hits:
+        - 75
+        - 85
+      - name: ProfilerC_2
+        minTime:
+        - 116
+        - 126
+        maxTime:
+        - 136
+        - 146
+        totalTime:
+        - 156
+        - 166
+        hits:
+        - 176
+        - 186
+      dataAreas:
+      - name: g_char1
+        minTime:
+        - 321
+        - 322
+        maxTime:
+        - 323
+        - 324
+        totalTime:
+        - 325
+        - 326
+        hits:
+        - 327
+        - 328
+    hil:
+      params:
+        AnalogIn.AIN0: 12
+        DigitalIn.DIN0: 20
+- id: 'full-3Derived'
+  options:
+    /IDE/opt1: "ValX"
+  locals:
+    dblA: double
+    dblB: double
+  init:
+    dblA: 9
+    dblB: 8
+  func: [funcTestDouble2, [], rv]
+  params: [dblA, 3, dblB]
+  stubs:
+  - func:
+    - 'stubbedFunc3'
+    - srv
+    params:
+    - pI
+    assign:
+      pI: 0
+      srv: 0
+  expect:
+  - rv == dblA + dblB + 3 + 1
+  coverage:
+    runMode: start
+    document: 'cover.ccv'
+    statistics:
+    - func: 'Fu::nc1'
+      code: 45
+      branches: 46
+      taken: 47
+      notTaken: 48
+      both: 90
+    - func: 'Func2'
+      code: 60
+      branches: 70
+      taken: 80
+      notTaken: 90
+      both: 100
+  profiler:
+    runMode: start
+    document: 'prof.xml'
+    codeAreas:
+    - name: 'Pr::ofilerC_1'
+      minTime:
+      - 1
+      - 2
+      maxTime:
+      - 3
+      - 4
+      totalTime:
+      - 5
+      - 6
+      hits:
+      - 7
+      - 8
+    - name: 'ProfilerC_2'
+      minTime:
+      - 11
+      - 12
+      maxTime:
+      - 13
+      - 14
+      totalTime:
+      - 15
+      - 16
+      hits:
+      - 17
+      - 18
+    dataAreas:
+    - name: 'g_char1'
+      minTime:
+      - 217
+      - 227
+      maxTime:
+      - 237
+      - 247
+      totalTime:
+      - 257
+      - 267
+      hits:
+      - 277
+      - 287
+  hil:
+    params:
+      AnalogIn.AIN0: 10
+      DigitalIn.DIN0: 20
+  tests:
+  - options:
+      /IDE/opt1: "Val-Z"
+    init:
+      dblA: 99
+      dblB: 100
+    params: [12345, 23456, 34567]
+    stubs:
+    - func:
+      - 'stubbedFunc3'
+      - srv
+      params:
+      - pI
+      assign:
+        pI: 23
+        srv: 24
+    expect:
+    - rv == dblA + dblB + 3 + 9
+    coverage:
+      runMode: start
+      document: 'cover.ccv'
+      statistics:
+      - func: 'Fu::nc1'
+        code: 405
+        branches: 406
+        taken: 407
+        notTaken: 408
+        both: 900
+      - func: Func2
+        code: 31
+        branches: 32
+        taken: 33
+        notTaken: 34
+        both: 35
+    profiler:
+      runMode: start
+      document: 'prof.xml'
+      codeAreas:
+      - name: 'Pr::ofilerC_1'
+        minTime:
+        - 19
+        - 29
+        maxTime:
+        - 39
+        - 49
+        totalTime:
+        - 59
+        - 69
+        hits:
+        - 79
+        - 89
+      - name: ProfilerC_2
+        minTime:
+        - 111
+        - 121
+        maxTime:
+        - 131
+        - 141
+        totalTime:
+        - 151
+        - 161
+        hits:
+        - 171
+        - 181
+      dataAreas:
+      - name: g_char1
+        minTime:
+        - 2171
+        - 2271
+        maxTime:
+        - 2371
+        - 2471
+        totalTime:
+        - 2571
+        - 2671
+        hits:
+        - 2771
+        - 2871
+    hil:
+      params:
+        AnalogIn.AIN0: 12
+        DigitalIn.DIN0: 22
+  - options:
+      /IDE/opt1: "Val, Y"
+    init:
+      dblA: 10
+      dblB: 11
+    params: [3, 4, 5]
+    stubs:
+    - func:
+      - 'stubbedFunc3'
+      - srv
+      params:
+      - pI
+      assign:
+        pI: 1
+        srv: 2
+    coverage:
+      runMode: start
+      document: 'cover.ccv'
+      statistics:
+      - func: 'Fu::nc1'
+        code: 0
+        branches: 0
+        taken: 0
+        both: 0
+      - func: Func2
+        code: 61
+        branches: 62
+        taken: 63
+        notTaken: 64
+        both: 65
+    profiler:
+      runMode: start
+      document: 'prof.xml'
+      codeAreas:
+      - name: 'Pr::ofilerC_1'
+        minTime:
+        - 15
+        - 25
+        maxTime:
+        - 35
+        - 45
+        totalTime:
+        - 55
+        - 65
+        hits:
+        - 75
+        - 85
+      - name: ProfilerC_2
+        minTime:
+        - 116
+        - 126
+        maxTime:
+        - 136
+        - 146
+        totalTime:
+        - 156
+        - 166
+        hits:
+        - 176
+        - 186
+      dataAreas:
+      - name: g_char1
+        minTime:
+        - 2179
+        - 2279
+        maxTime:
+        - 2379
+        - 2479
+        totalTime:
+        - 2579
+        - 2679
+        hits:
+        - 2779
+        - 2879
+    hil:
+      params:
+        AnalogIn.AIN0: 12
+        DigitalIn.DIN0: 20
+  - options:
+      /IDE/opt1: 12345
+    init:
+      dblA: 111
+      dblB: 222
+    params: [1, 2, 3]
+    stubs:
+    - func:
+      - 'stubbedFunc3'
+      - srv
+      params:
+      - pI
+      assign:
+        pI: 555
+        srv: 666
+    expect:
+    - rv == dblA + dblB + 3 + 999
+    coverage:
+      runMode: start
+      document: 'cover.ccv'
+      statistics:
+      - func: 'Fu::nc1'
+        code: 450
+        branches: 460
+        taken: 470
+        notTaken: 480
+        both: 900
+      - func: Func2
+        code: 600
+        branches: 700
+        taken: 800
+        notTaken: 900
+        both: 1000
+    profiler:
+      runMode: start
+      document: 'prof.xml'
+      codeAreas:
+      - name: 'Pr::ofilerC_1'
+        minTime:
+        - 16
+        - 26
+        maxTime:
+        - 36
+        - 46
+        totalTime:
+        - 56
+        - 66
+        hits:
+        - 76
+        - 86
+      - name: ProfilerC_2
+        minTime:
+        - 117
+        - 127
+        maxTime:
+        - 137
+        - 147
+        totalTime:
+        - 157
+        - 167
+        hits:
+        - 177
+        - 187
+      dataAreas:
+      - name: g_char1
+        minTime:
+        - 21791
+        - 22791
+        maxTime:
+        - 23791
+        - 24791
+        totalTime:
+        - 25791
+        - 26791
+        hits:
+        - 27791
+        - 28791
+    hil:
+      params:
+        AnalogIn.AIN0: 88
+        DigitalIn.DIN0: 77

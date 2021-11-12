@@ -1,0 +1,56 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <title>Profiler</title>
+  </head>
+
+  <body>
+    <h1>Profiler</h1>
+
+    Profiler section configures <i>winIDEA</i> analyzer for time
+    measurements. Here we can specify requirements for function
+    execution time statistics. If execution times are outside of the
+    range specified, test fails. <br/>
+
+    <p align="center">
+    <img width="90%" src="images/profiler.png"/>
+    </p>
+
+    Timing requirements can be specified in <i>Code areas</i>
+    and <i>Data areas</i> sections. For each time constraint we can
+    specify a minimum and a maximum value, because function execution
+    time may not be the same each time (for example due to caching),
+    and profiler results are not 100% exact.
+
+    <p align="center">
+    <img width="90%" src="images/profilerCodeStat.png"/>
+    </p>
+
+    If a field is left empty, then it is ignored in the test
+    results. For example, if we are interested only in the maximum
+    execution time, it is enough to specify only the <i>Upper
+    limit</i> of <i>Max time</i>.<p>
+    
+    For data items we can also specify timing requirements on
+    values. If variable name is followed by value, then the specified
+    value may be assigned to variable only for the amount of time
+    specified in profiler statistic page. This can be useful, for
+    example, when we profile <i>task id</i> variable to specify the max and
+    min execution time of specific task. <p/>
+
+    When value is not specified, then statistic requirements apply to
+    all values measured during the test. This way we can specify the
+    maximum execution time of every task.<br>
+    <b>Important:</b>If we want to specify both variable name with
+    value and without it, the entry without a value must be the last
+    in the list.
+    
+    <p align="center">
+    <img width="90%" src="images/profilerDataStat.png"/>
+    </p>
+
+    
+  </body>
+</html>

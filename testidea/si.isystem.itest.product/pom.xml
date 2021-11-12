@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+	                     http://maven.apache.org/maven-v4_0_0.xsd">
+  
+  <modelVersion>4.0.0</modelVersion>
+
+  <version>${isys.version}</version>
+  <artifactId>si.isystem.itest.product</artifactId>
+  <packaging>eclipse-repository</packaging>
+  <name>iSYSTEM testIDEA</name>
+
+  <parent>
+    <relativePath>../pom-rcp.xml</relativePath>
+    <groupId>si.isystem</groupId>
+    <artifactId>testidea</artifactId>
+    <version>${isys.version}</version>
+  </parent>
+  
+      <dependencies>
+        <dependency>
+            <groupId>si.isystem</groupId>
+            <artifactId>de.kupzog.ktable</artifactId>
+            <version>${isys.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>si.isystem</groupId>
+            <artifactId>si.isystem.icadapter</artifactId>
+            <version>${isys.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>si.isystem</groupId>
+            <artifactId>si.isystem.jfaceutils</artifactId>
+            <version>${isys.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>si.isystem</groupId>
+            <artifactId>si.isystem.commons.plugin</artifactId>
+            <version>${isys.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>si.isystem</groupId>
+            <artifactId>si.isystem.itest.plugin.core</artifactId>
+            <version>${isys.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>si.isystem</groupId>
+            <artifactId>si.isystem.itest.plugin.rcp</artifactId>
+            <version>${isys.version}</version>
+        </dependency>
+    </dependencies>
+
+  
+  <build>
+    <plugins>
+      <plugin>
+	<groupId>org.eclipse.tycho</groupId>
+	<artifactId>tycho-p2-director-plugin</artifactId>
+	<version>${tycho.version}</version>
+	<configuration>
+          <pomDependencies>consider</pomDependencies>
+	  <formats>
+	    <win32>zip</win32>
+	    <linux>tar.gz</linux>
+	  </formats>
+	</configuration>
+	<executions>
+	  <execution>
+	    <id>materialize-products</id>
+	    <goals>
+	      <goal>materialize-products</goal>
+	    </goals>
+	  </execution>
+	  <execution>
+	    <id>archive-products</id>
+	    <goals>
+	      <goal>archive-products</goal>
+	    </goals>
+	  </execution>
+	</executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

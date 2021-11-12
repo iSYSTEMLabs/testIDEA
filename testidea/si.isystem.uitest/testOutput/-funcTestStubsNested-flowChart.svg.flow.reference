@@ -1,0 +1,50 @@
+digraph {
+  node[fontsize=10];
+  graph [rank=max];
+  edge[fontsize=10];
+n_134227032n_134231080 [shape=ellipse, style="filled,dashed", fillcolor="paleturquoise", label=<<font color="red">0x8002458</font><br/>funcTestShort1<br align="left"/>>];
+n_134231080->n_134227032n_134231080;
+n_134227156n_134231088 [shape=ellipse, style="filled,dashed", fillcolor="paleturquoise", label=<<font color="red">0x80024d4</font><br/>funcTestInt1<br align="left"/>>];
+n_134231088->n_134227156n_134231088;
+n_134231000n_134231094 [shape=ellipse, style="filled,dashed", fillcolor="paleturquoise", label=<<font color="red">0x80033d8</font><br/>stubbedFuncInt<br align="left"/>>];
+n_134231094->n_134231000n_134231094;
+n_134231112->n_134231118 [label=<<font color="red">0x800344e</font><br/>True>, constraint=false];
+n_134231116->n_134231122 [label=<<font color="red">0x8003452</font><br/>>, constraint=false];
+funcTestStubsNested [shape=ellipse, style="filled", fillcolor="aquamarine", label=<<font color="red">0x8003420</font><br/>funcTestStubsNested<br align="left"/>>];
+funcTestStubsNested->n_134231072;
+n_134231072 [shape=box, style="filled", fillcolor="cornsilk", label=<<font color="green">int funcTestStubsNested() {</font><br align="left"/>push {r7,r14}<br align="left"/>sub sp,sp,#0008<br align="left"/>add r7,sp,#0000<br align="left"/><font color="green">  retVal = funcTestInt1(funcTestShort1(6));</font><br align="left"/>mov r0,#06<br align="left"/>>];
+n_134231072->n_134231080;
+n_134231080 [shape=octagon, style="filled", fillcolor="moccasin", label=<bl funcTestShort1<br align="left"/>>];
+n_134231080->n_134231084;
+n_134231084 [shape=box, style="filled", fillcolor="cornsilk", label=<mov r3,r0<br align="left"/>mov r0,r3<br align="left"/>>];
+n_134231084->n_134231088;
+n_134231088 [shape=octagon, style="filled", fillcolor="moccasin", label=<bl funcTestInt1<br align="left"/>>];
+n_134231088->n_134231092;
+n_134231092 [shape=box, style="filled", fillcolor="cornsilk", label=<str r0,[r7,#04]<br align="left"/>>];
+n_134231092->n_134231094;
+n_134231094 [shape=octagon, style="filled", fillcolor="moccasin", label=<<font color="green">  if (42 == stubbedFuncInt()) {</font><br align="left"/>bl stubbedFuncInt<br align="left"/>>];
+n_134231094->n_134231098;
+n_134231098 [shape=box, style="filled", fillcolor="cornsilk", label=<mov r3,r0<br align="left"/>cmp r3,#2A<br align="left"/>ite eq<br align="left"/>>];
+n_134231098->n_134231104;
+n_134231104 [shape=parallelogram, style="filled", fillcolor="cornsilk", label=<mov r3,#01<br align="left"/>>];
+n_134231104->n_134231106 [label=<False>];
+n_134231106 [shape=parallelogram, style="filled", fillcolor="cornsilk", label=<mov r3,#00<br align="left"/>>];
+n_134231106->n_134231108 [label=<False>];
+n_134231108 [shape=box, style="filled", fillcolor="cornsilk", label=<uxtb r3,r3<br align="left"/>cmp r3,#00<br align="left"/>>];
+n_134231108->n_134231112;
+n_134231112 [shape=diamond, style="filled", fillcolor="moccasin", height="1", label=<beq 'itest.c'  1120<br align="left"/>>];
+n_134231112->n_134231114 [label=<False>];
+n_134231114 [shape=box, style="filled", fillcolor="cornsilk", label=<<font color="green">    return retVal; </font><br align="left"/>ldr r3,[r7,#04]<br align="left"/>>];
+n_134231114->n_134231116;
+n_134231116 [shape=hexagon, style="filled", fillcolor="moccasin", label=<b 'itest.c'  1121<br align="left"/>>];
+n_134231116->n_134231118 [style=invis];
+n_134231118 [shape=box, style="filled", fillcolor="cornsilk", label=<<font color="green">  return 456;</font><br align="left"/>mov r3,#000001C8<br align="left"/>>];
+n_134231118->n_134231122;
+n_134231122 [shape=box, style="filled", fillcolor="cornsilk", label=<<font color="green">}</font><br align="left"/>mov r0,r3<br align="left"/>add r7,#08<br align="left"/>mov sp,r7<br align="left"/>>];
+n_134231122->n_134231128;
+n_134231128 [shape=hexagon, style="filled", fillcolor="thistle", label=<pop {r7,r15}<br align="left"/>>];
+{rank=same; n_134231094; n_134231000n_134231094; }
+{rank=same; n_134231080; n_134227032n_134231080; }
+{rank=same; n_134231088; n_134227156n_134231088; }
+}
+

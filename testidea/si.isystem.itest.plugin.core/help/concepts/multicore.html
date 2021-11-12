@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <link href="../styles.css" rel="stylesheet" type="text/css">
+    <title>Multi-core testing</title>
+  </head>
+
+  <body>
+    <h1>Multi-core testing</h1>
+
+    With multi-core targets a need to run tests on a specific core
+appears. To be able to utilize multi-core testing, we must first
+properly configure testIDEA.
+
+    
+    <h2>Configure core IDs</h2>
+
+    Each core is identified by its index. To make this identification
+    more user friendly, we can assign name to each core in project
+    properties (<code>File | Properties | Multicore
+    configuration</code>). Comma separated list contains list of core
+    IDs, where the first item refers to core with index 0 or primary
+    core, the next item refers to core with index 1, ... <br>
+
+    Button <i>Get from winIDEA</i> reads core IDs from winIDEA. Names
+    will be the same as found in winIDEA
+    menu <span class="menuCmd">Debug | Core</span>. It is a
+    convenience feature, but not mandatory - names of cores in
+    testIDEA may differ from those in winIDEA, so that we can use the
+    same iyaml file when our code is compiled and tested on different
+    targets.
+
+    <p align="center">
+    <img width="90%" src="images/multicoreConfiguration.png"/>
+    </p>
+
+    If this field is empty, we can not specify test IDs in test cases.
+    
+    <h2>Initialization sequence</h2>
+
+    With more than one core the initialization sequence becomes more
+    complex. For each core we must make sure that:
+    <ul>
+      <li>testIDEA connects to core</li>
+      <li>the code is downloaded and winIDEA knows application symbols</li>
+      <li>core is active (released from reset)</li>
+      <li>startup code for the core is executed (for example <i>run until
+      main()</i>), so that stack is initialized</li>
+    </ul>
+
+    See also the screenshot below.
+
+    <p/>
+    
+    The recommended approach for init sequence configuration is manual
+    initialization of <i>winIDEAs</i> for all cores we want to test. During
+    this operation we write down all actions, for example: <i>Download,
+    Run until main(), Debug | Core, ... </i> When done, we enter this
+    sequence into <i>Run configuration</i> dialog (<code>Run | Run
+      configuration</code>). Example for target with two cores is shown in
+    the image below. Empty field for core ID refers to primary core
+    (core with index 0).
+
+    <p align="center">
+    <img width="90%" src="images/multicoreInitSequence.png"/>
+    </p>
+
+    Available actions and their parameters are described in table
+    tool-tip (hover the question mark icon in the top left corner of
+    the <code>Init sequence</code> table).
+    
+    
+    
+    <h2>Assign core IDs to test cases</h2>
+
+    The final step is defining core ID for each test case. Since list
+    of functions given by content assist depends on core selection, it
+    is a good idea to select core ID first. If core ID field is left
+    empty, primary core is assumed.
+    
+    <p align="center">
+    <img width="90%" src="images/multicoreFuncSection.png"/>
+    </p>
+
+    
+
+  </body>
+</html>

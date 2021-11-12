@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- do not join or split lines with version numbers as build script 
+     modifies them -->
+<site>
+<feature url="features/si.isystem.itest.feature.eclipse_VERSION_TOKEN.jar"
+         version="VERSION_TOKEN"
+         id="si.isystem.itest.feature.eclipse">
+     
+      <category name="si.isystem.testidea.category"/>
+   </feature>
+   
+   <category-def name="si.isystem.testidea.category" label="iSYSTEM Test"/>
+</site>

@@ -1,0 +1,14 @@
+diagram {
+  default_fontsize = 12;
+"CPU_Recursion";
+"CPU_Recursion" -> "Factorial" [label="Factorial"];
+"Factorial" -> "Factorial" [label="Factorial"];
+"Factorial" -> "Factorial" [label="Factorial"];
+"Factorial" -> "Factorial" [label="Factorial"];
+"Factorial" -> "Factorial" [label="Factorial"];
+"Factorial" <-- "Factorial";
+"Factorial" <-- "Factorial";
+"Factorial" <-- "Factorial";
+"Factorial" <-- "Factorial";
+"CPU_Recursion" <-- "Factorial";
+}

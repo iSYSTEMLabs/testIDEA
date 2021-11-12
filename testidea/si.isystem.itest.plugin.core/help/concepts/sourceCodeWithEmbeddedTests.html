@@ -1,0 +1,321 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <title>Test cases in C/C++ source files</title>
+  </head>
+
+  <body>
+    <h1>Test cases in C/C++ source files</h1>
+
+    Unit tests are tightly related to specific sections of source code,
+    usually this means each tests belongs to one function. Therefore it
+    makes sense to keep test specifications in the same file with source
+    code. To make this possible, <i>testIDEA</i> can parse special C/C++
+    comments, which contain test specifications. Comments must start with
+    string '/*#', which is a standard C/++ multi-line comment followed by
+    '#'. Example:
+
+    <pre>
+    /*#
+    - func: [min_int, [], rv]
+      params: [3, 5]
+      expect:
+      - rv == 3
+    */
+
+    int min_int(int a, int b)
+    {
+      if (a < b)
+        return a;
+
+      return b;
+    }
+    </pre>
+
+    This way we can easily adapt tests to any changes in the source
+    code. Of course it is also possible to have more than one test
+    specification in one comment block.
+    <p>
+
+    Test specifications can be edited either directly in the source
+    code editor, or the source code file is opened and edited in
+    <i>testIDEA</i>. <i>testIDEA</i> modifies only test specifications
+    in the special code comments, while the rest of the file is left
+    intact. <i>testIDEA</i> also does not add any new test comments to
+    the source file - all test specifications are stored into the
+    existing comments. Therefore it is a good idea to tell <i>testIDEA</i>
+    where to put test specifications by manually adding short test 
+    comments to places, where we want to have test specification. For
+    example, the following snippet shows test specification added
+    manually - the rest will be specified in <i>testIDEA</i>:
+
+    <pre>
+    /*#
+       - id: min
+     */
+
+    int min_int(int a, int b)
+    {
+      if (a < b)
+        return a;
+
+      return b;
+    }
+    </pre>
+
+    
+<h1>Rules for source code test comments</h1>
+
+<ol>
+<li>
+   Test comments must start with /*#. These three characters must be
+   the first non-space characters in the line. Example:<p>
+
+   Valid:
+   <pre>
+   /*# - func: [f, [], rv] */
+   </pre>
+
+   Not valid:
+   <pre>
+   a = 3; /*# - func: [f, [], rv] */
+   // <i>testIDEA</i> will ignore such test specifications.
+   </pre>
+
+   Similar applies to the end of comment token '*/'. It must the
+   last token in line. The following is not valid:
+
+   <pre>
+   /*# - func: [f, [], rv] */ a = 3;
+   </pre>
+
+   testIDEA will report an error in such case.<p>
+
+   Test specification may start immediately in the same line as
+   comment start, but for readability purposes it is recommended to
+   start it on a new line:
+
+   <pre>
+   /*#
+       - func: [f, [], rv] 
+    */
+   </pre>
+
+   <b>Note:</b> If there is more than one line in test spec, it is highly
+     recommended to start test spec on the line after comment start for
+     readability reasons. The following is NOT recommended:
+
+   <pre>
+   /*# - func: [f]
+      expect:
+      - rv == 0
+    */
+   </pre>
+   
+</li>
+
+
+<li>
+   <i>testIDEA</i> loads files with extension <i>iyaml</i> as pure
+   YAML files. If the file has any other extension, it is loaded as
+   source code file, where test specifications are stored in special
+   source code comments, as described in this section.<p>
+
+   If file is opened as <i>iyaml</i> file, it is not possible to save
+   it as source code file, because it contains no source
+   code. However, if it is opened as source code file, we can save it
+   as <i>iyaml</i> file (the source code is not saved).<p>
+</li>
+
+
+<li>
+   Indentation may differ between comments, but it must be
+   consistent inside one comment.<p>
+</li>
+
+
+<li>
+   Tabs inside test specifications are forbidden.
+   See: <a href="http://www.yaml.org/faq.html">http://www.yaml.org/faq.html</a>.
+   It is not a good idea to use tabs in source code anyway.<p>
+</li>
+
+
+<li>
+   Hierarchy of test specifications can be defined in one of two ways:
+   <ul>
+     <li>
+     Use inheritance inside one test specifications comment, for example:
+     <pre>
+     - id: ts1
+       func: [g, [45], rv]
+       expect: [rv == 90]
+       tests:
+         id: ts1-a
+         params: 50
+         expect: [rv == 100]
+      </pre>
+      </li>
+     
+     <li>
+     Use tag <i>baseId</i> to define the base test specification,
+     which may be defined in some other test specification comment,
+     for example:
+     
+     <pre>
+       - id: ts1-b
+         baseId: ts1
+         params: 60
+         expect: [rv == 120]
+      </pre>
+
+      <p>
+      The <i>baseId</i> tags assigned to test specifications, which
+      are already derived in the comment, are ignored. For example, if
+      the test specifications with id <i>ts1-a</i> in the example
+      above, would have the <i>baseId</i> tag defined, this tag would
+      be ignored.
+
+      <p>
+      The base test specification may be defined later in the source
+      file.
+
+      <p>
+      If more than one test specification with id equal to the <i>baseId</i>
+      exist, the first one declared is used as a base test
+      specification.
+
+      <p>
+      If base test spec A is defined after derived test specs, derived
+      test specs are appended to the list of derived test specs in the
+      order as they appear in the file. Exception to this rule are
+      derived test specs defined immediately as children of A in the
+      same test comment - they are the first ones.
+
+      <p>
+      Although testIDEA allows flexibility in defining test
+      specifications, it is recommended to define test specifications
+      in their natural order when possible. For example, it is allowed
+      to define base test specification in a comment that follows its
+      derived tests specifications. However, for readability reasons we
+      should define base test specification before its derived test
+      specifications, whenever possible. This flexibility is available
+      for cases, when other aspects of function organization inside
+      source code file have stronger impact on readability and clarity.
+      </li>
+     </ul><p>
+   </li>
+
+<li>
+ Test configuration must start with special comment /*~.
+   There may be only one such comment in one source file.<p>
+</li>
+
+
+<li>
+   <i>testIDEA</i> never changes anything outside of test comments. Inside test
+   comments testIDEA tries to do its best to keep the formatting of test
+   specifications intact. For example, if you open the source code
+   file and then save it without changes, indentation of test
+   specifications does not change. However there are two cases, when
+   formatting changes (semantic is preserved!):
+
+   <ul>
+     <li>
+       The first case is when there are base and derived test
+       specification defined in the same comment, but they are linked
+       with tag <i>baseId</i>, not hierarchically. When saved, they are saved
+       in hierarchy, not linked with <i>baseId</i>. For example, if the
+       comment contains:
+
+       <pre>
+       /*#
+          - id: testA
+            func: [min_int, [56, 89], rvf]
+            expect:
+            - rvf == 56
+     
+          - baseId: testA
+            func: [max_int, [99, 999], rvm]
+            expect:
+            - rvm == 999
+        */
+       </pre>
+
+       then the saved comment will be:
+
+       <pre>
+       /*#
+          - id: testA
+            func: [min_int, [56, 89], rvf]
+            expect:
+            - rvf == 56
+            tests:
+            - func: [max_int, [99, 999], rvm]
+              expect:
+              - rvm == 999
+        */
+        </pre>
+     </li>
+     <li>
+       The second case is when the order of derived test
+       specifications linked to base test specifications with tag
+       <i>baseId</i> does not match the order of base test
+       specifications. Derived test specifications are
+       always saved in the same order as base test specifications,
+       because this is also their execution order.
+       For example:
+
+       If comments contain:
+        <pre>
+        /*#
+          - id: testA
+            func: [min_int, [56, 89], rvf]
+            expect:
+            - rvf == 56
+     
+          - id: testB
+            func: [max_int, [99, 999], rvm]
+            expect:
+            - rvm == 999
+        */
+
+       /*#
+          - baseId: testB
+            params: [59, 99]
+            expect:
+            - rvf == 59
+     
+          - baseId: testA
+            params: [199, 1999]
+            expect:
+            - rvm == 1999
+        */
+        </pre>
+
+        the first comment will be unchanged, while the second one will
+        be saved as:
+
+        <pre>
+       /*#
+          - baseId: testA
+            params: [199, 1999]
+            expect:
+            - rvm == 1999
+     
+          - baseId: testB
+            params: [59, 99]
+            expect:
+            - rvf == 59
+        */
+       </pre>
+       
+</ol>
+
+     
+     
+     
+     
+     

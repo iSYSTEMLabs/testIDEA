@@ -1,0 +1,11 @@
+digraph G {
+  node[fontsize=10];
+  edge[fontsize=10];
+"stubbedFuncInt"[style=filled, fillcolor=".2 .1 1.0"];
+"funcTestShort1"[style=filled, fillcolor=".2 .1 1.0"];
+"funcTestInt1"[style=filled, fillcolor=".2 .1 1.0"];
+"funcTestStubsNested"[style=filled, fillcolor=".2 .1 1.0"];
+"funcTestStubsNested" -> "stubbedFuncInt"[label = "1"];
+"funcTestStubsNested" -> "funcTestShort1"[label = "1"];
+"funcTestStubsNested" -> "funcTestInt1"[label = "1"];
+}

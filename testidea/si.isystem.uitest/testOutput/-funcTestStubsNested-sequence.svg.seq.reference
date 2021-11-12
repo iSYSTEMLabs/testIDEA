@@ -1,0 +1,10 @@
+diagram {
+  default_fontsize = 12;
+"funcTestStubsNested";
+"funcTestStubsNested" -> "funcTestShort1" [label="funcTestShort1"];
+"funcTestStubsNested" <-- "funcTestShort1";
+"funcTestStubsNested" -> "funcTestInt1" [label="funcTestInt1"];
+"funcTestStubsNested" <-- "funcTestInt1";
+"funcTestStubsNested" -> "stubbedFuncInt" [label="stubbedFuncInt"];
+"funcTestStubsNested" <-- "stubbedFuncInt";
+}

@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Automatic-Module-Name: si.isystem.jfaceutils
+Bundle-ManifestVersion: 2
+Bundle-Name: iSYSTEM JFace Utils
+Bundle-Vendor: iSYSTEM Labs d.o.o.
+Bundle-SymbolicName: si.isystem.jfaceutils
+Bundle-Version: 9.12.297
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ClassPath: .,
+ lib/miglayout-3.7.1.jar,
+ lib/commons-lang3-3.3.2.jar
+Require-Bundle: org.eclipse.swt,
+ org.eclipse.jface
+Export-Package: si.isystem.exceptions,
+ si.isystem.ui.utils
