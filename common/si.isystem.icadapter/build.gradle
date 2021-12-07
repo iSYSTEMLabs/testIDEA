@@ -2,11 +2,11 @@
 // https://github.com/eclipse/buildship/blob/master/docs/pluginbuild/Usage.md
 
 dependencies {
-    compile fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.core.runtime_*.jar')
-    compile fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.osgi_*.jar')
+    implementation fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.core.runtime_*.jar')
+    implementation fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.osgi_*.jar')
     
-    compile fileTree(dir: "lib", include: "*.jar")
-    runtime fileTree(dir: "lib", include: "*.jar")
+    implementation fileTree(dir: "lib", include: "*.jar")
+    runtimeOnly fileTree(dir: "lib", include: "*.jar")
 }
      
 // Info about trying to build Eclipse projects with Buildship:

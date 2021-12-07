@@ -1,15 +1,19 @@
 
 dependencies {
 
-    compile fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.core.commands_*.jar')
-    compile fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.equinox.common_*.jar')
-    compile fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.jface_*.jar')
-    compile fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.osgi_*.jar')
-    compile fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.ui*.jar')
-    compile fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.core*.jar')
-    compile fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.swt.win32.win32.x86_64_*.jar')
+    implementation fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.core.commands_*.jar')
+    implementation fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.equinox.common_*.jar')
+    implementation fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.jface_*.jar')
+    implementation fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.osgi_*.jar')
+    implementation fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.ui*.jar')
+    implementation fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.core*.jar')
+    implementation fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.swt.win32.win32.x86_64_*.jar')
                      
-    compile fileTree(dir: "lib", include: '**/*.jar')
+    implementation fileTree(dir: "lib", include: '**/*.jar')
+
+    // The next line was added when transitioning from gradle 6.1 to 7.3, otherwise
+    // the jar file was not found by this porject.
+    implementation project(':si.isystem.icadapter').files("lib/IConnectJNI.jar")
 }
 
 

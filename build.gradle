@@ -13,10 +13,6 @@ apply from: "utils.gradle"
 
 def os = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
 ext.isWindows = os.startsWith("windows");
-if (!isWindows) {    
-    ext.writeAVersionHeaderFile()  // aversion_scc.h is not created/updated
-              // on Linux by TortoiseSVN, because these hooks don't work there.
-}
 
 rootProject.version = getISysVer()
 def versionWithRev = getISysQualifiedVer()
@@ -42,7 +38,7 @@ def drive = ext.expandEnvVars("%ISYSTEM_ROOT_DRIVE%")
 if (!isWindows) {
     drive = System.getenv("HOME")
 }
-ext.ISYSTEM_BUILD_MAVEN_PATH = ''  
+ext.ISYSTEM_BUILD_MAVEN_PATH = ''
 
 // def toolsDir = 'AsystLib/tools'
 // if (ext.isWindows) {
@@ -63,7 +59,7 @@ subprojects {
     ext {
         versionWithScRev = versionWithRev
     }
-    apply plugin: 'maven'
+    apply plugin: 'maven-publish'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
@@ -75,9 +71,12 @@ subprojects {
 
     def isDebugBuild = project.hasProperty('debugBuild') ?
                        project.getProperty('debugBuild') == 'true'  : false
-    compileJava.options.debug = isDebugBuild
-    compileJava.options.debugOptions.debugLevel = "source,lines,vars"
-    compileJava.options.encoding="UTF-8"
+    compileJava {
+        options.release = 8
+        options.debug = isDebugBuild
+        options.debugOptions.debugLevel = "source,lines,vars"
+        options.encoding="UTF-8"
+    }
 
     sourceSets {
         main {
@@ -110,16 +109,27 @@ subprojects {
         //   into('lib') { from project(':si.isystem.jfaceutils').jar }
     }
 
-    uploadArchives.mustRunAfter assemble
+        publishing {
+            publications {
+                testIDEA(MavenPublication) {
+                    groupId = 'si.isystem'
+                    from components.java
+                    pom {
+                        name = 'tiLibrary'
+                        description = 'Library for testIDEA'
+                    }
+                }
+            }
 
-    uploadArchives {
-        repositories {
-            mavenDeployer {
-                println "------------- file:///${projectDir}/../../$MAVEN_LOCAL_REPO/"
-                repository(url: "file:///${projectDir}/../../$MAVEN_LOCAL_REPO/")
+            repositories {
+                maven {
+                    println "------------- file:///${projectDir}/../../$MAVEN_LOCAL_REPO/"
+                    url = layout.buildDirectory.dir("file:///${projectDir}/../../$MAVEN_LOCAL_REPO/")
+                }
             }
         }
-    }
+
+    publish.mustRunAfter assemble
 }
 
 
@@ -155,9 +165,9 @@ project(':si.isystem.icadapter') {
 project(':si.isystem.commons.plugin') {
 
     dependencies {
-        compile project(':si.isystem.jfaceutils'),
-                project(':de.kupzog.ktable'),
-                project(':si.isystem.icadapter')
+        implementation project(':si.isystem.jfaceutils'),
+                       project(':de.kupzog.ktable'),
+                       project(':si.isystem.icadapter')
     }
 }
 
@@ -166,11 +176,11 @@ def isysDependenciesCommon = [
     ':de.kupzog.ktable:assemble',
     ':si.isystem.icadapter:assemble',
     ':si.isystem.commons.plugin:assemble',
-    //    ':si.isystem.connectjava:uploadArchives',
-    ':si.isystem.jfaceutils:uploadArchives',
-    ':de.kupzog.ktable:uploadArchives',
-    ':si.isystem.icadapter:uploadArchives',
-    ':si.isystem.commons.plugin:uploadArchives']
+    //    ':si.isystem.connectjava:publish',
+    ':si.isystem.jfaceutils:publish',
+    ':de.kupzog.ktable:publish',
+    ':si.isystem.icadapter:publish',
+    ':si.isystem.commons.plugin:publish']
 
 //-------------------------------------------------------------------------------------------------------------
 //---------------------------------------------  testIDEA  ----------------------------------------------------
@@ -181,26 +191,26 @@ def POM_PLUGIN = 'testidea/pom-plugin.xml'
 
 project(':si.isystem.itest.plugin.core') {
     dependencies {
-        compile project(':si.isystem.commons.plugin')
+        implementation project(':si.isystem.commons.plugin')
     }
 }
 
 project(':si.isystem.itest.plugin.rcp') {
     dependencies {
-        compile project(':si.isystem.itest.plugin.core')
+        implementation project(':si.isystem.itest.plugin.core')
     }
 }
 
 project(':si.isystem.itest.plugin.eclipse') {
     dependencies {
-        compile project(':si.isystem.itest.plugin.core')
+        implementation project(':si.isystem.itest.plugin.core')
     }
 }
 
 // this project also depends on sub-projects
 dependencies {
-    compile project(':si.isystem.itest.plugin.rcp'),
-            project(':si.isystem.itest.plugin.eclipse')
+    implementation project(':si.isystem.itest.plugin.rcp'),
+                   project(':si.isystem.itest.plugin.eclipse')
 }
 
 def isysDependenciesTestIDEA = [
@@ -208,9 +218,9 @@ def isysDependenciesTestIDEA = [
     ':si.isystem.itest.plugin.core:assemble',
     ':si.isystem.itest.plugin.rcp:assemble',
     ':si.isystem.itest.plugin.eclipse:assemble',
-    ':si.isystem.itest.plugin.core:uploadArchives',
-    ':si.isystem.itest.plugin.rcp:uploadArchives',
-    ':si.isystem.itest.plugin.eclipse:uploadArchives']
+    ':si.isystem.itest.plugin.core:publish',
+    ':si.isystem.itest.plugin.rcp:publish',
+    ':si.isystem.itest.plugin.eclipse:publish']
 
 task exeBuildTestIDEA(dependsOn: [isysDependenciesCommon, isysDependenciesTestIDEA]) {
     group 'iSYSTEM'
@@ -225,7 +235,7 @@ task exeBuildTestIDEA(dependsOn: [isysDependenciesCommon, isysDependenciesTestID
 
         runMavenBuild(POM_RCP_TESTIDEA, 'verify', '')
 
-/* Currently Builder copies JRE from ISYSTEM_APPS, no need to copy here.
+/* Currently Builder copies JRE from ISYSTEM_APPS, no need to copy it here.
          copy {
              from "$System.env.ISYSTEM_APPS/jre"
              into "si.isystem.itest.product/target/products/si.isystem.itest.product/win32/win32/x86/jre"
@@ -283,21 +293,21 @@ def POM_DEBUG_PLUGIN = 'debugger/pom-plugin.xml'
 
 project(':si.isystem.debug.core') {
     dependencies {
-        compile project(':si.isystem.commons.plugin')
+        implementation project(':si.isystem.commons.plugin')
     }
 }
 
 project(':si.isystem.eclipse.debug') {
     dependencies {
-        compile project(':si.isystem.debug.core')
+        implementation project(':si.isystem.debug.core')
     }
 }
 
 def isysDependenciesDebugger = [
     ':si.isystem.debug.core:assemble',
     ':si.isystem.eclipse.debug:assemble',
-    ':si.isystem.debug.core:uploadArchives',
-    ':si.isystem.eclipse.debug:uploadArchives'
+    ':si.isystem.debug.core:publish',
+    ':si.isystem.eclipse.debug:publish'
     ]
 
 task pluginBuildDebugger(dependsOn: [isysDependenciesCommon, isysDependenciesDebugger]) {

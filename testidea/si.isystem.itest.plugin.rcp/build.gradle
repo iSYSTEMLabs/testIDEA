@@ -1,8 +1,9 @@
 
 dependencies {
-    compile fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.osgi_*.jar')
-    compile fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.ui*.jar')
-    compile fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.core*.jar')
+    implementation fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.osgi_*.jar')
+    implementation fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.ui*.jar')
+    implementation fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.core*.jar')
+    implementation fileTree(dir: TARGET_PLATFORM_PLUGINS, include: 'org.eclipse.jface_*.jar')
 }
 
 jar {
